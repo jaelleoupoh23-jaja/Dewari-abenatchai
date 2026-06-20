@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
 
-const LOGO_URL = '/Image%20ChatGPT%2020%20juin%202026%2C%2016_26_29.png'
+const LOGO_URL = 'https://raw.githubusercontent.com/jaelleoupoh23-jaja/Dewari-abenatchan/main/Image%20ChatGPT%2020%20juin%202026%2C%2016_26_29.png'
 
 const AVATAR_COLORS = ['#534AB7', '#EF9F27', '#1D9E75', '#D85A30', '#D4537E', '#185FA5']
 function colorFor(name) {
