@@ -8,6 +8,13 @@ const SLIDES = [
   { emoji: '👑', titre: 'Deviens la légende du quartier', fond: 'linear-gradient(135deg,#3A0CA3,#FF4D6D)' },
 ]
 
+const ONGLETS = [
+  { id: 'accueil', label: '🏠 Accueil' },
+  { id: 'tournoi', label: '🏆 Tournoi' },
+  { id: 'salons', label: '🎲 Salons' },
+  { id: 'compte', label: '👤 Mon compte' },
+]
+
 export default function App() {
   const [ecran, setEcran] = useState('accueil')
   const [session, setSession] = useState(null)
@@ -17,6 +24,11 @@ export default function App() {
   const [tournoi, setTournoi] = useState(null)
   const [modalAuth, setModalAuth] = useState(null)
   const [inscritTournoi, setInscritTournoi] = useState(false)
+
+  const refTournoi = useRef(null)
+  const refSalons = useRef(null)
+  const refCompte = useRef(null)
+  const refAccueil = useRef(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -28,6 +40,7 @@ export default function App() {
 
   useEffect(() => {
     if (session) chargerMembre()
+    else setMembre(null)
   }, [session])
 
   async function chargerMembre() {
@@ -82,16 +95,44 @@ export default function App() {
     chargerSalons()
   }
 
+  function allerA(id) {
+    const refs = { accueil: refAccueil, tournoi: refTournoi, salons: refSalons, compte: refCompte }
+    refs[id]?.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  async function deconnexion() {
+    await supabase.auth.signOut()
+    setMembre(null)
+    setEcran('accueil')
+  }
+
   return (
     <div style={st.page}>
       {ecran === 'accueil' && (
-        <Accueil
-          salons={salons}
-          tournoi={tournoi}
-          inscritTournoi={inscritTournoi}
-          onChoisirSalon={ouvrirSalon}
-          onOuvrirTournoi={() => setModalAuth({ pourTournoi: true })}
-        />
+        <>
+          <div style={st.barreNom}>👑 Dewari-abenatchai</div>
+          <NavOnglets onAller={allerA} />
+          <div ref={refAccueil} />
+          <Accueil
+            salons={salons}
+            tournoi={tournoi}
+            inscritTournoi={inscritTournoi}
+            onChoisirSalon={ouvrirSalon}
+            onOuvrirTournoi={() => setModalAuth({ pourTournoi: true })}
+            refTournoi={refTournoi}
+            refSalons={refSalons}
+          />
+          <div ref={refCompte}>
+            <Compte
+              session={session}
+              membre={membre}
+              salons={salons}
+              onConnexion={() => setModalAuth({ pourSalon: null })}
+              onDeconnexion={deconnexion}
+              onRetourSalon={(s) => { setSalonActif(s); setEcran('chat') }}
+            />
+          </div>
+        </>
       )}
 
       {ecran === 'chat' && membre && salonActif && (
@@ -106,7 +147,7 @@ export default function App() {
         <ModalAuth
           contexte={modalAuth}
           onFermer={() => setModalAuth(null)}
-          onSuccesSalon={(s) => { setModalAuth(null); rejoindreSalon(s) }}
+          onSuccesSalon={(s) => { setModalAuth(null); if (s) rejoindreSalon(s) }}
           onSuccesTournoi={() => { setModalAuth(null); setInscritTournoi(true) }}
           tournoi={tournoi}
         />
@@ -115,7 +156,54 @@ export default function App() {
   )
 }
 
-function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTournoi }) {
+function NavOnglets({ onAller }) {
+  return (
+    <div style={st.navWrap}>
+      {ONGLETS.map((o) => (
+        <button key={o.id} onClick={() => onAller(o.id)} style={st.navBouton}>
+          {o.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourSalon }) {
+  if (!session || !membre) {
+    return (
+      <div style={st.section}>
+        <div style={st.sectionTitre}>Mon compte</div>
+        <div style={st.sectionSousTitre}>Connecte-toi pour voir ton profil</div>
+        <button onClick={onConnexion} style={{ ...st.boutonPrincipal, marginTop: 14 }}>Se connecter / Créer un compte</button>
+      </div>
+    )
+  }
+
+  const salonActuel = salons.find((s) => s.id === membre.salon_id)
+
+  return (
+    <div style={st.section}>
+      <div style={st.sectionTitre}>Mon compte</div>
+      <div style={st.carteCompte}>
+        <div style={st.avatarGroupe}>{(membre.pseudo || '?').slice(0, 2).toUpperCase()}</div>
+        <div style={{ marginLeft: 12 }}>
+          <div style={{ fontWeight: 800, fontSize: 16 }}>{membre.pseudo}</div>
+          <div style={{ fontSize: 13, color: '#9a93b5' }}>{salonActuel ? `Dans ${salonActuel.nom}` : 'Pas encore dans un salon'}</div>
+        </div>
+      </div>
+      {salonActuel && (
+        <button onClick={() => onRetourSalon(salonActuel)} style={{ ...st.boutonPrincipal, marginTop: 14 }}>
+          Retourner dans {salonActuel.nom}
+        </button>
+      )}
+      <button onClick={onDeconnexion} style={{ ...st.lienFermer, marginTop: 14, border: '1px solid #3a3658', borderRadius: 10, padding: 10 }}>
+        Se déconnecter
+      </button>
+    </div>
+  )
+}
+
+function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTournoi, refTournoi, refSalons }) {
   const [index, setIndex] = useState(0)
   const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
 
@@ -133,7 +221,6 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
 
   return (
     <>
-      <div style={st.barreNom}>👑 Déwari Abenatchan</div>
       <div style={{ ...st.banniere, background: slide.fond }}>
         <div style={st.bannieretEmoji}>{slide.emoji}</div>
         <div style={st.bannierTitre}>{slide.titre}</div>
@@ -144,7 +231,7 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
         </div>
       </div>
 
-      <div style={st.heroTexte}>
+      <div ref={refTournoi} style={st.heroTexte}>
         <div style={st.eyebrow}>LUDO COMPÉTITION · DÉCEMBRE</div>
         {compte && (
           <div style={st.compteWrap}>
@@ -173,7 +260,7 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
         )}
       </div>
 
-      <div style={st.section}>
+      <div ref={refSalons} style={st.section}>
         <div style={st.sectionTitre}>Choisis ton salon</div>
         <div style={st.sectionSousTitre}>6 niveaux de mise, 20 joueurs max par salon</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 14 }}>
@@ -281,7 +368,7 @@ function ModalAuth({ contexte, onFermer, onSuccesSalon, onSuccesTournoi, tournoi
     <div style={st.overlay} onClick={onFermer}>
       <div style={st.modal} onClick={(e) => e.stopPropagation()}>
         <div style={st.modalTitre}>
-          {pourTournoi ? `S'inscrire au tournoi · ${tournoi?.prix_inscription?.toLocaleString('fr-FR') || '30 000'} CFA` : `Rejoindre ${salonCible?.nom}`}
+          {pourTournoi ? `S'inscrire au tournoi · ${tournoi?.prix_inscription?.toLocaleString('fr-FR') || '30 000'} CFA` : salonCible ? `Rejoindre ${salonCible?.nom}` : 'Connexion'}
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
@@ -313,21 +400,39 @@ function ChatSalon({ salon, membre, onRetour }) {
   const [messages, setMessages] = useState([])
   const [texte, setTexte] = useState('')
   const [nbMembres, setNbMembres] = useState(salon.nbMembres || 0)
+  const [enTrainEcrire, setEnTrainEcrire] = useState([])
+  const [envoiPhoto, setEnvoiPhoto] = useState(false)
   const finRef = useRef(null)
+  const canalRef = useRef(null)
+  const inputFichierRef = useRef(null)
 
   useEffect(() => {
     chargerMessages()
     chargerNbMembres()
+
     const canal = supabase
-      .channel(`salon-${salon.id}`)
+      .channel(`salon-${salon.id}`, { config: { presence: { key: membre.id } } })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `salon_id=eq.${salon.id}` }, (payload) => {
         setMessages((m) => [...m, payload.new])
       })
+      .on('broadcast', { event: 'frappe' }, ({ payload }) => {
+        if (payload.membre_id === membre.id) return
+        setEnTrainEcrire((liste) => {
+          if (liste.find((p) => p.id === payload.membre_id)) return liste
+          return [...liste, { id: payload.membre_id, pseudo: payload.pseudo }]
+        })
+        clearTimeout(window[`frappe_${payload.membre_id}`])
+        window[`frappe_${payload.membre_id}`] = setTimeout(() => {
+          setEnTrainEcrire((liste) => liste.filter((p) => p.id !== payload.membre_id))
+        }, 2000)
+      })
       .subscribe()
+
+    canalRef.current = canal
     return () => supabase.removeChannel(canal)
   }, [salon.id])
 
-  useEffect(() => { finRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
+  useEffect(() => { finRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages, enTrainEcrire])
 
   async function chargerNbMembres() {
     const { count } = await supabase
@@ -347,11 +452,46 @@ function ChatSalon({ salon, membre, onRetour }) {
     setMessages(data || [])
   }
 
+  function signalerFrappe() {
+    canalRef.current?.send({
+      type: 'broadcast',
+      event: 'frappe',
+      payload: { membre_id: membre.id, pseudo: membre.pseudo },
+    })
+  }
+
+  function gererSaisie(e) {
+    setTexte(e.target.value)
+    signalerFrappe()
+  }
+
   async function envoyer(e) {
     e.preventDefault()
     if (!texte.trim()) return
     await supabase.from('messages').insert({ contenu: texte, membre_id: membre.id, salon_id: salon.id })
     setTexte('')
+  }
+
+  async function choisirPhoto(e) {
+    const fichier = e.target.files?.[0]
+    if (!fichier) return
+    setEnvoiPhoto(true)
+    const nomFichier = `${salon.id}/${Date.now()}_${fichier.name}`
+    const { error: uploadErr } = await supabase.storage.from('photos-chat').upload(nomFichier, fichier)
+    if (uploadErr) {
+      alert("Erreur lors de l'envoi de la photo.")
+      setEnvoiPhoto(false)
+      return
+    }
+    const { data: urlData } = supabase.storage.from('photos-chat').getPublicUrl(nomFichier)
+    await supabase.from('messages').insert({
+      contenu: '',
+      image_url: urlData.publicUrl,
+      membre_id: membre.id,
+      salon_id: salon.id,
+    })
+    setEnvoiPhoto(false)
+    e.target.value = ''
   }
 
   return (
@@ -361,7 +501,11 @@ function ChatSalon({ salon, membre, onRetour }) {
         <div style={st.avatarGroupe}>{salon.palier / 1000}K</div>
         <div style={{ marginLeft: 10 }}>
           <div style={{ fontWeight: 800, color: '#fff', fontSize: 15 }}>{salon.nom}</div>
-          <div style={{ fontSize: 12, color: '#9a93b5' }}>{nbMembres} membre{nbMembres > 1 ? 's' : ''}</div>
+          <div style={{ fontSize: 12, color: '#9a93b5' }}>
+            {enTrainEcrire.length > 0
+              ? `${enTrainEcrire.map((p) => p.pseudo).join(', ')} en train d'écrire...`
+              : `${nbMembres} membre${nbMembres > 1 ? 's' : ''}`}
+          </div>
         </div>
       </div>
       <div style={st.zoneMessages}>
@@ -370,14 +514,39 @@ function ChatSalon({ salon, membre, onRetour }) {
           return (
             <div key={m.id} style={{ ...st.bulle, alignSelf: moi ? 'flex-end' : 'flex-start', background: moi ? 'linear-gradient(135deg,#FF4D6D,#7B2CBF)' : '#23203a', color: '#fff' }}>
               {!moi && <div style={{ fontSize: 11, fontWeight: 800, color: '#FFB800' }}>{m.membres?.pseudo || '...'}</div>}
-              {m.contenu}
+              {m.image_url ? (
+                <img src={m.image_url} alt="photo" style={st.imageMsg} />
+              ) : (
+                m.contenu
+              )}
             </div>
           )
         })}
+        {enTrainEcrire.length > 0 && (
+          <div style={{ ...st.bulle, alignSelf: 'flex-start', background: '#23203a', fontStyle: 'italic', color: '#9a93b5' }}>
+            {enTrainEcrire.map((p) => p.pseudo).join(', ')} en train d'écrire...
+          </div>
+        )}
         <div ref={finRef} />
       </div>
       <form onSubmit={envoyer} style={st.zoneSaisie}>
-        <input value={texte} onChange={(e) => setTexte(e.target.value)} placeholder="Écrire un message..." style={st.inputChat} />
+        <input
+          type="file"
+          accept="image/*"
+          ref={inputFichierRef}
+          onChange={choisirPhoto}
+          style={{ display: 'none' }}
+        />
+        <button
+          type="button"
+          onClick={() => inputFichierRef.current?.click()}
+          disabled={envoiPhoto}
+          style={st.boutonPhoto}
+          title="Envoyer une photo"
+        >
+          {envoiPhoto ? '⏳' : '📷'}
+        </button>
+        <input value={texte} onChange={gererSaisie} placeholder="Écrire un message..." style={st.inputChat} />
         <button type="submit" style={st.boutonEnvoyer}>➤</button>
       </form>
     </div>
@@ -387,6 +556,8 @@ function ChatSalon({ salon, membre, onRetour }) {
 const st = {
   page: { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: '#16142a', fontFamily: "'Poppins', sans-serif", display: 'flex', flexDirection: 'column', boxSizing: 'border-box', color: '#fff' },
   barreNom: { textAlign: 'center', padding: '14px 0 0', fontWeight: 800, fontSize: 16, letterSpacing: 0.5, color: '#fff' },
+  navWrap: { display: 'flex', gap: 8, overflowX: 'auto', padding: '12px 16px 4px', WebkitOverflowScrolling: 'touch' },
+  navBouton: { flexShrink: 0, padding: '8px 14px', borderRadius: 20, background: '#221f3b', color: '#cfc9e6', border: 'none', fontWeight: 700, fontSize: 13, whiteSpace: 'nowrap' },
   avatarGroupe: { width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg,#FFB800,#FF4D6D)', color: '#1d1a35', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 12, flexShrink: 0 },
   banniere: { height: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: 20, textAlign: 'center', transition: 'background 0.6s ease' },
   bannieretEmoji: { fontSize: 48, marginBottom: 8 },
@@ -408,6 +579,7 @@ const st = {
   ligneSalon: { display: 'flex', alignItems: 'center', padding: '10px 12px', background: '#1d1a35', borderRadius: 14 },
   avatar: { width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg,#FFB800,#FF4D6D)', color: '#1d1a35', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, flexShrink: 0, fontSize: 13 },
   badge: { fontSize: 11, color: '#fff', borderRadius: 12, padding: '2px 8px', fontWeight: 800 },
+  carteCompte: { display: 'flex', alignItems: 'center', background: '#1d1a35', borderRadius: 14, padding: 14, marginTop: 14 },
   overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, padding: 16 },
   modal: { background: '#1d1a35', borderRadius: 20, padding: 24, width: '100%', maxWidth: 360, maxHeight: '90vh', overflowY: 'auto' },
   modalTitre: { fontSize: 16, fontWeight: 800, marginBottom: 14, textAlign: 'center' },
@@ -420,7 +592,9 @@ const st = {
   retour: { background: 'none', border: 'none', fontSize: 20, color: '#fff', cursor: 'pointer' },
   zoneMessages: { flex: 1, display: 'flex', flexDirection: 'column', gap: 8, overflowY: 'auto', minHeight: 300, padding: '14px 16px' },
   bulle: { maxWidth: '75%', padding: '8px 12px', borderRadius: 14, fontSize: 14 },
+  imageMsg: { maxWidth: '100%', borderRadius: 10, display: 'block' },
   zoneSaisie: { display: 'flex', alignItems: 'center', gap: 8, padding: 16, borderTop: '1px solid #2a2745' },
+  boutonPhoto: { background: 'none', border: 'none', fontSize: 20, flexShrink: 0 },
   inputChat: { flex: 1, padding: 10, borderRadius: 20, border: '1px solid #3a3658', background: '#221f3b', color: '#fff' },
-  boutonEnvoyer: { background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: 16 },
+  boutonEnvoyer: { background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: 16, flexShrink: 0 },
 }
