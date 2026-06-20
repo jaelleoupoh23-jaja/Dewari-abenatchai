@@ -207,26 +207,33 @@ function Chat({ session }) {
   return (
     <div>
       <div className="chat-box">
-        {messages.map((m) => (
-          <div className="msg" key={m.id}>
-            <div className="pseudo">{m.membres?.pseudo || 'Membre'}</div>
-            {m.contenu && <div className="text">{m.contenu}</div>}
-            {m.image_url && <img src={m.image_url} alt="" />}
-          </div>
-        ))}
+        {messages.map((m) => {
+          const isMine = membre && m.membre_id === membre.id
+          return (
+            <div className={'msg-row ' + (isMine ? 'mine' : 'theirs')} key={m.id}>
+              <div className="bubble">
+                {!isMine && <div className="pseudo">{m.membres?.pseudo || 'Membre'}</div>}
+                {m.contenu && <div>{m.contenu}</div>}
+                {m.image_url && <img src={m.image_url} alt="" />}
+              </div>
+            </div>
+          )
+        })}
       </div>
-      <form onSubmit={sendMessage}>
+      <form onSubmit={sendMessage} className="chat-input-row">
         <input
           type="text"
           placeholder="Écrire un message…"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} />
-        <button type="submit" disabled={busy}>
-          Envoyer
-        </button>
+        <label style={{ width: 42, height: 42, borderRadius: '50%', background: '#ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 18 }}>
+          📷
+          <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => setFile(e.target.files[0])} />
+        </label>
+        <button type="submit" disabled={busy}>➤</button>
       </form>
+      {file && <p style={{ fontSize: 12, color: '#666' }}>Image sélectionnée : {file.name}</p>}
     </div>
   )
 }
