@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from './supabaseClient'
 
+const AVATAR_COLORS = ['#534AB7', '#EF9F27', '#1D9E75', '#D85A30', '#D4537E', '#185FA5']
+function colorFor(name) {
+  if (!name) return AVATAR_COLORS[0]
+  let sum = 0
+  for (let i = 0; i < name.length; i++) sum += name.charCodeAt(i)
+  return AVATAR_COLORS[sum % AVATAR_COLORS.length]
+}
+function initials(name) {
+  if (!name) return '?'
+  return name.slice(0, 2).toUpperCase()
+}
+
 export default function App() {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showAuth, setShowAuth] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -18,9 +31,29 @@ export default function App() {
 
   if (loading) return <div className="container">Chargement…</div>
 
+  if (!session && !showAuth) {
+    return (
+      <div className="container">
+        <div className="landing">
+          <div className="crown">👑</div>
+          <h1>Déwari Abenatchan</h1>
+          <p className="tagline">Le rendez-vous des rois et reines du Ludo</p>
+        </div>
+        <div className="card" style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: 14, color: '#6b6385', marginBottom: 16 }}>
+            Rejoins le groupe, partage tes codes de salle et défie tes adversaires.
+          </p>
+          <button onClick={() => setShowAuth(true)} style={{ width: '100%' }}>
+            Entrer dans le royaume
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="container">
-      <h1>Déwari Abenatchan</h1>
+      <h1 className="app-title">👑 Déwari Abenatchan</h1>
       {session ? <GroupScreen session={session} /> : <AuthScreen />}
     </div>
   )
@@ -114,7 +147,7 @@ function AuthScreen() {
           </>
         )}
         {error && <p className="error">{error}</p>}
-        <button type="submit" disabled={busy}>
+        <button type="submit" disabled={busy} style={{ width: '100%' }}>
           {mode === 'signup' ? "Créer mon compte" : 'Se connecter'}
         </button>
       </form>
@@ -136,7 +169,7 @@ function GroupScreen({ session }) {
         </button>
       </div>
       {tab === 'chat' ? <Chat session={session} /> : <Codes session={session} />}
-      <button onClick={() => supabase.auth.signOut()} style={{ background: '#999', marginTop: 10 }}>
+      <button className="signout-btn" onClick={() => supabase.auth.signOut()}>
         Se déconnecter
       </button>
     </div>
@@ -209,10 +242,16 @@ function Chat({ session }) {
       <div className="chat-box">
         {messages.map((m) => {
           const isMine = membre && m.membre_id === membre.id
+          const pseudo = m.membres?.pseudo || 'Membre'
           return (
             <div className={'msg-row ' + (isMine ? 'mine' : 'theirs')} key={m.id}>
+              {!isMine && (
+                <div className="avatar" style={{ background: colorFor(pseudo) }}>
+                  {initials(pseudo)}
+                </div>
+              )}
               <div className="bubble">
-                {!isMine && <div className="pseudo">{m.membres?.pseudo || 'Membre'}</div>}
+                {!isMine && <div className="pseudo">{pseudo}</div>}
                 {m.contenu && <div>{m.contenu}</div>}
                 {m.image_url && <img src={m.image_url} alt="" />}
               </div>
@@ -227,13 +266,13 @@ function Chat({ session }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <label style={{ width: 42, height: 42, borderRadius: '50%', background: '#ddd', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 18 }}>
+        <label className="icon-btn">
           📷
           <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => setFile(e.target.files[0])} />
         </label>
         <button type="submit" disabled={busy}>➤</button>
       </form>
-      {file && <p style={{ fontSize: 12, color: '#666' }}>Image sélectionnée : {file.name}</p>}
+      {file && <p style={{ fontSize: 12, color: '#6b6385' }}>Image sélectionnée : {file.name}</p>}
     </div>
   )
 }
@@ -298,21 +337,29 @@ function Codes({ session }) {
             </option>
           ))}
         </select>
-        <button type="submit" disabled={busy}>
+        <button type="submit" disabled={busy} style={{ width: '100%' }}>
           Partager le code
         </button>
       </form>
 
-      {codes.map((c) => (
-        <div className="card code-item" key={c.id}>
-          <div>
-            <strong>{c.code}</strong>
-            <div style={{ fontSize: 12, color: '#666' }}>
-              {c.membres?.pseudo} · {c.nb_joueurs} joueurs
+      {codes.map((c) => {
+        const pseudo = c.membres?.pseudo || 'Membre'
+        return (
+          <div className="card code-item" key={c.id}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div className="avatar" style={{ background: colorFor(pseudo) }}>
+                {initials(pseudo)}
+              </div>
+              <div>
+                <strong>{c.code}</strong>
+                <div style={{ fontSize: 12, color: '#6b6385' }}>
+                  {pseudo} · {c.nb_joueurs} joueurs
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
