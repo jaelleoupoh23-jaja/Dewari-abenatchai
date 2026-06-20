@@ -1,11 +1,22 @@
 * { box-sizing: border-box; }
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 body {
   margin: 0;
   font-family: 'Poppins', -apple-system, system-ui, sans-serif;
-  background: #f4f1fb;
   color: #2c2546;
+  background: linear-gradient(-45deg, #1a1530, #3C3489, #534AB7, #1a1530, #0a0815);
+  background-size: 400% 400%;
+  animation: gradientMove 18s ease infinite;
+  min-height: 100vh;
 }
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .container {
   max-width: 480px;
   margin: 0 auto;
@@ -20,18 +31,16 @@ body {
 .landing h1 {
   font-size: 26px;
   font-weight: 700;
-  background: linear-gradient(135deg, #534AB7, #EF9F27);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #EF9F27;
   margin: 0 0 4px;
 }
 .landing p.tagline {
   font-size: 14px;
-  color: #6b6385;
+  color: #d8d3ee;
   margin: 0 0 20px;
 }
 
-h1.app-title { font-size: 20px; font-weight: 700; color: #3C3489; }
+h1.app-title { font-size: 20px; font-weight: 700; color: #EF9F27; }
 
 input, button, textarea, select {
   font-size: 15px;
@@ -62,11 +71,11 @@ button:disabled { opacity: 0.5; cursor: default; }
   padding: 16px;
   margin-bottom: 10px;
   border: 1px solid #ece8fa;
-  box-shadow: 0 2px 8px rgba(83,74,183,0.06);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 
 .chat-box {
-  background: #f4f1fb;
+  background: rgba(255,255,255,0.95);
   border-radius: 14px;
   padding: 12px;
   height: 400px;
@@ -106,7 +115,7 @@ button:disabled { opacity: 0.5; cursor: default; }
 .bubble img { max-width: 100%; border-radius: 10px; margin-top: 4px; display: block; }
 
 .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-.tabs button { flex: 1; background: #ece8fa; color: #534AB7; border-radius: 14px; }
+.tabs button { flex: 1; background: rgba(255,255,255,0.85); color: #534AB7; border-radius: 14px; }
 .tabs button.active { background: linear-gradient(135deg, #534AB7, #7F77DD); color: white; }
 
 .error { color: #c0392b; font-size: 13px; }
