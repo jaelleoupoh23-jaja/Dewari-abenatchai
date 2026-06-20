@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { supabase } from './supabaseClient'
+const LOGO_URL = '/Image%20ChatGPT%2020%20juin%202026%2C%2016_26_29.png'
+  import { supabase } from './supabaseClient'
 
 const AVATAR_COLORS = ['#534AB7', '#EF9F27', '#1D9E75', '#D85A30', '#D4537E', '#185FA5']
 function colorFor(name) {
@@ -33,12 +34,12 @@ export default function App() {
 
   if (!session && !showAuth) {
     return (
-      <div className="container">
-        <div className="landing">
-          <div className="crown">👑</div>
-          <h1>Déwari Abenatchan</h1>
-          <p className="tagline">Le rendez-vous des rois et reines du Ludo</p>
-        </div>
+     <div className="container">
+          <div className="landing">
+            <img src={LOGO_URL} alt="Déwari Abenatchan" style={{ width: 96, height: 96, objectFit: 'contain', marginBottom: 8 }} />
+            <h1>Déwari Abenatchan</h1>
+            <p className="tagline">Le rendez-vous des rois et reines du Ludo</p>
+          </div>
         <div className="card" style={{ textAlign: 'center' }}>
           <p style={{ fontSize: 14, color: '#6b6385', marginBottom: 16 }}>
             Rejoins le groupe, partage tes codes de salle et défie tes adversaires.
