@@ -1,4 +1,5 @@
-import { RtcTokenBuilder, RtcRole } from 'agora-token'
+import pkg from 'agora-token'
+const { RtcTokenBuilder, RtcRole } = pkg
 
 export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
