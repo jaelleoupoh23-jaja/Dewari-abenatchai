@@ -97,8 +97,13 @@ export default function App() {
   }
 
   function allerA(id) {
-    const refs = { accueil: refAccueil, tournoi: refTournoi, salons: refSalons, compte: refCompte }
-    refs[id]?.current?.scrollIntoView({ behavior: 'smooth' })
+    if (id === 'tournoi') {
+      setEcran('tournoi')
+      return
+    }
+    if (ecran !== 'accueil') setEcran('accueil')
+    const refs = { accueil: refAccueil, salons: refSalons, compte: refCompte }
+    setTimeout(() => refs[id]?.current?.scrollIntoView({ behavior: 'smooth' }), 50)
   }
 
   async function deconnexion() {
@@ -134,6 +139,15 @@ export default function App() {
             />
           </div>
         </>
+      )}
+
+      {ecran === 'tournoi' && (
+        <PageTournoi
+          tournoi={tournoi}
+          inscritTournoi={inscritTournoi}
+          onOuvrirInscription={() => setModalAuth({ pourTournoi: true })}
+          onRetour={() => setEcran('accueil')}
+        />
       )}
 
       {ecran === 'chat' && membre && salonActif && (
@@ -206,17 +220,11 @@ function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourS
 
 function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTournoi, refTournoi, refSalons }) {
   const [index, setIndex] = useState(0)
-  const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
 
   useEffect(() => {
     const t1 = setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), 3500)
     return () => clearInterval(t1)
   }, [])
-
-  useEffect(() => {
-    const t2 = setInterval(() => setCompte(calculCompte(tournoi?.date_debut)), 60000)
-    return () => clearInterval(t2)
-  }, [tournoi])
 
   const slide = SLIDES[index]
 
@@ -232,38 +240,11 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
         </div>
       </div>
 
-      <div ref={refTournoi} style={st.heroTexte}>
-        <div style={st.eyebrow}>LUDO COMPÉTITION · DÉCEMBRE</div>
-        {compte && (
-          <div style={st.compteWrap}>
-            {[{ v: compte.j, l: 'jours' }, { v: compte.h, l: 'heures' }, { v: compte.m, l: 'min' }].map((b) => (
-              <div key={b.l} style={st.compteBloc}>
-                <div style={st.compteChiffre}>{String(b.v).padStart(2, '0')}</div>
-                <div style={st.compteLabel}>{b.l}</div>
-              </div>
-            ))}
-          </div>
-        )}
-        {!inscritTournoi ? (
-          <button onClick={onOuvrirTournoi} style={st.boutonPrincipal}>
-            🏆 Je m'inscris au tournoi · {tournoi?.prix_inscription?.toLocaleString('fr-FR') || '30 000'} CFA
-          </button>
-        ) : (
-          <div style={st.confirme}>✅ Tu es inscrit au tournoi !</div>
-        )}
-        {tournoi?.description && (
-          <div style={st.details}>
-            {tournoi.description && !tournoi.description.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>{tournoi.description}</p>}
-            {tournoi.premier_prix && !tournoi.premier_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥇 1er prix : {tournoi.premier_prix}</p>}
-            {tournoi.deuxieme_prix && !tournoi.deuxieme_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥈 2e prix : {tournoi.deuxieme_prix}</p>}
-            {tournoi.troisieme_prix && !tournoi.troisieme_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥉 3e prix : {tournoi.troisieme_prix}</p>}
-          </div>
-        )}
-      </div>
+      <div ref={refTournoi} />
 
       <div ref={refSalons} style={st.section}>
         <div style={st.sectionTitre}>Choisis ton salon</div>
-        <div style={st.sectionSousTitre}>6 niveaux de mise, 20 joueurs max par salon</div>
+        <div style={st.sectionSousTitre}>20 joueurs max par salon</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 14 }}>
           {salons.map((s) => {
             const complet = s.nbMembres >= 20
@@ -287,6 +268,53 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
         </div>
       </div>
     </>
+  )
+}
+
+function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
+  const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
+
+  useEffect(() => {
+    const t = setInterval(() => setCompte(calculCompte(tournoi?.date_debut)), 60000)
+    return () => clearInterval(t)
+  }, [tournoi])
+
+  return (
+    <div style={st.page}>
+      <div style={st.enteteChat}>
+        <button onClick={onRetour} style={st.retour}>←</button>
+        <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>🏆 Tournoi</span>
+      </div>
+
+      <div style={{ ...st.heroTexte, paddingTop: 24 }}>
+        <div style={st.eyebrow}>LUDO COMPÉTITION · DÉCEMBRE</div>
+        {compte && (
+          <div style={st.compteWrap}>
+            {[{ v: compte.j, l: 'jours' }, { v: compte.h, l: 'heures' }, { v: compte.m, l: 'min' }].map((b) => (
+              <div key={b.l} style={st.compteBloc}>
+                <div style={st.compteChiffre}>{String(b.v).padStart(2, '0')}</div>
+                <div style={st.compteLabel}>{b.l}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {!inscritTournoi ? (
+          <button onClick={onOuvrirInscription} style={st.boutonPrincipal}>
+            🏆 Je m'inscris au tournoi
+          </button>
+        ) : (
+          <div style={st.confirme}>✅ Tu es inscrit au tournoi !</div>
+        )}
+        {(tournoi?.description || tournoi?.premier_prix || tournoi?.deuxieme_prix || tournoi?.troisieme_prix) && (
+          <div style={st.details}>
+            {tournoi?.description && !tournoi.description.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>{tournoi.description}</p>}
+            {tournoi?.premier_prix && !tournoi.premier_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥇 1er prix : {tournoi.premier_prix}</p>}
+            {tournoi?.deuxieme_prix && !tournoi.deuxieme_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥈 2e prix : {tournoi.deuxieme_prix}</p>}
+            {tournoi?.troisieme_prix && !tournoi.troisieme_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥉 3e prix : {tournoi.troisieme_prix}</p>}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -369,7 +397,7 @@ function ModalAuth({ contexte, onFermer, onSuccesSalon, onSuccesTournoi, tournoi
     <div style={st.overlay} onClick={onFermer}>
       <div style={st.modal} onClick={(e) => e.stopPropagation()}>
         <div style={st.modalTitre}>
-          {pourTournoi ? `S'inscrire au tournoi · ${tournoi?.prix_inscription?.toLocaleString('fr-FR') || '30 000'} CFA` : salonCible ? `Rejoindre ${salonCible?.nom}` : 'Connexion'}
+          {pourTournoi ? `S'inscrire au tournoi` : salonCible ? `Rejoindre ${salonCible?.nom}` : 'Connexion'}
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
