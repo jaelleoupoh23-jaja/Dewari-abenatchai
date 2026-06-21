@@ -290,30 +290,66 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
   )
 }
 
+const PIPS = {
+  1: [[1, 1]],
+  2: [[0, 0], [2, 2]],
+  3: [[0, 0], [1, 1], [2, 2]],
+  4: [[0, 0], [0, 2], [2, 0], [2, 2]],
+  5: [[0, 0], [0, 2], [1, 1], [2, 0], [2, 2]],
+  6: [[0, 0], [0, 2], [1, 0], [1, 2], [2, 0], [2, 2]],
+}
+
+function FaceDe({ valeur, enTrain }) {
+  const actifs = new Set((PIPS[valeur] || []).map(([r, c]) => `${r}-${c}`))
+  return (
+    <div style={{ ...st.deCube, animation: enTrain ? 'tourneDe 0.5s linear infinite' : 'none' }}>
+      <div style={st.deGrille}>
+        {[0, 1, 2].map((r) =>
+          [0, 1, 2].map((c) => (
+            <div key={`${r}-${c}`} style={st.dePipCase}>
+              {actifs.has(`${r}-${c}`) && <div style={st.dePip} />}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  )
+}
+
 function PageDe({ onRetour }) {
   const [phase, setPhase] = useState('config')
   const [nbJoueurs, setNbJoueurs] = useState(2)
   const [noms, setNoms] = useState(['Joueur 1', 'Joueur 2', 'Joueur 3', 'Joueur 4'])
   const [scores, setScores] = useState([])
   const [tour, setTour] = useState(0)
+  const [valeurAffichee, setValeurAffichee] = useState(1)
   const [dernierLancer, setDernierLancer] = useState(null)
   const [enTrainDeLancer, setEnTrainDeLancer] = useState(false)
   const [vainqueur, setVainqueur] = useState(null)
+  const intervalleRef = useRef(null)
 
   function demarrer() {
     setScores(Array(nbJoueurs).fill(0))
     setTour(0)
     setDernierLancer(null)
     setVainqueur(null)
+    setValeurAffichee(1)
     setPhase('jeu')
   }
 
   function lancerDe() {
     if (enTrainDeLancer || vainqueur !== null) return
     setEnTrainDeLancer(true)
-    const valeur = Math.floor(Math.random() * 6) + 1
+
+    intervalleRef.current = setInterval(() => {
+      setValeurAffichee(Math.floor(Math.random() * 6) + 1)
+    }, 80)
+
     setTimeout(() => {
+      clearInterval(intervalleRef.current)
+      const valeur = Math.floor(Math.random() * 6) + 1
       const points = valeur === 6 ? 1.5 : valeur
+      setValeurAffichee(valeur)
       setScores((anciens) => {
         const nouveaux = [...anciens]
         nouveaux[tour] = nouveaux[tour] + points
@@ -326,8 +362,10 @@ function PageDe({ onRetour }) {
       setDernierLancer({ valeur, points, joueur: tour })
       setEnTrainDeLancer(false)
       setTour((t) => (t + 1) % nbJoueurs)
-    }, 500)
+    }, 700)
   }
+
+  useEffect(() => () => clearInterval(intervalleRef.current), [])
 
   function rejouer() {
     setPhase('config')
@@ -335,6 +373,14 @@ function PageDe({ onRetour }) {
 
   return (
     <div style={st.page}>
+      <style>{`
+        @keyframes tourneDe {
+          0% { transform: rotate(0deg) scale(1); }
+          50% { transform: rotate(180deg) scale(1.1); }
+          100% { transform: rotate(360deg) scale(1); }
+        }
+      `}</style>
+
       <div style={st.enteteChat}>
         <button onClick={onRetour} style={st.retour}>←</button>
         <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>🎲 Le Dé</span>
@@ -372,7 +418,9 @@ function PageDe({ onRetour }) {
           </div>
 
           <div style={st.regleDe}>
-            Chaque lancer donne ses points normaux (1 à 5), sauf le <b>6</b> qui ne vaut que <b>1.5 point</b>. Le premier à atteindre <b>10 points</b> gagne.
+            🎲 Le Dé, c'est un mini-jeu rapide pour se défier entre amis pendant qu'on attend une partie de Ludo, ou juste pour s'amuser 5 minutes.
+            <br /><br />
+            Chaque lancer donne ses points normaux (1 à 5), sauf le <b>6</b> qui ne vaut que <b>1.5 point</b> — le hasard peut surprendre jusqu'au bout. Le premier à atteindre <b>10 points</b> gagne.
           </div>
 
           <button onClick={demarrer} style={{ ...st.boutonPrincipal, marginTop: 18 }}>
@@ -400,11 +448,9 @@ function PageDe({ onRetour }) {
           </div>
 
           <div style={st.zoneDe}>
-            <div style={st.deAffichage}>
-              {enTrainDeLancer ? '🎲' : dernierLancer ? FACES_DE[dernierLancer.valeur] : '🎲'}
-            </div>
+            <FaceDe valeur={valeurAffichee} enTrain={enTrainDeLancer} />
             {dernierLancer && !enTrainDeLancer && (
-              <div style={{ fontSize: 13, color: '#9a93b5', marginTop: 6 }}>
+              <div style={{ fontSize: 13, color: '#9a93b5', marginTop: 12 }}>
                 {noms[dernierLancer.joueur]} a fait {dernierLancer.valeur} → +{dernierLancer.points} pt{dernierLancer.points > 1 ? 's' : ''}
               </div>
             )}
@@ -431,8 +477,6 @@ function PageDe({ onRetour }) {
     </div>
   )
 }
-
-const FACES_DE = { 1: '⚀', 2: '⚁', 3: '⚂', 4: '⚃', 5: '⚄', 6: '⚅' }
 
 function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
   const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
@@ -848,7 +892,10 @@ const st = {
   carteDe: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#3A0CA3,#7B2CBF)', cursor: 'pointer' },
   carteDeEmoji: { fontSize: 32 },
   zoneDe: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', background: '#1d1a35', borderRadius: 16, padding: '24px 18px', marginTop: 18 },
-  deAffichage: { fontSize: 64 },
+  deCube: { width: 88, height: 88, borderRadius: 18, background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', boxShadow: '0 6px 18px rgba(123,44,191,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 14 },
+  deGrille: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'repeat(3, 1fr)', width: '100%', height: '100%' },
+  dePipCase: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  dePip: { width: 12, height: 12, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.3)' },
   regleDe: { fontSize: 13, color: '#cfc9e6', background: '#1d1a35', borderRadius: 12, padding: 12, marginTop: 18, lineHeight: 1.5 },
   overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, padding: 16 },
   modal: { background: '#1d1a35', borderRadius: 20, padding: 24, width: '100%', maxWidth: 360, maxHeight: '90vh', overflowY: 'auto' },
