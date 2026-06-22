@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabaseClient'
 import AgoraRTC from 'agora-rtc-sdk-ng'
+import { creerPartie, coupsValides, jouerCoup, lancerDe, passerAuJoueurSuivant, estCaseSecurisee } from './moteurLudo'
 
 const SLIDES = [
   { emoji: '🎲', titre: 'Le Ludo prend une autre dimension', fond: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)' },
@@ -17,6 +18,55 @@ const ONGLETS = [
 ]
 
 const NUMERO_WAVE = '07-08-68-02-36'
+
+const COULEURS_LUDO = ['rouge', 'vert', 'jaune', 'bleu']
+const HEX_COULEUR = { rouge: '#FF4D6D', vert: '#23A559', jaune: '#FFB800', bleu: '#3A86FF' }
+
+const CASES_PARCOURS = [
+  [6,1],[6,2],[6,3],[6,4],[6,5],
+  [5,6],[4,6],[3,6],[2,6],[1,6],[0,6],
+  [0,7],
+  [0,8],[1,8],[2,8],[3,8],[4,8],[5,8],
+  [6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
+  [7,14],
+  [8,14],[8,13],[8,12],[8,11],[8,10],[8,9],
+  [9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
+  [14,7],
+  [14,6],[13,6],[12,6],[11,6],[10,6],[9,6],
+  [8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
+  [7,0],
+  [6,0],
+]
+
+const COULOIR_COORDS = {
+  rouge: [[7,1],[7,2],[7,3],[7,4],[7,5],[7,6]],
+  vert: [[1,7],[2,7],[3,7],[4,7],[5,7],[6,7]],
+  jaune: [[7,13],[7,12],[7,11],[7,10],[7,9],[7,8]],
+  bleu: [[13,7],[12,7],[11,7],[10,7],[9,7],[8,7]],
+}
+
+const BASE_COORDS = {
+  rouge: [[1,1],[1,4],[4,1],[4,4]],
+  vert: [[1,10],[1,13],[4,10],[4,13]],
+  jaune: [[10,10],[10,13],[13,10],[13,13]],
+  bleu: [[10,1],[10,4],[13,1],[13,4]],
+}
+
+const ZONES_BASE = {
+  rouge: { x: 0, y: 0 },
+  vert: { x: 9, y: 0 },
+  jaune: { x: 9, y: 9 },
+  bleu: { x: 0, y: 9 },
+}
+
+const CELLULE = 22
+
+function coordPion(couleur, pion, index) {
+  if (pion.etat === 'base') return BASE_COORDS[couleur][index]
+  if (pion.etat === 'parcours') return CASES_PARCOURS[pion.position]
+  if (pion.etat === 'couloir') return COULOIR_COORDS[couleur][pion.position]
+  return [7, 7]
+}
 
 export default function App() {
   const [ecran, setEcran] = useState('accueil')
@@ -128,6 +178,7 @@ export default function App() {
             onChoisirSalon={ouvrirSalon}
             onOuvrirTournoi={() => setModalAuth({ pourTournoi: true })}
             onOuvrirDe={() => setEcran('de')}
+            onOuvrirLudo={() => setEcran('ludo')}
             refTournoi={refTournoi}
             refSalons={refSalons}
           />
@@ -155,6 +206,10 @@ export default function App() {
 
       {ecran === 'de' && (
         <PageDe onRetour={() => setEcran('accueil')} />
+      )}
+
+      {ecran === 'ludo' && (
+        <PageLudo onRetour={() => setEcran('accueil')} />
       )}
 
       {ecran === 'chat' && membre && salonActif && (
@@ -225,7 +280,7 @@ function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourS
   )
 }
 
-function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTournoi, onOuvrirDe, refTournoi, refSalons }) {
+function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTournoi, onOuvrirDe, onOuvrirLudo, refTournoi, refSalons }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -258,6 +313,18 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
           <div style={{ flex: 1, marginLeft: 12 }}>
             <div style={{ fontWeight: 800, fontSize: 16 }}>Jouer au Dé</div>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>2 ou 4 joueurs · premier à 10 gagne</div>
+          </div>
+          <div style={{ fontSize: 20 }}>→</div>
+        </div>
+
+        <div
+          onClick={onOuvrirLudo}
+          style={st.carteLudo}
+        >
+          <div style={st.carteDeEmoji}>♟️</div>
+          <div style={{ flex: 1, marginLeft: 12 }}>
+            <div style={{ fontWeight: 800, fontSize: 16 }}>Jouer au Ludo</div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>2 ou 4 joueurs · règles classiques</div>
           </div>
           <div style={{ fontSize: 20 }}>→</div>
         </div>
@@ -349,8 +416,8 @@ function PageDe({ onRetour }) {
 
     setTimeout(() => {
       clearInterval(intervalleRef.current)
-      const valeur = Math.floor(Math.random() * 6) + 1
-      const points = valeur === 6 ? 1.5 : valeur
+      const valeur = Math.floor(Math.random() * 6) + 1 
+               const points = valeur === 6 ? 1.5 : valeur
       setValeurAffichee(valeur)
       setScores((anciens) => {
         const nouveaux = [...anciens]
@@ -480,6 +547,245 @@ function PageDe({ onRetour }) {
   )
 }
 
+function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
+  const couleurCourante = partie.couleurs[partie.tourActuel]
+
+  return (
+    <svg viewBox="0 0 330 330" style={st.ludoSvg}>
+      {Object.entries(ZONES_BASE).map(([couleur, z]) => (
+        <rect
+          key={couleur}
+          x={z.x * CELLULE}
+          y={z.y * CELLULE}
+          width={6 * CELLULE}
+          height={6 * CELLULE}
+          fill={HEX_COULEUR[couleur]}
+          opacity={0.18}
+          rx={10}
+        />
+      ))}
+
+      <rect x={6 * CELLULE} y={6 * CELLULE} width={3 * CELLULE} height={3 * CELLULE} fill="#2a2050" rx={6} />
+      <text x={7.5 * CELLULE} y={7.7 * CELLULE} textAnchor="middle" fontSize="16">🏆</text>
+
+      {Object.entries(COULOIR_COORDS).map(([couleur, cases]) =>
+        cases.map(([r, c], i) => (
+          <rect
+            key={`${couleur}-couloir-${i}`}
+            x={c * CELLULE}
+            y={r * CELLULE}
+            width={CELLULE}
+            height={CELLULE}
+            fill={HEX_COULEUR[couleur]}
+            opacity={0.5}
+            stroke="#16142a"
+            strokeWidth={0.5}
+          />
+        ))
+      )}
+
+      {CASES_PARCOURS.map(([r, c], i) => (
+        <rect
+          key={`case-${i}`}
+          x={c * CELLULE}
+          y={r * CELLULE}
+          width={CELLULE}
+          height={CELLULE}
+          fill={estCaseSecurisee(i) ? '#FFE08A' : '#f4f2fb'}
+          stroke="#16142a"
+          strokeWidth={0.5}
+        />
+      ))}
+
+      {partie.couleurs.map((couleur) =>
+        partie.pions[couleur].map((pion, index) => {
+          const [r, c] = coordPion(couleur, pion, index)
+          const decalage = pion.etat === 'arrivee' || pion.etat === 'parcours' ? (index % 4) * 3 : 0
+          const cx = c * CELLULE + CELLULE / 2 + decalage
+          const cy = r * CELLULE + CELLULE / 2 + decalage
+          const jouable = couleur === couleurCourante && coupsDispo.some((cp) => cp.index === index)
+
+          return (
+            <g
+              key={`${couleur}-${index}`}
+              onClick={() => jouable && onJouerPion(index)}
+              style={{ cursor: jouable ? 'pointer' : 'default' }}
+            >
+              {jouable && (
+                <circle cx={cx} cy={cy} r={CELLULE / 2.1} fill="none" stroke="#fff" strokeWidth={2}>
+                  <animate attributeName="r" values={`${CELLULE / 2.6};${CELLULE / 1.9};${CELLULE / 2.6}`} dur="1s" repeatCount="indefinite" />
+                </circle>
+              )}
+              <circle cx={cx} cy={cy} r={CELLULE / 2.8} fill={HEX_COULEUR[couleur]} stroke="#16142a" strokeWidth={1.5} />
+            </g>
+          )
+        })
+      )}
+    </svg>
+  )
+}
+
+function PageLudo({ onRetour }) {
+  const [phase, setPhase] = useState('config')
+  const [nbJoueurs, setNbJoueurs] = useState(2)
+  const [noms, setNoms] = useState(['Joueur 1', 'Joueur 2', 'Joueur 3', 'Joueur 4'])
+  const [partie, setPartie] = useState(null)
+  const [coupsDispo, setCoupsDispo] = useState([])
+  const [messageTour, setMessageTour] = useState('')
+
+  function demarrer() {
+    const couleursActives = COULEURS_LUDO.slice(0, nbJoueurs)
+    setPartie(creerPartie(couleursActives))
+    setCoupsDispo([])
+    setMessageTour('')
+    setPhase('jeu')
+  }
+
+  function lancer() {
+    if (!partie || coupsDispo.length > 0) return
+    const resultat = lancerDe(partie)
+    setPartie(resultat.partie)
+
+    if (resultat.tourAnnule) {
+      setMessageTour(`3 six d'affilée → tour annulé, au suivant !`)
+      setCoupsDispo([])
+    } else if (resultat.aucunCoup) {
+      setMessageTour(`Dé : ${resultat.valeur} — aucun coup possible, au suivant.`)
+      setCoupsDispo([])
+    } else {
+      setMessageTour(`Dé : ${resultat.valeur} — choisis un pion à jouer.`)
+      setCoupsDispo(resultat.coups)
+    }
+  }
+
+  function jouerPion(index) {
+    if (!partie || !partie.dernierDe) return
+    let nouvellePartie = jouerCoup(partie, index, partie.dernierDe)
+
+    if (nouvellePartie.vainqueur) {
+      setPartie(nouvellePartie)
+      setCoupsDispo([])
+      setPhase('fini')
+      return
+    }
+
+    if (!nouvellePartie.doitRejouer) {
+      nouvellePartie = passerAuJoueurSuivant(nouvellePartie)
+      setMessageTour('')
+    } else {
+      setMessageTour('Tu rejoues !')
+    }
+    setPartie(nouvellePartie)
+    setCoupsDispo([])
+  }
+
+  function rejouerPartie() {
+    setPartie(null)
+    setPhase('config')
+  }
+
+  const couleurCourante = partie?.couleurs[partie.tourActuel]
+  const indexCourant = partie ? partie.couleurs.indexOf(couleurCourante) : -1
+
+  return (
+    <div style={st.page}>
+      <div style={st.enteteChat}>
+        <button onClick={onRetour} style={st.retour}>←</button>
+        <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>🎲 Ludo</span>
+      </div>
+
+      {phase === 'config' && (
+        <div style={st.section}>
+          <div style={st.sectionTitre}>Combien de joueurs ?</div>
+          <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+            {[2, 4].map((n) => (
+              <button
+                key={n}
+                onClick={() => setNbJoueurs(n)}
+                style={{ ...st.ongletAuth, flex: 1, ...(nbJoueurs === n ? st.ongletActif : {}) }}
+              >
+                {n} joueurs
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
+            {Array.from({ length: nbJoueurs }).map((_, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 16, height: 16, borderRadius: 4, background: HEX_COULEUR[COULEURS_LUDO[i]], flexShrink: 0 }} />
+                <input
+                  value={noms[i]}
+                  onChange={(e) => {
+                    const copie = [...noms]
+                    copie[i] = e.target.value
+                    setNoms(copie)
+                  }}
+                  style={{ ...st.input, flex: 1 }}
+                  placeholder={`Nom du joueur ${i + 1}`}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div style={st.regleDe}>
+            Règles classiques : sortie de pion uniquement sur un 6, un 6 redonne un tour, 3 six d'affilée annule le tour, capture en tombant pile sur un adversaire (sauf cases dorées sécurisées), dépassement autorisé pour entrer dans la zone d'arrivée.
+          </div>
+
+          <button onClick={demarrer} style={{ ...st.boutonPrincipal, marginTop: 18 }}>
+            Démarrer la partie
+          </button>
+        </div>
+      )}
+
+      {phase === 'jeu' && partie && (
+        <div style={st.section}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+            {partie.couleurs.map((couleur, i) => (
+              <div
+                key={couleur}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 14,
+                  background: i === partie.tourActuel ? '#2a2050' : '#1d1a35',
+                  border: i === partie.tourActuel ? `1px solid ${HEX_COULEUR[couleur]}` : 'none',
+                }}
+              >
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: HEX_COULEUR[couleur] }} />
+                <span style={{ fontSize: 12, fontWeight: 700 }}>{noms[i]}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={st.ludoPlateauWrap}>
+            <PlateauLudo partie={partie} coupsDispo={coupsDispo} onJouerPion={jouerPion} />
+          </div>
+
+          <div style={st.zoneDe}>
+            {messageTour && <div style={{ fontSize: 13, color: '#cfc9e6', marginBottom: 10 }}>{messageTour}</div>}
+            <div style={{ fontWeight: 800, fontSize: 15 }}>
+              Au tour de <span style={{ color: HEX_COULEUR[couleurCourante] }}>{noms[indexCourant]}</span>
+            </div>
+            <button onClick={lancer} disabled={coupsDispo.length > 0} style={{ ...st.boutonPrincipal, marginTop: 14 }}>
+              {coupsDispo.length > 0 ? 'Choisis un pion sur le plateau' : 'Lancer le dé'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {phase === 'fini' && partie?.vainqueur && (
+        <div style={st.section}>
+          <div style={st.zoneDe}>
+            <div style={{ fontSize: 48 }}>🏆</div>
+            <div style={{ fontSize: 20, fontWeight: 800, marginTop: 10 }}>
+              {noms[partie.couleurs.indexOf(partie.vainqueur)]} gagne !
+            </div>
+            <button onClick={rejouerPartie} style={{ ...st.boutonPrincipal, marginTop: 18 }}>Rejouer</button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
   const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
 
@@ -531,7 +837,7 @@ function calculCompte(dateDebut) {
   if (!dateDebut) return null
   const diff = new Date(dateDebut) - new Date()
   if (diff <= 0) return { j: 0, h: 0, m: 0 }
-  return {
+  return { 
     j: Math.floor(diff / 86400000),
     h: Math.floor((diff % 86400000) / 3600000),
     m: Math.floor((diff % 3600000) / 60000),
@@ -896,6 +1202,9 @@ const st = {
   badge: { fontSize: 11, color: '#fff', borderRadius: 12, padding: '2px 8px', fontWeight: 800 },
   carteCompte: { display: 'flex', alignItems: 'center', background: '#1d1a35', borderRadius: 14, padding: 14, marginTop: 14 },
   carteDe: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#3A0CA3,#7B2CBF)', cursor: 'pointer' },
+  carteLudo: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#23A559,#3A86FF)', cursor: 'pointer', marginTop: 10 },
+  ludoPlateauWrap: { display: 'flex', justifyContent: 'center', background: '#0f0d20', borderRadius: 16, padding: 10 },
+  ludoSvg: { width: '100%', maxWidth: 340, height: 'auto' },
   carteDeEmoji: { fontSize: 32 },
   zoneDe: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', background: '#1d1a35', borderRadius: 16, padding: '24px 18px', marginTop: 18 },
   deCube: { width: 88, height: 88, borderRadius: 18, background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', boxShadow: '0 6px 18px rgba(123,44,191,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 14 },
