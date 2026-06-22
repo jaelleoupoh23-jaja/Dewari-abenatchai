@@ -1,9 +1,21 @@
+const DEPART_COULEUR = {
+  rouge: 0,
+  vert: 13,
+  jaune: 26,
+  bleu: 39,
+}
+
+function positionGlobale(couleur, position) {
+  return (DEPART_COULEUR[couleur] + position) % 52
+}
+
 export function estCaseSecurisee(position) {
   return [0, 8, 13, 21, 26, 34, 39, 47].includes(position)
 }
 
 export function creerPartie(couleurs = ['rouge', 'vert']) {
   const pions = {}
+
   couleurs.forEach((couleur) => {
     pions[couleur] = Array.from({ length: 4 }, () => ({
       etat: 'base',
@@ -70,16 +82,26 @@ export function jouerCoup(partie, index, valeur) {
     pion.etat = 'parcours'
     pion.position = 0
   } else if (pion.etat === 'parcours') {
-    pion.position += valeur
-    if (pion.position >= 51) {
+    const nouvellePosition = pion.position + valeur
+
+    if (nouvellePosition < 51) {
+      pion.position = nouvellePosition
+    } else if (nouvellePosition === 51) {
       pion.etat = 'couloir'
       pion.position = 0
+    } else {
+      return partie
     }
   } else if (pion.etat === 'couloir') {
-    pion.position += valeur
-    if (pion.position >= 5) {
+    const nouvellePosition = pion.position + valeur
+
+    if (nouvellePosition < 5) {
+      pion.position = nouvellePosition
+    } else if (nouvellePosition === 5) {
       pion.etat = 'arrivee'
       pion.position = 5
+    } else {
+      return partie
     }
   }
 
@@ -107,7 +129,9 @@ export function jouerCoup(partie, index, valeur) {
 
 function capturerPions(partie, couleurActuelle, pionJoue) {
   if (pionJoue.etat !== 'parcours') return partie
-  if (estCaseSecurisee(pionJoue.position)) return partie
+
+  const positionJoueur = positionGlobale(couleurActuelle, pionJoue.position)
+  if (estCaseSecurisee(positionJoueur)) return partie
 
   const nouveauxPions = { ...partie.pions }
 
@@ -115,9 +139,14 @@ function capturerPions(partie, couleurActuelle, pionJoue) {
     if (couleur === couleurActuelle) return
 
     nouveauxPions[couleur] = partie.pions[couleur].map((pion) => {
-      if (pion.etat === 'parcours' && pion.position === pionJoue.position) {
+      if (pion.etat !== 'parcours') return pion
+
+      const positionAdversaire = positionGlobale(couleur, pion.position)
+
+      if (positionAdversaire === positionJoueur) {
         return { etat: 'base', position: -1 }
       }
+
       return pion
     })
   })
