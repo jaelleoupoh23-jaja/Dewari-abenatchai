@@ -305,10 +305,7 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
       <div ref={refTournoi} />
 
       <div style={st.section}>
-        <div
-          onClick={onOuvrirDe}
-          style={st.carteDe}
-        >
+        <div onClick={onOuvrirDe} style={st.carteDe}>
           <div style={st.carteDeEmoji}>🎲</div>
           <div style={{ flex: 1, marginLeft: 12 }}>
             <div style={{ fontWeight: 800, fontSize: 16 }}>Jouer au Dé</div>
@@ -317,10 +314,7 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
           <div style={{ fontSize: 20 }}>→</div>
         </div>
 
-        <div
-          onClick={onOuvrirLudo}
-          style={st.carteLudo}
-        >
+        <div onClick={onOuvrirLudo} style={st.carteLudo}>
           <div style={st.carteDeEmoji}>♟️</div>
           <div style={{ flex: 1, marginLeft: 12 }}>
             <div style={{ fontWeight: 800, fontSize: 16 }}>Jouer au Ludo</div>
@@ -409,18 +403,16 @@ function PageDe({ onRetour }) {
   function lancerDe() {
     if (enTrainDeLancer || vainqueur !== null) return
     setEnTrainDeLancer(true)
-
     intervalleRef.current = setInterval(() => {
       setValeurAffichee(Math.floor(Math.random() * 6) + 1)
     }, 80)
-
     setTimeout(() => {
       clearInterval(intervalleRef.current)
-      const valeur = Math.floor(Math.random() * 6) + 1       const points = valeur === 6 ? 1.5 : valeur
+      const valeur = Math.floor(Math.random() * 6) + 1
+        const points = valeur === 6 ? 1.5 : valeur
       setValeurAffichee(valeur)
       setScores((anciens) => {
-        setScores((anciens) => {
-        const points = valeur === 6 ? 1.5 : valeur
+        const nouveaux = [...anciens]
         nouveaux[tour] = nouveaux[tour] + points
         if (nouveaux[tour] >= 10) {
           setVainqueur(tour)
@@ -784,9 +776,7 @@ function PageLudo({ onRetour }) {
       )}
     </div>
   )
-}
-
-function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
+} function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
   const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
 
   useEffect(() => {
@@ -837,7 +827,8 @@ function calculCompte(dateDebut) {
   if (!dateDebut) return null
   const diff = new Date(dateDebut) - new Date()
   if (diff <= 0) return { j: 0, h: 0, m: 0 }
-  return {j: Math.floor(diff / 86400000),
+  return {
+    j: Math.floor(diff / 86400000),
     h: Math.floor((diff % 86400000) / 3600000),
     m: Math.floor((diff % 3600000) / 60000),
   }
@@ -926,9 +917,7 @@ function ModalAuth({ contexte, onFermer, onSuccesSalon, onSuccesTournoi, tournoi
           <input placeholder="Numéro" value={numero} onChange={(e) => setNumero(e.target.value)} required={mode === 'inscription' || pourTournoi} style={st.input} />
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required style={st.input} />
           <input type="password" placeholder="Mot de passe" value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} required minLength={6} style={st.input} />
-
           {erreur && <div style={st.erreur}>{erreur}</div>}
-
           <button type="submit" disabled={occupe} style={st.boutonPrincipal}>
             {occupe ? 'Patiente...' : mode === 'inscription' ? 'Valider' : 'Se connecter'}
           </button>
@@ -957,7 +946,6 @@ function ChatSalon({ salon, membre, onRetour }) {
   useEffect(() => {
     chargerMessages()
     chargerNbMembres()
-
     const canal = supabase
       .channel(`salon-${salon.id}`, { config: { presence: { key: membre.id } } })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `salon_id=eq.${salon.id}` }, (payload) => {
@@ -975,7 +963,6 @@ function ChatSalon({ salon, membre, onRetour }) {
         }, 2000)
       })
       .subscribe()
-
     canalRef.current = canal
     return () => supabase.removeChannel(canal)
   }, [salon.id])
@@ -1026,18 +1013,9 @@ function ChatSalon({ salon, membre, onRetour }) {
     setEnvoiPhoto(true)
     const nomFichier = `${salon.id}/${Date.now()}_${fichier.name}`
     const { error: uploadErr } = await supabase.storage.from('photos-chat').upload(nomFichier, fichier)
-    if (uploadErr) {
-      alert("Erreur lors de l'envoi de la photo.")
-      setEnvoiPhoto(false)
-      return
-    }
+    if (uploadErr) { alert("Erreur lors de l'envoi de la photo."); setEnvoiPhoto(false); return }
     const { data: urlData } = supabase.storage.from('photos-chat').getPublicUrl(nomFichier)
-    await supabase.from('messages').insert({
-      contenu: '',
-      image_url: urlData.publicUrl,
-      membre_id: membre.id,
-      salon_id: salon.id,
-    })
+    await supabase.from('messages').insert({ contenu: '', image_url: urlData.publicUrl, membre_id: membre.id, salon_id: salon.id })
     setEnvoiPhoto(false)
     e.target.value = ''
   }
@@ -1046,25 +1024,20 @@ function ChatSalon({ salon, membre, onRetour }) {
     try {
       const reponse = await fetch(`/api/agora-token?channel=${salon.id}&uid=0`)
       const { token, appId } = await reponse.json()
-
       const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })
       clientAgoraRef.current = client
-
       client.on('user-published', async (user, mediaType) => {
         await client.subscribe(user, mediaType)
         if (mediaType === 'audio') user.audioTrack.play()
         setParticipantsAppel((p) => [...new Set([...p, user.uid])])
       })
-
       client.on('user-left', (user) => {
         setParticipantsAppel((p) => p.filter((id) => id !== user.uid))
       })
-
       await client.join(appId, salon.id, token, null)
       const pisteAudio = await AgoraRTC.createMicrophoneAudioTrack()
       pisteAudioRef.current = pisteAudio
       await client.publish([pisteAudio])
-
       setEnAppel(true)
       setParticipantsAppel([membre.id])
     } catch (err) {
@@ -1150,20 +1123,8 @@ function ChatSalon({ salon, membre, onRetour }) {
         <div ref={finRef} />
       </div>
       <form onSubmit={envoyer} style={st.zoneSaisie}>
-        <input
-          type="file"
-          accept="image/*"
-          ref={inputFichierRef}
-          onChange={choisirPhoto}
-          style={{ display: 'none' }}
-        />
-        <button
-          type="button"
-          onClick={() => inputFichierRef.current?.click()}
-          disabled={envoiPhoto}
-          style={st.boutonPhoto}
-          title="Envoyer une photo"
-        >
+        <input type="file" accept="image/*" ref={inputFichierRef} onChange={choisirPhoto} style={{ display: 'none' }} />
+        <button type="button" onClick={() => inputFichierRef.current?.click()} disabled={envoiPhoto} style={st.boutonPhoto} title="Envoyer une photo">
           {envoiPhoto ? '⏳' : '📷'}
         </button>
         <input value={texte} onChange={gererSaisie} placeholder="Écrire un message..." style={st.inputChat} />
