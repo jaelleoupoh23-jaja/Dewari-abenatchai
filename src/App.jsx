@@ -20,7 +20,44 @@ const ONGLETS = [
 const NUMERO_WAVE = '07-08-68-02-36'
 
 const COULEURS_LUDO = ['rouge', 'vert', 'jaune', 'bleu']
-const HEX_COULEUR = { rouge: '#FF4D6D', vert: '#23A559', jaune: '#FFB800', bleu: '#3A86FF' }
+const HEX_COULEUR = { rouge: '#FF4D6D', vert: '#23A559', jaune: '#FFB800', bleu: '#3A86FF' } 
+
+const NOMS_AFRICAINS = [
+  'Awa', 'Koffi', 'Yao', 'Aminata', 'Fatou', 'Moussa', 'Aïcha', 'Ibrahim',
+  'Kwame', 'Ama', 'Kojo', 'Akosua', 'Nana', 'Abena', 'Kwaku', 'Efua',
+
+  'Chinua', 'Ngozi', 'Chiamaka', 'Emeka', 'Amara', 'Zainab', 'Temitope', 'Oluwaseun',
+  'Adeola', 'Folake', 'Tunde', 'Bamidele', 'Yetunde', 'Adebayo',
+
+  'Thabo', 'Nomsa', 'Lerato', 'Sipho', 'Naledi', 'Bongani', 'Zanele', 'Mandla',
+  'Katlego', 'Tshepo', 'Refilwe', 'Kagiso', 'Tumelo',
+
+  'Alem', 'Selam', 'Dawit', 'Mekdes', 'Tesfaye', 'Hana', 'Abebe', 'Liya',
+  'Berhanu', 'Kidist', 'Natnael', 'Rahel',
+
+  'Omar', 'Yasmine', 'Samir', 'Leila', 'Karim', 'Nour', 'Rania', 'Malika',
+  'Amine', 'Sana', 'Walid', 'Salma',
+
+  'Cheikh', 'Sokhna', 'Mamadou', 'Bineta', 'Ousmane', 'Adama', 'Khady', 'Boubacar',
+  'Aissatou', 'Ibrahima', 'Mame', 'Coumba',
+
+  'Amani', 'Juma', 'Nia', 'Baraka', 'Zuri', 'Imani', 'Kito', 'Nala',
+  'Jelani', 'Makena', 'Ayanna', 'Kamau',
+
+  'Aziz', 'Hassan', 'Mariam', 'Youssef', 'Soraya', 'Farid', 'Nadia', 'Dalia',
+
+  'Tariro', 'Nyasha', 'Tatenda', 'Rutendo',
+  'Mpho', 'Boitumelo', 'Neo', 'Kelebogile',
+  'Tinashe', 'Rudo', 'Anesu', 'Vimbai'
+]
+
+function nomAfricainAuto() {
+  const nom = NOMS_AFRICAINS[
+    Math.floor(Math.random() * NOMS_AFRICAINS.length)
+  ]
+
+  return `${nom}${Math.floor(100 + Math.random() * 900)}`
+}
 
 const CASES_PARCOURS = [
   [6,1],[6,2],[6,3],[6,4],[6,5],
@@ -395,7 +432,7 @@ function FaceDe({ valeur, enTrain }) {
 function PageDe({ onRetour }) {
   const [phase, setPhase] = useState('config')
   const [nbJoueurs, setNbJoueurs] = useState(2)
-  const [noms, setNoms] = useState(['Joueur 1', 'Joueur 2', 'Joueur 3', 'Joueur 4'])
+  const [noms, setNoms] = const [noms, setNoms] = useState([   nomAfricainAuto(),   nomAfricainAuto(),   nomAfricainAuto(),   nomAfricainAuto() ])
   const [scores, setScores] = useState([])
   const [tour, setTour] = useState(0)
   const [valeurAffichee, setValeurAffichee] = useState(1)
@@ -633,7 +670,12 @@ function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
 function PageLudo({ onRetour }) {
   const [phase, setPhase] = useState('config')
   const [nbJoueurs, setNbJoueurs] = useState(2)
-  const [noms, setNoms] = useState(['Joueur 1', 'Joueur 2', 'Joueur 3', 'Joueur 4'])
+const [noms, setNoms] = useState([
+  nomAfricainAuto(),
+  nomAfricainAuto(),
+  nomAfricainAuto(),
+  nomAfricainAuto()
+]) 
   const [partie, setPartie] = useState(null)
   const [coupsDispo, setCoupsDispo] = useState([])
   const [messageTour, setMessageTour] = useState('')
