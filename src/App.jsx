@@ -20,7 +20,12 @@ const ONGLETS = [
 const NUMERO_WAVE = '07-08-68-02-36'
 
 const COULEURS_LUDO = ['rouge', 'vert', 'jaune', 'bleu']
-const HEX_COULEUR = { rouge: '#FF4D6D', vert: '#23A559', jaune: '#FFB800', bleu: '#3A86FF' } 
+const HEX_COULEUR = {
+  rouge: '#E63946',
+  vert: '#1B9E4B',
+  jaune: '#F6B800',
+  bleu: '#1E88E5'
+}
 
 const NOMS_AFRICAINS = [
   'Awa', 'Koffi', 'Yao', 'Aminata', 'Fatou', 'Moussa', 'Aïcha', 'Ibrahim',
@@ -1193,7 +1198,21 @@ function ChatSalon({ salon, membre, onRetour }) {
 }
 
 const st = {
-  page: { maxWidth: 420, margin: '0 auto', minHeight: '100vh', background: 'radial-gradient(circle at top, #3C3489 0%, #1a1530 45%, #0a0815 100%)', fontFamily: "'Poppins', sans-serif", display: 'flex', flexDirection: 'column', boxSizing: 'border-box', color: '#fff' },
+ page: {
+  maxWidth: 430,
+  margin: '0 auto',
+  minHeight: '100vh',
+  background:
+    'radial-gradient(circle at top, rgba(34,139,34,0.45), transparent 35%), linear-gradient(135deg, #06140b 0%, #102b16 45%, #020705 100%)',
+  fontFamily: "'Poppins', sans-serif",
+  display: 'flex',
+  flexDirection: 'column',
+  boxSizing: 'border-box',
+  color: '#fff',
+  position: 'relative',
+  overflow: 'hidden',
+  padding: '14px 10px',
+}
   barreNom: { textAlign: 'center', padding: '14px 0 0', fontWeight: 800, fontSize: 16, letterSpacing: 0.5, color: '#fff' },
   navWrap: { display: 'flex', gap: 8, overflowX: 'auto', padding: '12px 16px 4px', WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory', scrollBehavior: 'smooth' },
   navBouton: { flexShrink: 0, padding: '8px 14px', borderRadius: 20, background: '#221f3b', color: '#cfc9e6', border: 'none', fontWeight: 700, fontSize: 13, whiteSpace: 'nowrap', scrollSnapAlign: 'start' },
@@ -1221,7 +1240,27 @@ const st = {
   carteCompte: { display: 'flex', alignItems: 'center', background: '#1d1a35', borderRadius: 14, padding: 14, marginTop: 14 },
   carteDe: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#3A0CA3,#7B2CBF)', cursor: 'pointer' },
   carteLudo: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#23A559,#3A86FF)', cursor: 'pointer', marginTop: 10 },
-  ludoPlateauWrap: { display: 'flex', justifyContent: 'center', background: '#0f0d20', borderRadius: 16, padding: 10 },
+ ludoPlateauWrap: {
+  background: `
+    radial-gradient(circle at center, rgba(34,139,34,0.25), transparent 45%),
+    linear-gradient(145deg,#2d1b0f,#1a120b,#0e1f12)
+  `,
+  padding: 18,
+  borderRadius: 32,
+  border: '4px solid #D4AF37',
+  boxShadow:
+    '0 0 40px rgba(0,0,0,0.7), inset 0 0 30px rgba(212,175,55,0.15)',
+  position: 'relative',
+  overflow: 'hidden',
+},
+jungleDecoration: {
+  position: 'absolute',
+  inset: 0,
+  pointerEvents: 'none',
+  opacity: 0.15,
+  backgroundImage:
+    'url("https://www.transparenttextures.com/patterns/leaves.png")',
+},
   ludoSvg: { width: '100%', maxWidth: 340, height: 'auto' },
   carteDeEmoji: { fontSize: 32 },
   zoneDe: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', background: '#1d1a35', borderRadius: 16, padding: '24px 18px', marginTop: 18 },
