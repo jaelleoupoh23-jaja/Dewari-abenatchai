@@ -416,8 +416,7 @@ function PageDe({ onRetour }) {
 
     setTimeout(() => {
       clearInterval(intervalleRef.current)
-      const valeur = Math.floor(Math.random() * 6) + 1 
-               const points = valeur === 6 ? 1.5 : valeur
+      const valeur = Math.floor(Math.random() * 6) + 1const points = valeur === 6 ? 1.5 : valeur
       setValeurAffichee(valeur)
       setScores((anciens) => {
         const nouveaux = [...anciens]
@@ -837,8 +836,7 @@ function calculCompte(dateDebut) {
   if (!dateDebut) return null
   const diff = new Date(dateDebut) - new Date()
   if (diff <= 0) return { j: 0, h: 0, m: 0 }
-  return { 
-    j: Math.floor(diff / 86400000),
+  return {j: Math.floor(diff / 86400000),
     h: Math.floor((diff % 86400000) / 3600000),
     m: Math.floor((diff % 3600000) / 60000),
   }
