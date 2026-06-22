@@ -416,7 +416,7 @@ function PageDe({ onRetour }) {
 
     setTimeout(() => {
       clearInterval(intervalleRef.current)
-      const valeur = Math.floor(Math.random() * 6) + 1const points = valeur === 6 ? 1.5 : valeur
+      const valeur = Math.floor(Math.random() * 6) + 1       const points = valeur === 6 ? 1.5 : valeur
       setValeurAffichee(valeur)
       setScores((anciens) => {
         const nouveaux = [...anciens]
