@@ -519,7 +519,7 @@ const points = valeur === 6 ? 1.5 : valeur
               Au tour de {noms[tour]}
             </div>
             <button onClick={lancerDe} disabled={enTrainDeLancer} style={{ ...st.boutonPrincipal, marginTop: 14 }}>
-              {enTrainDeLancer ? 'Lancement...' : 'Lancer le dé'}
+              {enTrainDeLancer ? 'Lancement...' : '🎲 Lancer le Déwari'}
             </button>
           </div>
         </div>
@@ -757,7 +757,7 @@ function PageLudo({ onRetour }) {
               Au tour de <span style={{ color: HEX_COULEUR[couleurCourante] }}>{noms[indexCourant]}</span>
             </div>
             <button onClick={lancer} disabled={coupsDispo.length > 0} style={{ ...st.boutonPrincipal, marginTop: 14 }}>
-              {coupsDispo.length > 0 ? 'Choisis un pion sur le plateau' : 'Lancer le dé'}
+              {coupsDispo.length > 0 ? 'Choisis un pion sur le plateau' : '🎲 Lancer le Déwari'}
             </button>
           </div>
         </div>
