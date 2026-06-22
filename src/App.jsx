@@ -16,6 +16,8 @@ const ONGLETS = [
   { id: 'compte', label: '👤 Mon compte' },
 ]
 
+const NUMERO_WAVE = '07-08-68-02-36'
+
 export default function App() {
   const [ecran, setEcran] = useState('accueil')
   const [session, setSession] = useState(null)
@@ -808,6 +810,10 @@ function ChatSalon({ salon, membre, onRetour }) {
         )}
       </div>
 
+      <div style={st.bandeauWave}>
+        💳 Mises à régler via <b>Wave : {NUMERO_WAVE}</b> — règlement manuel entre joueurs
+      </div>
+
       {enAppel && (
         <div style={st.barreAppel}>
           <span style={{ fontSize: 13 }}>📞 Appel en cours · {participantsAppel.length} participant{participantsAppel.length > 1 ? 's' : ''}</span>
@@ -897,6 +903,7 @@ const st = {
   dePipCase: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
   dePip: { width: 12, height: 12, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.3)' },
   regleDe: { fontSize: 13, color: '#cfc9e6', background: '#1d1a35', borderRadius: 12, padding: 12, marginTop: 18, lineHeight: 1.5 },
+  bandeauWave: { background: '#1f3a2e', color: '#7CFFB2', fontSize: 12.5, padding: '8px 16px', textAlign: 'center', borderBottom: '1px solid #2a2745' },
   overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, padding: 16 },
   modal: { background: '#1d1a35', borderRadius: 20, padding: 24, width: '100%', maxWidth: 360, maxHeight: '90vh', overflowY: 'auto' },
   modalTitre: { fontSize: 16, fontWeight: 800, marginBottom: 14, textAlign: 'center' },
