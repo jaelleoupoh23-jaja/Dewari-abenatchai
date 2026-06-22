@@ -597,72 +597,116 @@ const points = valeur === 6 ? 1.5 : valeur
 function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
   const couleurCourante = partie.couleurs[partie.tourActuel]
 
-  const animalPion = {
-    rouge: '🦁',
-    vert: '🐆',
-    jaune: '🦅',
-    bleu: '🐘',
+  const totem = {
+    rouge: { icon: '🦁', name: 'Lion' },
+    vert: { icon: '🐆', name: 'Panthère' },
+    jaune: { icon: '🦅', name: 'Aigle' },
+    bleu: { icon: '🐘', name: 'Éléphant' },
+  }
+
+  const zoneLabel = {
+    rouge: 'ROYAUME LION',
+    vert: 'JUNGLE PANTHÈRE',
+    jaune: 'CIEL AIGLE',
+    bleu: 'TERRE ÉLÉPHANT',
   }
 
   return (
     <svg viewBox="0 0 330 330" style={st.ludoSvg}>
       <defs>
-        <radialGradient id="jungleFond" cx="50%" cy="50%" r="75%">
-          <stop offset="0%" stopColor="#2f7d32" />
-          <stop offset="55%" stopColor="#174c25" />
-          <stop offset="100%" stopColor="#071b0d" />
-        </radialGradient>
+        <pattern id="motifJungle" width="42" height="42" patternUnits="userSpaceOnUse">
+          <rect width="42" height="42" fill="#06381f" />
+          <path d="M0 22 Q16 4 42 16" stroke="#0b6538" strokeWidth="5" fill="none" opacity="0.45" />
+          <path d="M4 38 Q20 20 38 34" stroke="#0f8a4b" strokeWidth="3" fill="none" opacity="0.35" />
+          <circle cx="8" cy="9" r="3" fill="#2ecc71" opacity="0.35" />
+          <circle cx="33" cy="27" r="4" fill="#27ae60" opacity="0.25" />
+        </pattern>
 
-        <filter id="ombrePion" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="3" stdDeviation="2" floodColor="#000" floodOpacity="0.6" />
+        <linearGradient id="boisCase" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#f8e7b0" />
+          <stop offset="45%" stopColor="#d9b66f" />
+          <stop offset="100%" stopColor="#9b6a28" />
+        </linearGradient>
+
+        <filter id="ombreFort" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="5" stdDeviation="4" floodColor="#000" floodOpacity="0.65" />
+        </filter>
+
+        <filter id="lumiereOr" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#FFD700" floodOpacity="0.85" />
         </filter>
       </defs>
 
-      <rect x="0" y="0" width="330" height="330" rx="24" fill="url(#jungleFond)" />
-      <text x="25" y="28" fontSize="20">🌿</text>
-      <text x="285" y="30" fontSize="20">🌴</text>
-      <text x="18" y="310" fontSize="20">🍃</text>
-      <text x="285" y="310" fontSize="20">🌿</text>
+      <rect x="0" y="0" width="330" height="330" rx="30" fill="url(#motifJungle)" />
+      <rect x="8" y="8" width="314" height="314" rx="30" fill="rgba(0,0,0,0.22)" stroke="#FFD700" strokeWidth="4" filter="url(#lumiereOr)" />
 
-{Object.entries(ZONES_BASE).map(([couleur, z]) => (
-  <g key={couleur}>
-    <rect
-      x={z.x * CELLULE + 3}
-      y={z.y * CELLULE + 3}
-      width={6 * CELLULE - 6}
-      height={6 * CELLULE - 6}
-      rx="22"
-      fill={HEX_COULEUR[couleur]}
-      opacity="0.45"
-      stroke="#FFD700"
-      strokeWidth="2"
-    />
+      <text x="20" y="30" fontSize="22">🌿</text>
+      <text x="286" y="31" fontSize="22">🌴</text>
+      <text x="18" y="309" fontSize="22">🍃</text>
+      <text x="286" y="310" fontSize="22">🌿</text>
 
-    <rect
-      x={z.x * CELLULE + 12}
-      y={z.y * CELLULE + 12}
-      width={6 * CELLULE - 24}
-      height={6 * CELLULE - 24}
-      rx="16"
-      fill="rgba(255,255,255,0.12)"
-      stroke="rgba(255,215,0,0.35)"
-      strokeWidth="1"
-    />
+      {Object.entries(ZONES_BASE).map(([couleur, z]) => (
+        <g key={couleur} filter="url(#ombreFort)">
+          <rect
+            x={z.x * CELLULE + 2}
+            y={z.y * CELLULE + 2}
+            width={6 * CELLULE - 4}
+            height={6 * CELLULE - 4}
+            rx="20"
+            fill={HEX_COULEUR[couleur]}
+            opacity="0.78"
+            stroke="#FFD700"
+            strokeWidth="2.5"
+          />
 
-    <text
-      x={z.x * CELLULE + 3 * CELLULE}
-      y={z.y * CELLULE + 3 * CELLULE + 6}
-      textAnchor="middle"
-      fontSize="22"
-      opacity="0.25"
-    >
-      🌴
-    </text>
-  </g>
-))}
+          <rect
+            x={z.x * CELLULE + 15}
+            y={z.y * CELLULE + 15}
+            width={6 * CELLULE - 30}
+            height={6 * CELLULE - 30}
+            rx="14"
+            fill="rgba(255,255,255,0.18)"
+            stroke="rgba(255,255,255,0.55)"
+            strokeWidth="1.2"
+          />
 
-      <rect x={6 * CELLULE} y={6 * CELLULE} width={3 * CELLULE} height={3 * CELLULE} fill="#1b3d22" rx={8} stroke="#FFD700" strokeWidth="1.5" />
-      <text x={7.5 * CELLULE} y={7.75 * CELLULE} textAnchor="middle" fontSize="20">🌴</text>
+          <text
+            x={z.x * CELLULE + 3 * CELLULE}
+            y={z.y * CELLULE + 3 * CELLULE + 5}
+            textAnchor="middle"
+            fontSize="24"
+            opacity="0.32"
+          >
+            🌴
+          </text>
+
+          <text
+            x={z.x * CELLULE + 3 * CELLULE}
+            y={z.y * CELLULE + 6 * CELLULE - 8}
+            textAnchor="middle"
+            fontSize="5.5"
+            fontWeight="900"
+            fill="#fff"
+            opacity="0.8"
+          >
+            {zoneLabel[couleur]}
+          </text>
+        </g>
+      ))}
+
+      {CASES_PARCOURS.map(([r, c], i) => (
+        <rect
+          key={`case-${i}`}
+          x={c * CELLULE}
+          y={r * CELLULE}
+          width={CELLULE}
+          height={CELLULE}
+          rx="2"
+          fill={estCaseSecurisee(i) ? '#FFD86B' : 'url(#boisCase)'}
+          stroke="#3a240d"
+          strokeWidth="0.8"
+        />
+      ))}
 
       {Object.entries(COULOIR_COORDS).map(([couleur, cases]) =>
         cases.map(([r, c], i) => (
@@ -672,26 +716,27 @@ function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
             y={r * CELLULE}
             width={CELLULE}
             height={CELLULE}
+            rx="2"
             fill={HEX_COULEUR[couleur]}
-            opacity={0.75}
-            stroke="#0b1b0f"
-            strokeWidth={0.7}
+            opacity="0.9"
+            stroke="#2b1608"
+            strokeWidth="0.8"
           />
         ))
       )}
 
-      {CASES_PARCOURS.map(([r, c], i) => (
-        <rect
-          key={`case-${i}`}
-          x={c * CELLULE}
-          y={r * CELLULE}
-          width={CELLULE}
-          height={CELLULE}
-          fill={estCaseSecurisee(i) ? '#FFD86B' : '#D9C28A'}
-          stroke="#5b3a14"
-          strokeWidth={0.6}
-        />
-      ))}
+      <rect
+        x={6 * CELLULE}
+        y={6 * CELLULE}
+        width={3 * CELLULE}
+        height={3 * CELLULE}
+        rx="9"
+        fill="#0b2b16"
+        stroke="#FFD700"
+        strokeWidth="2"
+        filter="url(#lumiereOr)"
+      />
+      <text x={7.5 * CELLULE} y={7.8 * CELLULE} textAnchor="middle" fontSize="22">👑</text>
 
       {partie.couleurs.map((couleur) =>
         partie.pions[couleur].map((pion, index) => {
@@ -706,39 +751,38 @@ function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
               key={`${couleur}-${index}`}
               onClick={() => jouable && onJouerPion(index)}
               style={{ cursor: jouable ? 'pointer' : 'default' }}
-              filter="url(#ombrePion)"
+              filter="url(#ombreFort)"
             >
               {jouable && (
-                <circle cx={cx} cy={cy} r={CELLULE / 1.9} fill="none" stroke="#FFD700" strokeWidth={2}>
-                  <animate attributeName="r" values={`${CELLULE / 2.4};${CELLULE / 1.7};${CELLULE / 2.4}`} dur="1s" repeatCount="indefinite" />
+                <circle cx={cx} cy={cy} r={CELLULE / 1.45} fill="none" stroke="#FFD700" strokeWidth="2.5">
+                  <animate attributeName="r" values={`${CELLULE / 2};${CELLULE / 1.35};${CELLULE / 2}`} dur="1s" repeatCount="indefinite" />
                 </circle>
               )}
+
+              <ellipse cx={cx} cy={cy + 9} rx="10" ry="4" fill="rgba(0,0,0,0.45)" />
 
               <circle
                 cx={cx}
                 cy={cy}
-                r={CELLULE / 2.15}
-                fill={HEX_COULEUR[couleur]}
+                r="10"
+                fill="#fff8cf"
                 stroke="#FFD700"
-                strokeWidth="2"
+                strokeWidth="2.2"
               />
 
               <circle
-                cx={cx - 4}
-                cy={cy - 5}
-                r={CELLULE / 7}
-                fill="rgba(255,255,255,0.65)"
+                cx={cx}
+                cy={cy}
+                r="7"
+                fill={HEX_COULEUR[couleur]}
+                opacity="0.25"
               />
 
-              <text
-                x={cx}
-                y={cy + 5}
-                textAnchor="middle"
-                fontSize="14"
-                fontWeight="900"
-              >
-                {animalPion[couleur]}
+              <text x={cx} y={cy + 5} textAnchor="middle" fontSize="13">
+                {totem[couleur].icon}
               </text>
+
+              <title>{totem[couleur].name}</title>
             </g>
           )
         })
@@ -746,7 +790,6 @@ function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
     </svg>
   )
 }
-
 function PageLudo({ onRetour }) {
 const [phase, setPhase] = useState('config');
 const [nbJoueurs, setNbJoueurs] = useState(2);
