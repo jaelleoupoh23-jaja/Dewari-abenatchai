@@ -687,7 +687,7 @@ function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
           y={r * CELLULE}
           width={CELLULE}
           height={CELLULE}
-          fill={estCaseSecurisee(i) ? '#FFD86B' : 'fill={estCaseSecurisee(i) ? '#FFD86B' : '#D9C28A'}'}
+          fill={estCaseSecurisee(i) ? '#FFD86B' : '#D9C28A'}
           stroke="#5b3a14"
           strokeWidth={0.6}
         />
