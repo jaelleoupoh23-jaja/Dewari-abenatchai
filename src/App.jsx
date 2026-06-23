@@ -597,12 +597,12 @@ const points = valeur === 6 ? 1.5 : valeur
 function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
   const couleurCourante = partie.couleurs[partie.tourActuel]
 
-  const totem = {
-    rouge: { icon: '🦁', name: 'Lion' },
-    vert: { icon: '🐆', name: 'Panthère' },
-    jaune: { icon: '🦅', name: 'Aigle' },
-    bleu: { icon: '🐘', name: 'Éléphant' },
-  }
+ const totem = {
+  rouge: { img: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f981.svg', name: 'Lion' },
+  vert: { img: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f406.svg', name: 'Panthère' },
+  jaune: { img: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f985.svg', name: 'Aigle' },
+  bleu: { img: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f418.svg', name: 'Éléphant' },
+}
 
   const zoneLabel = {
     rouge: 'ROYAUME LION',
@@ -778,11 +778,16 @@ function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
                 opacity="0.25"
               />
 
-              <text x={cx} y={cy + 5} textAnchor="middle" fontSize="13">
-                {totem[couleur].icon}
-              </text>
+           <image
+  href={totem[couleur].img}
+  x={cx - 9}
+  y={cy - 9}
+  width="18"
+  height="18"
+/>
 
-              <title>{totem[couleur].name}</title>
+<title>{totem[couleur].name}</title>
+
             </g>
           )
         })
