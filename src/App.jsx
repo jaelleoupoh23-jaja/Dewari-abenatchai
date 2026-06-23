@@ -1015,16 +1015,26 @@ function BarreChatCadeaux() {
         padding:'8px 0'
       }}>
         {emojis.map((e) => (
-          <button   key={e}   onClick={() => setReaction(`${e} réaction envoyée`)}   style={{
-            minWidth:48,
-            height:44,
-            borderRadius:12,
-            background:'#102442',
-            border:'1px solid rgba(255,255,255,.12)',
-            fontSize:24
-          }}>
-            {e}
-          </button>
+         <button
+  key={e}
+  type="button"
+  onClick={() => {
+    alert(e)
+    setReaction(e)
+  }}
+  style={{
+    minWidth:48,
+    height:44,
+    borderRadius:12,
+    background:'#102442',
+    border:'1px solid rgba(255,255,255,.12)',
+    fontSize:24,
+    cursor:'pointer',
+    zIndex:10
+  }}
+>
+  {e}
+</button>
         ))}
       </div>
 {reaction && (
