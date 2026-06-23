@@ -833,7 +833,222 @@ const cy = r * CELLULE + CELLULE / 2 + dy
       )}
     </svg>
   )
+} 
+
+function InterfaceLudoPro({
+  partie,
+  noms,
+  indexCourant,
+  couleurCourante,
+  coupsDispo,
+  deBouge,
+  lancerAvecAnimation,
+  jouerPion
+}) {
+  const joueurs = partie.couleurs.map((couleur, i) => ({
+    couleur,
+    nom: noms[i],
+    actif: i === indexCourant,
+    pieces: [15600, 22840, 8350, 12420][i] || 5000,
+    trophees: [520, 780, 320, 410][i] || 100,
+    drapeau: ['🇸🇳', '🇨🇮', '🇬🇭', '🇳🇬'][i] || '🌍',
+    avatar: ['👨🏿‍🦱', '👩🏾‍🦱', '👨🏾', '👩🏿'][i] || '🙂'
+  }))
+
+  return (
+    <div style={{
+      width:'100%',
+      maxWidth:520,
+      margin:'0 auto',
+      minHeight:'100vh',
+      background:'radial-gradient(circle at top,#123b2a,#06130f 65%,#030806)',
+      color:'#fff',
+      padding:8,
+      boxSizing:'border-box',
+      position:'relative',
+      overflow:'hidden'
+    }}>
+      <div style={{
+        display:'grid',
+        gridTemplateColumns:'1fr 1fr',
+        gap:8,
+        marginBottom:6
+      }}>
+        {joueurs.slice(0, 2).map((j) => <CarteJoueurPro key={j.couleur} joueur={j} />)}
+      </div>
+
+      <div style={{
+        position:'relative',
+        width:'100%',
+        aspectRatio:'1 / 1',
+        margin:'0 auto'
+      }}>
+        <PlateauLudo
+          partie={partie}
+          coupsDispo={coupsDispo}
+          onJouerPion={jouerPion}
+          dernierDe={partie.dernierDe}
+          couleurCourante={couleurCourante}
+          deBouge={deBouge}
+          onLancer={lancerAvecAnimation}
+        />
+      </div>
+
+      <div style={{
+        display:'grid',
+        gridTemplateColumns:'1fr 1fr',
+        gap:8,
+        marginTop:6
+      }}>
+        {joueurs.slice(2, 4).map((j) => <CarteJoueurPro key={j.couleur} joueur={j} />)}
+      </div>
+
+      <BarreChatCadeaux />
+    </div>
+  )
 }
+
+function CarteJoueurPro({ joueur }) {
+  return (
+    <div style={{
+      display:'flex',
+      alignItems:'center',
+      gap:8,
+      background: joueur.actif
+        ? `linear-gradient(135deg,${HEX_COULEUR[joueur.couleur]},#111936)`
+        : '#101936',
+      border:`2px solid ${HEX_COULEUR[joueur.couleur]}`,
+      borderRadius:18,
+      padding:8,
+      boxShadow: joueur.actif ? `0 0 18px ${HEX_COULEUR[joueur.couleur]}` : '0 8px 18px rgba(0,0,0,.35)'
+    }}>
+      <div style={{
+        width:48,
+        height:48,
+        borderRadius:'50%',
+        display:'grid',
+        placeItems:'center',
+        fontSize:28,
+        background:'#f7d99b',
+        border:'2px solid #ffd700'
+      }}>
+        {joueur.avatar}
+      </div>
+
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ fontWeight:900, fontSize:15, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+          {joueur.drapeau} {joueur.nom}
+        </div>
+        <div style={{ fontSize:13 }}>🪙 {joueur.pieces.toLocaleString('fr-FR')}</div>
+        <div style={{ fontSize:12 }}>🏆 {joueur.trophees}</div>
+        <div style={{ display:'flex', gap:3, marginTop:4 }}>
+          {[0,1,2,3].map((n) => (
+            <span key={n} style={{
+              width:12,
+              height:12,
+              borderRadius:'50%',
+              border:'1px solid #ffd700',
+              opacity:.75
+            }} />
+          ))}
+        </div>
+      </div>
+
+      <button style={{
+        width:42,
+        height:42,
+        borderRadius:'50%',
+        border:'2px solid #ffd700',
+        background:'#431014',
+        fontSize:22
+      }}>
+        🎁
+      </button>
+    </div>
+  )
+}
+
+function BarreChatCadeaux() {
+  const emojis = ['😂','😎','🔥','🙋🏿‍♂️','👑','🕺🏿','🥁','🍌','🥤']
+  const cadeaux = [
+    ['🍌','Banane','300'],
+    ['🥤','Jus Bissap','400'],
+    ['☕','Café Touba','500'],
+    ['🍵','Thé Ataya','400'],
+    ['🥁','Tam-tam','700'],
+    ['🦁','Lion','1,000'],
+    ['🐘','Éléphant','1,500'],
+    ['👑','Couronne','2,000'],
+    ['💎','Diamant','5,000'],
+    ['⚔️','Attaque','600']
+  ]
+
+  return (
+    <div style={{ marginTop:8 }}>
+      <div style={{
+        display:'flex',
+        alignItems:'center',
+        gap:8,
+        background:'#081628',
+        border:'1px solid rgba(255,255,255,.12)',
+        borderRadius:22,
+        padding:8
+      }}>
+        <button style={{ fontSize:22, background:'transparent', border:0 }}>💬</button>
+        <div style={{ flex:1, opacity:.65 }}>Tape ton message...</div>
+        <button style={{ fontSize:22, background:'transparent', border:0 }}>😊</button>
+        <button style={{ fontSize:22, background:'transparent', border:0 }}>🎤</button>
+      </div>
+
+      <div style={{
+        display:'flex',
+        gap:6,
+        overflowX:'auto',
+        padding:'8px 0'
+      }}>
+        {emojis.map((e) => (
+          <button key={e} style={{
+            minWidth:48,
+            height:44,
+            borderRadius:12,
+            background:'#102442',
+            border:'1px solid rgba(255,255,255,.12)',
+            fontSize:24
+          }}>
+            {e}
+          </button>
+        ))}
+      </div>
+
+      <div style={{
+        display:'grid',
+        gridTemplateColumns:'repeat(2, 1fr)',
+        gap:8
+      }}>
+        {cadeaux.map(([emoji, nom, prix]) => (
+          <button key={nom} style={{
+            display:'flex',
+            alignItems:'center',
+            gap:8,
+            padding:10,
+            borderRadius:14,
+            border:'1px solid rgba(255,215,0,.35)',
+            background:'linear-gradient(135deg,#073b3f,#0d2538)',
+            color:'#fff',
+            fontWeight:800
+          }}>
+            <span style={{ fontSize:28 }}>{emoji}</span>
+            <span style={{ textAlign:'left' }}>
+              <div>{nom}</div>
+              <div style={{ color:'#ffd700', fontSize:13 }}>🪙 {prix}</div>
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function PageLudo({ onRetour }) {
 const [phase, setPhase] = useState('config');
 const [nbJoueurs, setNbJoueurs] = useState(2);
@@ -976,20 +1191,17 @@ function lancerAvecAnimation() {
         </div>
       )}
 
-  {phase === 'jeu' && partie && (
-  <div style={st.section}>
-    <div style={st.ludoPlateauWrap}>
-      <PlateauLudo
-        partie={partie}
-        coupsDispo={coupsDispo}
-        onJouerPion={jouerPion}
-        dernierDe={partie.dernierDe}
-        couleurCourante={couleurCourante}
-        deBouge={deBouge}
-        onLancer={lancerAvecAnimation}
-      />
-    </div>
-  </div>
+{phase === 'jeu' && partie && (
+  <InterfaceLudoPro
+    partie={partie}
+    noms={noms}
+    indexCourant={indexCourant}
+    couleurCourante={couleurCourante}
+    coupsDispo={coupsDispo}
+    deBouge={deBouge}
+    lancerAvecAnimation={lancerAvecAnimation}
+    jouerPion={jouerPion}
+  />
 )}
 
       {phase === 'fini' && partie?.vainqueur && (
