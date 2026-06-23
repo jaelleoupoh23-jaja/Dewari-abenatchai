@@ -98,7 +98,12 @@ const ZONES_BASE = {
   rouge: { x: 0, y: 0 },
   vert: { x: 9, y: 0 },
   jaune: { x: 9, y: 9 },
-  bleu: { x: 0, y: 9 },
+  bleu: { x: 0, y: 9 }
+}
+
+const COULEURS_DUEL = {
+  rouge: { x: 0, y: 0 },
+  jaune: { x: 9, y: 0 }
 }
 
 const CELLULE = 22
@@ -597,6 +602,11 @@ const points = valeur === 6 ? 1.5 : valeur
 function PlateauLudo({ partie, coupsDispo, onJouerPion }) {
   const couleurCourante = partie.couleurs[partie.tourActuel]
 
+  const couleursAffichees =
+    partie?.couleurs?.length === 2
+      ? ['rouge', 'jaune']
+      : Object.keys(ZONES_BASE)
+
 const totem = {
   rouge: {
     name: "Royaume Lion",
@@ -657,7 +667,7 @@ const totem = {
       <text x="18" y="309" fontSize="22">🍃</text>
       <text x="286" y="310" fontSize="22">🌿</text>
 
-      {Object.entries(ZONES_BASE).map(([couleur, z]) => (
+      {couleursAffichees.map(couleur =>.map(([couleur, z]) => (
         <g key={couleur} filter="url(#ombreFort)">
           <rect
             x={z.x * CELLULE + 2}
@@ -773,13 +783,13 @@ const totem = {
 
               <ellipse cx={cx} cy={cy + 9} rx="10" ry="4" fill="rgba(0,0,0,0.45)" />
 
-              <circle
-                cx={cx}
-                cy={cy}
-                r="10"
+             <circle
+  cx={cx}
+  cy={cy}
+  r="7"
                 fill="#fff8cf"
                 stroke="#FFD700"
-                strokeWidth="2.2"
+                strokeWidth="1.4"
               />
 
               <circle
@@ -793,7 +803,7 @@ const totem = {
   x={cx}
   y={cy + 5}
   textAnchor="middle"
-  fontSize="13"
+  fontSize="10"
 >
   {totem[couleur].icon}
 </text>
