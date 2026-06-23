@@ -976,80 +976,21 @@ function lancerAvecAnimation() {
         </div>
       )}
 
-    {phase === 'jeu' && partie && (
+  {phase === 'jeu' && partie && (
   <div style={st.section}>
-
-   <div style={{
-  display:'grid',
-  gridTemplateColumns:'1fr 1fr',
-  gap:12,
-  marginBottom:12
-}}>
-  {partie.couleurs.map((couleur, i) => {
-    const actif = i === indexCourant
-
-    return (
-      <div
-        key={couleur}
-        style={{
-          background: actif ? '#24135f' : '#12142f',
-          border: `2px solid ${HEX_COULEUR[couleur]}`,
-          borderRadius: 18,
-          padding: 10,
-          color: '#fff',
-          textAlign: 'center',
-          boxShadow: actif ? `0 0 18px ${HEX_COULEUR[couleur]}` : 'none'
-        }}
-      >
-        <div style={{ fontWeight:900, color:HEX_COULEUR[couleur], fontSize:16 }}>
-          {noms[i]}
-        </div>
-
-        <div style={{ fontSize:12, marginTop:6, opacity:.8 }}>
-          {actif ? 'À ton tour' : 'En attente'}
-        </div>
-      </div>
-    )
-  })}
-</div>
-
-<div style={{
-  display:'flex',
-  justifyContent:'center',
-  margin:'8px 0 14px'
-}}>
-  <button
-    onClick={coupsDispo.length === 0 ? lancerAvecAnimation : undefined}
-    disabled={coupsDispo.length > 0 || deBouge}
-    style={{
-      width:76,
-      height:76,
-      borderRadius:20,
-      border:`4px solid ${HEX_COULEUR[couleurCourante]}`,
-      background:'#fff',
-      fontSize:42,
-      cursor: coupsDispo.length === 0 ? 'pointer' : 'default',
-      boxShadow:`0 0 22px ${HEX_COULEUR[couleurCourante]}`,
-      animation: deBouge ? 'dewariDeTourne .65s ease-in-out' : 'none'
-    }}
-  >
-    {partie.dernierDe ? faceDe(partie.dernierDe) : '🎲'}
-  </button>
-</div>
-
     <div style={st.ludoPlateauWrap}>
-    <PlateauLudo
-  partie={partie}
-  coupsDispo={coupsDispo}
-  onJouerPion={jouerPion}
-  dernierDe={partie.dernierDe}
-  couleurCourante={couleurCourante}
-  deBouge={deBouge}
-  onLancer={lancerAvecAnimation}
-/>
+      <PlateauLudo
+        partie={partie}
+        coupsDispo={coupsDispo}
+        onJouerPion={jouerPion}
+        dernierDe={partie.dernierDe}
+        couleurCourante={couleurCourante}
+        deBouge={deBouge}
+        onLancer={lancerAvecAnimation}
+      />
     </div>
-
-    <div style={st.zoneDe}>
+  </div>
+)}
       <div style={st.robotBox}>
         🤖 {messageTour || 'À moi la victoire ! Je ne plaisante pas 😄'}
       </div>
