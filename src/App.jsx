@@ -847,7 +847,30 @@ const [noms, setNoms] = useState([
   const [partie, setPartie] = useState(null)
   const [coupsDispo, setCoupsDispo] = useState([])
   const [messageTour, setMessageTour] = useState('')
+const [deBouge, setDeBouge] = useState(false)
 
+const faceDe = (n) => {
+  const faces = {
+    1: '⚀',
+    2: '⚁',
+    3: '⚂',
+    4: '⚃',
+    5: '⚄',
+    6: '⚅',
+  }
+  return faces[n] || '🎲'
+}
+
+function lancerAvecAnimation() {
+  if (coupsDispo.length > 0 || deBouge) return
+
+  setDeBouge(true)
+
+  setTimeout(() => {
+    lancer()
+    setDeBouge(false)
+  }, 650)
+}
   function demarrer() {
    const couleursActives = nbJoueurs === 2
   ? ['rouge', 'jaune']
