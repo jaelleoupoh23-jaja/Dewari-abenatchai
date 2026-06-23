@@ -158,7 +158,7 @@ export function passerAuJoueurSuivant(partie) {
   return {
     ...partie,
     tourActuel: (partie.tourActuel + 1) % partie.couleurs.length,
-    dernierDe: null,
+    dernierDe: partie.dernierDe,
     sixConsecutifs: 0,
     doitRejouer: false,
   }
