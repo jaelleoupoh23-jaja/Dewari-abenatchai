@@ -1043,12 +1043,17 @@ function BarreChatCadeaux() {
 ))}
       </div>
 {reaction && (
-  <div style={{
-    marginTop:6,
-    textAlign:'center',
-    fontWeight:800,
-    color:'#ffd700'
-  }}>
+  <div
+    style={{
+      position:'fixed',
+      left:'50%',
+      top:'50%',
+      transform:'translate(-50%,-50%)',
+      fontSize:'120px',
+      zIndex:999999999,
+      pointerEvents:'none'
+    }}
+  >
     {reaction}
   </div>
 )}
