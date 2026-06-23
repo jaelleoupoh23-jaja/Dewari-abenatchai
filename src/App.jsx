@@ -600,7 +600,6 @@ const points = valeur === 6 ? 1.5 : valeur
 }
 
 function PlateauLudo({ partie, coupsDispo, onJouerPion, dernierDe, couleurCourante, deBouge, onLancer }) {
-  const couleurCourante = partie.couleurs[partie.tourActuel]
 
   const couleursAffichees =
     partie?.couleurs?.length === 2
