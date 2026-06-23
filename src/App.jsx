@@ -1011,7 +1011,8 @@ function BarreChatCadeaux() {
     <div style={{
   display:'flex',
   gap:6,
-  overflowX:'auto',
+ overflowX:'visible', 
+  flexWrap:'wrap',
   padding:'8px 0',
   position:'relative',
   zIndex:9999,
