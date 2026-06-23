@@ -1003,7 +1003,7 @@ function lancerAvecAnimation() {
             </div>
 
             <button
-              onClick={peutLancer ? lancer : undefined}
+            onClick={peutLancer ? lancerAvecAnimation : undefined}
               disabled={!peutLancer}
               style={{
                 width: 62,
@@ -1015,10 +1015,10 @@ function lancerAvecAnimation() {
                 cursor: peutLancer ? 'pointer' : 'default',
                 boxShadow: actif ? `0 0 16px ${HEX_COULEUR[couleur]}` : '0 6px 12px rgba(0,0,0,.35)',
                 transform: actif ? 'scale(1.05)' : 'scale(.92)',
-                transition: '0.25s'
+                transition: '0.25s',animation: deBouge && actif ? 'dewariDeTourne .65s ease-in-out' : 'none'
               }}
             >
-              {actif && partie.dernierDe ? partie.dernierDe : '🎲'}
+              {actif && partie.dernierDe ? faceDe(partie.dernierDe) : '🎲'}
             </button>
 
             <div style={{ fontSize:11, marginTop:6, opacity:.8 }}>
