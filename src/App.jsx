@@ -821,9 +821,9 @@ const cy = r * CELLULE + CELLULE / 2 + dy
   x={cx}
   y={cy + 5}
   textAnchor="middle"
-  fontSize="10"
+fontSize="13"
 >
-  {totem[couleur].icon}
+  ♟
 </text>
 <title>{totem[couleur].name}</title>
 
@@ -913,22 +913,22 @@ function CarteJoueurPro({ joueur }) {
     <div style={{
       display:'flex',
       alignItems:'center',
-      gap:8,
+    gap:5,
       background: joueur.actif
         ? `linear-gradient(135deg,${HEX_COULEUR[joueur.couleur]},#111936)`
         : '#101936',
       border:`2px solid ${HEX_COULEUR[joueur.couleur]}`,
-      borderRadius:18,
-      padding:8,
+     borderRadius:12,
+padding:5,
       boxShadow: joueur.actif ? `0 0 18px ${HEX_COULEUR[joueur.couleur]}` : '0 8px 18px rgba(0,0,0,.35)'
     }}>
       <div style={{
-        width:48,
-        height:48,
+       width:32,
+        height:32,
         borderRadius:'50%',
         display:'grid',
         placeItems:'center',
-        fontSize:28,
+     fontSize:20,
         background:'#f7d99b',
         border:'2px solid #ffd700'
       }}>
@@ -936,16 +936,17 @@ function CarteJoueurPro({ joueur }) {
       </div>
 
       <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ fontWeight:900, fontSize:15, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+        <div style={{ fontWeight:900, fontSize:11, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
           {joueur.drapeau} {joueur.nom}
         </div>
-        <div style={{ fontSize:13 }}>🪙 {joueur.pieces.toLocaleString('fr-FR')}</div>
-        <div style={{ fontSize:12 }}>🏆 {joueur.trophees}</div>
+        <div style={{ fontSize:10 }}>🪙 {joueur.pieces.toLocaleString('fr-FR')}</div>
+        <div style={{ fontSize:9}}>🏆 {joueur.trophees}</div>
         <div style={{ display:'flex', gap:3, marginTop:4 }}>
           {[0,1,2,3].map((n) => (
             <span key={n} style={{
-              width:12,
+           width:12, 
               height:12,
+
               borderRadius:'50%',
               border:'1px solid #ffd700',
               opacity:.75
@@ -955,12 +956,12 @@ function CarteJoueurPro({ joueur }) {
       </div>
 
       <button style={{
-        width:42,
-        height:42,
+       width:30,
+height:30,
         borderRadius:'50%',
         border:'2px solid #ffd700',
         background:'#431014',
-        fontSize:22
+       fontSize:16
       }}>
         🎁
       </button>
