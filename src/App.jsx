@@ -1018,38 +1018,29 @@ function BarreChatCadeaux() {
   zIndex:9999,
   pointerEvents:'auto'
 }}>
-        {emojis.map((e) => (
-         <button
-  key={e}
-  type="button"
-  onMouseDown={(ev) => {
-  ev.preventDefault()
-  ev.stopPropagation()
-  alert(e)
-  setReaction(e)
-}}
-onTouchStart={(ev) => {
-  ev.preventDefault()
-  ev.stopPropagation()
-  alert(e)
-  setReaction(e)
-}}
-  style={{
-    minWidth:48,
-    height:44,
-    borderRadius:12,
-    background:'#102442',
-    border:'1px solid rgba(255,255,255,.12)',
-    fontSize:24,
-    cursor:'pointer',
-   position:'relative',
-zIndex:10000,
-pointerEvents:'auto'
-  }}
->
-  {e}
-</button>
-        ))}
+{emojis.map((e) => (
+  <div
+    key={e}
+    onClick={() => {
+      alert(e)
+      setReaction(e)
+    }}
+    style={{
+      minWidth:48,
+      height:44,
+      borderRadius:12,
+      background:'#102442',
+      border:'1px solid rgba(255,255,255,.12)',
+      fontSize:24,
+      display:'flex',
+      alignItems:'center',
+      justifyContent:'center',
+      cursor:'pointer'
+    }}
+  >
+    {e}
+  </div>
+))}
       </div>
 {reaction && (
   <div style={{
