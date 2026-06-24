@@ -1745,4 +1745,3 @@ jungleDecoration: {
   boutonEnvoyer: { background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: 16, flexShrink: 0 },
 }
 
-export default App
