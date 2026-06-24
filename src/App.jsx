@@ -1121,7 +1121,7 @@ setMessage('')
       )}
     </div>
   )
-
+}
 function PageLudo({ onRetour }) {
 const [phase, setPhase] = useState('config');
 const [nbJoueurs, setNbJoueurs] = useState(2);
