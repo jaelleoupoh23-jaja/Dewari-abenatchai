@@ -1154,9 +1154,11 @@ const [deBouge, setDeBouge] = useState(false)
 const [pionBouge, setPionBouge] = useState(false)
 
 function sonPas() {
-  const audio = new Audio('/pas.mp3')
-  audio.volume = 0.35
-  audio.play().catch(() => {})
+  try {
+    const audio = new Audio('/pas.mp3')
+    audio.volume = 0.35
+    audio.play().catch(() => {})
+  } catch (e) {}
 }
 const faceDe = (n) => {
   const faces = {
