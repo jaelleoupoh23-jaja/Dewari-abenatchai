@@ -1007,7 +1007,7 @@ function BarreChatCadeaux() {
   setMessages([...messages, { texte: message, type: 'message' }])
 setMessage('')
 }
-  }
+  
 
   const envoyerReaction = (emoji) => {
     setReaction(emoji)
