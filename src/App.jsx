@@ -920,7 +920,6 @@ function InterfaceLudoPro({
 
     <BarreChatCadeaux
   onOuvrirChat={onOuvrirChat}
-  nouveauxMessages={nouveauxMessages}
 />
     </div>
   )
