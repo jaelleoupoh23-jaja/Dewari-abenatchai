@@ -423,28 +423,6 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
   )
 }
 
-const PIPS = {
-  1: [[1, 1]],
-  2: [[0, 0], [2, 2]],
-  3: [[0, 0], [1, 1], [2, 2]],
-  4: [[0, 0], [0, 2], [2, 0], [2, 2]],
-  5: [[0, 0], [0, 2], [1, 1], [2, 0], [2, 2]],
-  6: [[0, 0], [0, 2], [1, 0], [1, 2], [2, 0], [2, 2]],
-}
-
-function faceDe(valeur) {
-  const faces = {
-    1: '⚀',
-    2: '⚁',
-    3: '⚂',
-    4: '⚃',
-    5: '⚄',
-    6: '⚅'
-  }
-
-  return faces[valeur] || '🎲'
-}
-
 const PIPS_POSITIONS = {
   1: [[50, 50]],
   2: [[28, 28], [72, 72]],
