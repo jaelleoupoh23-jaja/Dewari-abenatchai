@@ -918,8 +918,9 @@ function InterfaceLudoPro({
         {joueurs.slice(2, 4).map((j) => <CarteJoueurPro key={j.couleur} joueur={j} />)}
       </div>
 
-     <BarreChatCadeaux
+    <BarreChatCadeaux
   onOuvrirChat={onOuvrirChat}
+  nouveauxMessages={nouveauxMessages}
 />
     </div>
   )
