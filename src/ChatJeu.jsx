@@ -27,6 +27,7 @@ export default function ChatJeu({ partieId, pseudo = 'Joueur', ouvert, fermer })
       partie_id: partieId,
   auteur_id: pseudo,
   pseudo,
+  role: 'joueur',
   type: 'message',
   contenu: message.trim()
 }
@@ -56,6 +57,7 @@ async function envoyerPreset(txt) {
   partie_id: partieId,
   auteur_id: pseudo,
   pseudo,
+  role: 'joueur',
   type: 'message',
   contenu: txt
 }
