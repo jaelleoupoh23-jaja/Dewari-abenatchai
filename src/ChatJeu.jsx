@@ -36,7 +36,7 @@ export default function ChatJeu({ partieId, pseudo = 'Joueur', ouvert, fermer })
 
     if (!error) setMessage('')
   }
-async function envoyerPreset(txt) {
+aasync function envoyerPreset(txt) {
   if (!txt) return
 
   const nouveauMessage = {
@@ -46,9 +46,18 @@ async function envoyerPreset(txt) {
     contenu: txt
   }
 
-  await supabase
+  const { data, error } = await supabase
     .from('messages_partie')
     .insert([nouveauMessage])
+    .select()
+    .single()
+
+  if (error) {
+    alert('Message non envoyé')
+    return
+  }
+
+  setMessages((prev) => [...prev, data])
 }
   useEffect(() => {
    if (!ouvert || !partieId) return
