@@ -36,9 +36,22 @@ export default function ChatJeu({ partieId, pseudo = 'Joueur', ouvert, fermer })
 
     if (!error) setMessage('')
   }
+async function envoyerPreset(txt) {
+  if (!txt) return
 
+  const nouveauMessage = {
+    partie_id: partieId,
+    pseudo,
+    type: 'message',
+    contenu: txt
+  }
+
+  await supabase
+    .from('messages_partie')
+    .insert([nouveauMessage])
+}
   useEffect(() => {
-    if (!ouvert || !partieId) return
+   if (!ouvert || !partieId) return
 
     chargerMessages()
 
@@ -94,7 +107,7 @@ export default function ChatJeu({ partieId, pseudo = 'Joueur', ouvert, fermer })
                 key={txt}
                 type="button"
                 style={s.presetBtn}
-                onClick={() => setMessage(txt)}
+              onClick={() => envoyerPreset(txt)}
               >
                 {txt}
               </button>
