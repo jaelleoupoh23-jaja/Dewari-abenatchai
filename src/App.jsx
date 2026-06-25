@@ -147,7 +147,7 @@ export default function App() {
   const [modalAuth, setModalAuth] = useState(null)
   const [inscritTournoi, setInscritTournoi] = useState(false)
 const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
-  
+  const [nouveauxMessages, setNouveauxMessages] = useState(0)
   const refTournoi = useRef(null)
   const refSalons = useRef(null)
   const refCompte = useRef(null)
@@ -918,7 +918,10 @@ function InterfaceLudoPro({
         {joueurs.slice(2, 4).map((j) => <CarteJoueurPro key={j.couleur} joueur={j} />)}
       </div>
 
-     <BarreChatCadeaux onOuvrirChat={onOuvrirChat} />
+     <BarreChatCadeaux
+  onOuvrirChat={onOuvrirChat}
+  nouveauxMessages={nouveauxMessages}
+/>
     </div>
   )
 }
@@ -982,7 +985,7 @@ height:30,
   )
 }
 
-function BarreChatCadeaux({ onOuvrirChat }) {
+function BarreChatCadeaux({ onOuvrirChat, nouveauxMessages }) {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [reaction, setReaction] = useState(null)
@@ -1123,6 +1126,9 @@ setMessage('')
   }}
 >
   💬
+{nouveauxMessages > 0 && (
+  <span style={st.badgeNotif}>{nouveauxMessages}</span>
+)}        
 </button>
 
         <input
