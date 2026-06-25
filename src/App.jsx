@@ -445,172 +445,160 @@ function faceDe(valeur) {
   return faces[valeur] || '🎲'
 }
 
+const PIPS_POSITIONS = {
+  1: [[50, 50]],
+  2: [[28, 28], [72, 72]],
+  3: [[28, 28], [50, 50], [72, 72]],
+  4: [[28, 28], [72, 28], [28, 72], [72, 72]],
+  5: [[28, 28], [72, 28], [50, 50], [28, 72], [72, 72]],
+  6: [[28, 22], [72, 22], [28, 50], [72, 50], [28, 78], [72, 78]],
+}
+
+function De3D({ valeur, tourne, onClick }) {
+  const pips = PIPS_POSITIONS[valeur] || []
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        width: 110,
+        height: 110,
+        borderRadius: 22,
+        background: 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 50%, #e8e8e8 100%)',
+        boxShadow: tourne
+          ? '0 0 50px rgba(255,75,109,0.7), 0 0 20px rgba(255,184,0,0.4), 6px 6px 0 #bbb, 10px 10px 0 #999'
+          : '6px 6px 0 #bbb, 10px 10px 0 #999, inset 0 2px 0 rgba(255,255,255,0.95)',
+        position: 'relative',
+        cursor: 'pointer',
+        animation: tourne ? 'de3dSpin 0.9s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none',
+        transition: 'box-shadow 0.3s',
+        flexShrink: 0,
+      }}
+    >
+      {pips.map(([x, y], i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            width: 17,
+            height: 17,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle at 35% 30%, #ff6b8a, #CC0020)',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,150,150,0.3)',
+            left: `${x}%`,
+            top: `${y}%`,
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 function PageDe({ onRetour }) {
-  const [phase, setPhase] = useState('config')
-  const [nbJoueurs, setNbJoueurs] = useState(2)
- const [noms, setNoms] = useState([nomAfricainAuto(), nomAfricainAuto(), nomAfricainAuto(), nomAfricainAuto()])
-  const [scores, setScores] = useState([])
-  const [tour, setTour] = useState(0)
-  const [valeurAffichee, setValeurAffichee] = useState(1)
-  const [dernierLancer, setDernierLancer] = useState(null)
-  const [enTrainDeLancer, setEnTrainDeLancer] = useState(false)
-  const [vainqueur, setVainqueur] = useState(null)
-  const intervalleRef = useRef(null)
+  const [val1, setVal1] = useState(6)
+  const [val2, setVal2] = useState(6)
+  const [tourne, setTourne] = useState(false)
+  const [total, setTotal] = useState(null)
+  const [hint, setHint] = useState(true)
 
-  function demarrer() {
-    setScores(Array(nbJoueurs).fill(0))
-    setTour(0)
-    setDernierLancer(null)
-    setVainqueur(null)
-    setValeurAffichee(1)
-    setPhase('jeu')
-  }
-
-  function lancerDe() {
-    if (enTrainDeLancer || vainqueur !== null) return
-    setEnTrainDeLancer(true)
-    intervalleRef.current = setInterval(() => {
-      setValeurAffichee(Math.floor(Math.random() * 6) + 1)
-    }, 80)
+  function lancer() {
+    if (tourne) return
+    setTourne(true)
+    setTotal(null)
+    setHint(false)
     setTimeout(() => {
-      clearInterval(intervalleRef.current)
-  const valeur = Math.floor(Math.random() * 6) + 1
-const points = valeur === 6 ? 1.5 : valeur
-      setValeurAffichee(valeur)
-      setScores((anciens) => {
-        const nouveaux = [...anciens]
-        nouveaux[tour] = nouveaux[tour] + points
-        if (nouveaux[tour] >= 10) {
-          setVainqueur(tour)
-          setPhase('fini')
-        }
-        return nouveaux
-      })
-      setDernierLancer({ valeur, points, joueur: tour })
-      setEnTrainDeLancer(false)
-      setTour((t) => (t + 1) % nbJoueurs)
-    }, 700)
-  }
-
-  useEffect(() => () => clearInterval(intervalleRef.current), [])
-
-  function rejouer() {
-    setPhase('config')
+      const v1 = Math.floor(Math.random() * 6) + 1
+      const v2 = Math.floor(Math.random() * 6) + 1
+      setVal1(v1)
+      setVal2(v2)
+      setTotal(v1 + v2)
+      setTourne(false)
+    }, 900)
   }
 
   return (
     <div style={st.page}>
       <style>{`
-        @keyframes tourneDe {
-          0% { transform: rotate(0deg) scale(1); }
-          50% { transform: rotate(180deg) scale(1.1); }
-          100% { transform: rotate(360deg) scale(1); }
+        @keyframes de3dSpin {
+          0%   { transform: rotateX(0deg)   rotateY(0deg)   scale(1); }
+          15%  { transform: rotateX(180deg) rotateY(90deg)  scale(1.12); }
+          35%  { transform: rotateX(360deg) rotateY(180deg) scale(1.18); }
+          55%  { transform: rotateX(450deg) rotateY(270deg) scale(1.14); }
+          75%  { transform: rotateX(540deg) rotateY(340deg) scale(1.08); }
+          100% { transform: rotateX(720deg) rotateY(360deg) scale(1); }
+        }
+        @keyframes totalAppear {
+          0%   { opacity: 0; transform: scale(0.4) translateY(16px); }
+          60%  { opacity: 1; transform: scale(1.12) translateY(-4px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes hintPulse {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50%      { opacity: 0.9; transform: scale(1.04); }
         }
       `}</style>
 
       <div style={st.enteteChat}>
         <button onClick={onRetour} style={st.retour}>←</button>
-        <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>🎲 Le Dé</span>
+        <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>🎲 Les Dés</span>
       </div>
 
-      {phase === 'config' && (
-        <div style={st.section}>
-          <div style={st.sectionTitre}>Combien de joueurs ?</div>
-          <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
-            {[2, 4].map((n) => (
-              <button
-                key={n}
-                onClick={() => setNbJoueurs(n)}
-                style={{ ...st.ongletAuth, flex: 1, ...(nbJoueurs === n ? st.ongletActif : {}) }}
-              >
-                {n} joueurs
-              </button>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
-            {Array.from({ length: nbJoueurs }).map((_, i) => (
-              <input
-                key={i}
-                value={noms[i]}
-                onChange={(e) => {
-                  const copie = [...noms]
-                  copie[i] = e.target.value
-                  setNoms(copie)
-                }}
-                style={st.input}
-                placeholder={`Nom du joueur ${i + 1}`}
-              />
-            ))}
-          </div>
-
-          <div style={st.regleDe}>
-            🎲 Le Dé, c'est un mini-jeu rapide pour se défier entre amis pendant qu'on attend une partie de Ludo, ou juste pour s'amuser 5 minutes.
-            <br /><br />
-            Chaque lancer donne ses points normaux (1 à 5), sauf le <b>6</b> qui ne vaut que <b>1.5 point</b> — le hasard peut surprendre jusqu'au bout. Le premier à atteindre <b>10 points</b> gagne.
-          </div>
-
-          <button onClick={demarrer} style={{ ...st.boutonPrincipal, marginTop: 18 }}>
-            Démarrer la partie
-          </button>
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px 18px',
+        background: 'radial-gradient(ellipse at 50% 40%, #1a1040 0%, #16142a 100%)',
+      }}>
+        <div style={{
+          display: 'flex',
+          gap: 36,
+          alignItems: 'center',
+          justifyContent: 'center',
+          perspective: 700,
+          marginBottom: 44,
+        }}>
+          <De3D valeur={val1} tourne={tourne} onClick={lancer} />
+          <De3D valeur={val2} tourne={tourne} onClick={lancer} />
         </div>
-      )}
 
-      {phase === 'jeu' && (
-        <div style={st.section}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {Array.from({ length: nbJoueurs }).map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  ...st.ligneSalon,
-                  background: i === tour ? '#2a2050' : '#1d1a35',
-                  border: i === tour ? '1px solid #FF4D6D' : 'none',
-                }}
-              >
-                <div style={{ flex: 1, fontWeight: 800 }}>{noms[i]}</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: '#FFB800' }}>{scores[i]}</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={st.zoneDe}>   <div style={st.robotBox}>     🤖{enTrainDeLancer ? 'Le dé tourne...' : 'À moi la victoire !'}   </div>
-          <div
-  style={{
-    fontSize: 56,
-    display: 'inline-block',
-    transform: enTrainDeLancer ? 'rotate(720deg) scale(1.2)' : 'rotate(0deg) scale(1)',
-    transition: 'transform 0.7s ease',
-    filter: 'drop-shadow(0 0 12px #ffffff)'
-  }}
->
-  {faceDe(valeurAffichee)}
-</div>
-            {dernierLancer && !enTrainDeLancer && (
-              <div style={{ fontSize: 13, color: '#9a93b5', marginTop: 12 }}>
-                {noms[dernierLancer.joueur]} a fait {dernierLancer.valeur} → +{dernierLancer.points} pt{dernierLancer.points > 1 ? 's' : ''}
-              </div>
-            )}
-            <div style={{ fontWeight: 800, marginTop: 10, fontSize: 15 }}>
-              Au tour de {noms[tour]}
+        {total !== null && !tourne && (
+          <div style={{ animation: 'totalAppear 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards', textAlign: 'center' }}>
+            <div style={{ fontSize: 12, color: '#9a93b5', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 8 }}>
+              Total
             </div>
-            <button onClick={lancerDe} disabled={enTrainDeLancer} style={{ ...st.boutonPrincipal, marginTop: 14 }}>
-              {enTrainDeLancer ? '🎲 Déwari tourne...' : '🎲 Lancer le Déwari'}
-            </button>
+            <div style={{
+              fontSize: 72,
+              fontWeight: 900,
+              background: 'linear-gradient(135deg, #FF4D6D 0%, #FFB800 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              lineHeight: 1,
+            }}>
+              {total}
+            </div>
+            {total === 12 && <div style={{ fontSize: 24, marginTop: 10 }}>🔥 Double 6 !</div>}
+            {total === 2  && <div style={{ fontSize: 24, marginTop: 10 }}>😬 Snake eyes...</div>}
+            {val1 === val2 && total !== 12 && total !== 2 && (
+              <div style={{ fontSize: 18, marginTop: 10, color: '#FFB800' }}>✨ Double !</div>
+            )}
           </div>
-        </div>
-      )}
+        )}
 
-      {phase === 'fini' && vainqueur !== null && (
-        <div style={st.section}>
-          <div style={st.zoneDe}>
-            <div style={{ fontSize: 48 }}>🏆</div>
-            <div style={{ fontSize: 20, fontWeight: 800, marginTop: 10 }}>{noms[vainqueur]} gagne !</div>
-            <div style={{ fontSize: 14, color: '#9a93b5', marginTop: 4 }}>Score final : {scores[vainqueur]} points</div>
-            <button onClick={rejouer} style={{ ...st.boutonPrincipal, marginTop: 18 }}>Rejouer</button>
+        {hint && !tourne && (
+          <div style={{ animation: 'hintPulse 2s ease-in-out infinite', color: '#9a93b5', fontSize: 13, marginTop: 24, textAlign: 'center' }}>
+            Touche les dés pour lancer
           </div>
-        </div>
-      )}
+        )}
+
+        {tourne && (
+          <div style={{ color: '#9a93b5', fontSize: 13, marginTop: 24, letterSpacing: 4 }}>
+            · · ·
+          </div>
+        )}
+      </div>
     </div>
   )
 }
