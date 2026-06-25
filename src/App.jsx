@@ -574,7 +574,7 @@ const points = valeur === 6 ? 1.5 : valeur
             ))}
           </div>
 
-          <div style={st.zoneDe}>   <div style={st.robotBox}>     🤖 {messageTour ? messageTour : 'À moi la victoire ! Je ne plaisante pas 😄'}   </div>
+          <div style={st.zoneDe}>   <div style={st.robotBox}>     🤖{entrainDeLancer ? 'Le dé tourne...' : 'À moi la victoire !'}   </div>
             <FaceDe valeur={valeurAffichee} enTrain={enTrainDeLancer} />
             {dernierLancer && !enTrainDeLancer && (
               <div style={{ fontSize: 13, color: '#9a93b5', marginTop: 12 }}>
