@@ -575,7 +575,15 @@ const points = valeur === 6 ? 1.5 : valeur
           </div>
 
           <div style={st.zoneDe}>   <div style={st.robotBox}>     🤖{enTrainDeLancer ? 'Le dé tourne...' : 'À moi la victoire !'}   </div>
-           <div style={{ fontSize: 52 }}>
+          <div
+  style={{
+    fontSize: 56,
+    display: 'inline-block',
+    transform: enTrainDeLancer ? 'rotate(720deg) scale(1.2)' : 'rotate(0deg) scale(1)',
+    transition: 'transform 0.7s ease',
+    filter: 'drop-shadow(0 0 12px #ffffff)'
+  }}
+>
   {faceDe(valeurAffichee)}
 </div>
             {dernierLancer && !enTrainDeLancer && (
