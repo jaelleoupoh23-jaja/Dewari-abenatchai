@@ -1741,7 +1741,7 @@ function ChatSalon({ salon, membre, onRetour }) {
               {m.image_url ? (
                 <img src={m.image_url} alt="photo" style={st.imageMsg} />
               ) : (
-                m.contenu
+              {m.texte || m.contenu}
               )}
             </div>
           )
