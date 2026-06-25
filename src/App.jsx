@@ -985,7 +985,7 @@ height:30,
   )
 }
 
-function BarreChatCadeaux({ onOuvrirChat, nouveauxMessages }) {
+function BarreChatCadeaux({ onOuvrirChat, nouveauxMessages = 0 }) {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [reaction, setReaction] = useState(null)
