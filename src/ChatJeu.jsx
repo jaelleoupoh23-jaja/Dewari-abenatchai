@@ -112,15 +112,9 @@ setMessages((prev) => [
   }, [ouvert, partieId])
 
   useEffect(() => {
-    finRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-(payload) => {
-    setMessages((prev) => [...prev, payload.new])
-
-    if (!ouvert && payload.new.pseudo !== pseudo) {
-        setNouveauxMessages((n) => n + 1)
-    }
-}
+  finRef.current?.scrollIntoView({ behavior: 'smooth' })
+}, [messages])
+  
   if (!ouvert) return null
 
   return (
@@ -130,7 +124,6 @@ setMessages((prev) => [
           <b>💬 Chat</b>
           <button onClick={fermer} style={s.close}>✖</button>
         </div>
-
         <div style={s.content}>
           <div style={s.messages}>
             {messages.map((m, i) => (
@@ -147,6 +140,7 @@ setMessages((prev) => [
               <button
                 key={txt}
                 type="button"
+                
                 style={s.presetBtn}
               onClick={() => envoyerPreset(txt)}
               >
