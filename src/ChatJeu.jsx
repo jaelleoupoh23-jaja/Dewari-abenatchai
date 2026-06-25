@@ -4,6 +4,7 @@ import { supabase } from './supabaseClient'
 export default function ChatJeu({ partieId, pseudo = 'Joueur', ouvert, fermer }) {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
+  const [nouveauxMessages, setNouveauxMessages] = useState(0)
   const finRef = useRef(null)
 
   const emojis = ['😊', '😂', '🔥', '👏', '😎', '😭', '😡', '😅', '❤️']
@@ -95,9 +96,13 @@ setMessages((prev) => [
           table: 'messages_partie',
           filter: `partie_id=eq.${partieId}`
         },
-        (payload) => {
-          setMessages((prev) => [...prev, payload.new])
-        }
+     (payload) => {
+    setMessages((prev) => [...prev, payload.new])
+
+    if (!ouvert && payload.new.pseudo !== pseudo) {
+        setNouveauxMessages((n) => n + 1)
+    }
+}
       )
       .subscribe()
 
@@ -109,7 +114,13 @@ setMessages((prev) => [
   useEffect(() => {
     finRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+(payload) => {
+    setMessages((prev) => [...prev, payload.new])
 
+    if (!ouvert && payload.new.pseudo !== pseudo) {
+        setNouveauxMessages((n) => n + 1)
+    }
+}
   if (!ouvert) return null
 
   return (
