@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabaseClient'
+import ChatJeu from './ChatJeu'
 import AgoraRTC from 'agora-rtc-sdk-ng'
 import { creerPartie, coupsValides, jouerCoup, lancerDe, passerAuJoueurSuivant, estCaseSecurisee } from './MoteurLudo'
 
@@ -145,7 +146,8 @@ export default function App() {
   const [tournoi, setTournoi] = useState(null)
   const [modalAuth, setModalAuth] = useState(null)
   const [inscritTournoi, setInscritTournoi] = useState(false)
-
+const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
+  
   const refTournoi = useRef(null)
   const refSalons = useRef(null)
   const refCompte = useRef(null)
@@ -847,6 +849,8 @@ fontSize="13"
   )
 } 
 
+{phase === 'jeu' && partie && (
+  <>
 function InterfaceLudoPro({
   partie,
   noms,
@@ -855,7 +859,8 @@ function InterfaceLudoPro({
   coupsDispo,
   deBouge,
   lancerAvecAnimation,
-  jouerPion
+  jouerPion,
+  onOuvrirChat
 }) {
   const joueurs = partie.couleurs.map((couleur, i) => ({
     couleur,
@@ -915,7 +920,7 @@ function InterfaceLudoPro({
         {joueurs.slice(2, 4).map((j) => <CarteJoueurPro key={j.couleur} joueur={j} />)}
       </div>
 
-      <BarreChatCadeaux />
+     <BarreChatCadeaux onOuvrirChat={() => setChatJeuOuvert(true)} />
     </div>
   )
 }
@@ -979,7 +984,7 @@ height:30,
   )
 }
 
-function BarreChatCadeaux() {
+function BarreChatCadeaux({ onOuvrirChat }) {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [reaction, setReaction] = useState(null)
@@ -1109,7 +1114,18 @@ setMessage('')
   zIndex:999999,
   pointerEvents:'auto'
 }}>
-        <button type="button" style={{ fontSize:22, background:'transparent', border:0 }}>💬</button>
+      <button
+  type="button"
+  onClick={onOuvrirChat}
+  style={{
+    fontSize:22,
+    background:'transparent',
+    border:0,
+    cursor:'pointer'
+  }}
+>
+  💬
+</button>
 
         <input
           value={message}
@@ -1199,7 +1215,7 @@ function sonPas() {
   const [coupsDispo, setCoupsDispo] = useState([])
   const [messageTour, setMessageTour] = useState('')
 const [deBouge, setDeBouge] = useState(false)
-
+const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
 function sonPas() {
   try {
     const audio = new Audio('/pas.mp3')
@@ -1382,16 +1398,26 @@ async function jouerPion(index) {
       )}
 
 {phase === 'jeu' && partie && (
-  <InterfaceLudoPro
-    partie={partie}
-    noms={noms}
-    indexCourant={indexCourant}
-    couleurCourante={couleurCourante}
-    coupsDispo={coupsDispo}
-    deBouge={deBouge}
-    lancerAvecAnimation={lancerAvecAnimation}
-    jouerPion={jouerPion}
-  />
+  <>
+    <InterfaceLudoPro
+      partie={partie}
+      noms={noms}
+      indexCourant={indexCourant}
+      couleurCourante={couleurCourante}
+      coupsDispo={coupsDispo}
+      deBouge={deBouge}
+      lancerAvecAnimation={lancerAvecAnimation}
+      jouerPion={jouerPion}
+      onOuvrirChat={() => setChatJeuOuvert(true)}
+    />
+
+    <ChatJeu
+      partieId={partie?.id || 'partie-test'}
+      pseudo={noms[indexCourant] || 'Joueur'}
+      ouvert={chatJeuOuvert}
+      fermer={() => setChatJeuOuvert(false)}
+    />
+  </>
 )}
 
       {phase === 'fini' && partie?.vainqueur && (
