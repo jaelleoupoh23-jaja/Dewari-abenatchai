@@ -77,7 +77,7 @@ export async function rejoindreAvecCode(code) {
   if (!couleur) return { erreur: 'Salon complet.' }
 
   // Vérifie que le pseudo n'est pas déjà dans ce salon
-  const dejaDedans = (joueurs || []).find(j => j.pseudo === pseudo)
+  const dejaDedans = (joueurs || []).find(j => j.pseudo === pseudo && j.partie_id === partie.id)
   if (!dejaDedans) {
     await supabase.from('joueurs_partie').insert({
       partie_id: partie.id,
@@ -85,7 +85,6 @@ export async function rejoindreAvecCode(code) {
       couleur,
     })
   }
-
   return { code: partie.id, pseudo, couleur, partie }
 }
 
