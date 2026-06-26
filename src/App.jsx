@@ -1366,19 +1366,37 @@ function PetitDeLudo({ valeur, anime }) {
       ))}
     </div>
   )
-}
-function PageLudoEnLigne({ partieInitiale, partieId, monRole, pseudo, onRetour }) {
+}function PageLudoEnLigne({ partieInitiale, partieId, monRole: monRoleInitial, pseudo, onRetour }) {
   const [partie, setPartie] = useState(partieInitiale)
   const [coupsDispo, setCoupsDispo] = useState([])
   const [deBouge, setDeBouge] = useState(false)
   const [pionBouge, setPionBouge] = useState(false)
   const [messageTour, setMessageTour] = useState('')
   const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
+  const [monRole, setMonRole] = useState(monRoleInitial)
+
+  useEffect(() => {
+    async function chargerMonRole() {
+      const { data } = await supabase
+        .from('joueurs_partie')
+        .select('couleur')
+        .eq('partie_id', partieId)
+        .eq('pseudo', pseudo)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      if (data?.couleur) {
+        setMonRole(data.couleur)
+        console.log('Rôle chargé dans PageLudoEnLigne:', data.couleur)
+      }
+    }
+    chargerMonRole()
+  }, [partieId, pseudo])
 
   const couleurCourante = partie?.couleurs[partie.tourActuel]
   const indexCourant = partie ? partie.couleurs.indexOf(couleurCourante) : -1
   const noms = partie?.couleurs || []
-const estMonTour = monRole ? couleurCourante === monRole : false
+  const estMonTour = monRole ? couleurCourante === monRole : false
 // Écoute les mises à jour de l'état de partie
   useEffect(() => {
     if (!partieId) return
