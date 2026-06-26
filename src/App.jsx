@@ -1525,7 +1525,7 @@ function PageMultijoueur({ onRetour }) {
 
   // Écoute les joueurs qui rejoignent
   useEffect(() => {
-    if (!code) return
+    if (!code || code.length < 6) return
     chargerJoueurs()
     const canal = supabase
       .channel(`joueurs-${code}`)
@@ -1541,7 +1541,7 @@ function PageMultijoueur({ onRetour }) {
 
   // Écoute les mises à jour de l'état de partie
   useEffect(() => {
-    if (!code) return
+   if (!code || code.length < 6) return
     const canal = ecouterPartie(code, (nouvelEtat) => {
       if (nouvelEtat.etat === 'en_cours' && nouvelEtat.etat_partie) {
         setPartieEnCours(nouvelEtat.etat_partie)
@@ -1712,12 +1712,16 @@ function PageMultijoueur({ onRetour }) {
                 </div>
               ))}
             </div>
-          {joueurs.length < nbJoueurs ? (
+        {joueurs.length < nbJoueurs ? (
               <div style={{ fontSize: 28, animation: 'hintPulse 1.5s ease-in-out infinite' }}>⏳</div>
-            ) : (
+            ) : joueurs[0]?.pseudo === pseudo ? (
               <button onClick={handleLancer} style={{ ...st.boutonPrincipal }}>
                 🚀 Tout le monde est là — Lancer la partie
               </button>
+            ) : (
+              <div style={{ fontSize: 13, color: '#9a93b5', textAlign: 'center', marginTop: 8 }}>
+                ⏳ En attente que le créateur lance la partie...
+              </div>
             )}
           </div>
         )}
