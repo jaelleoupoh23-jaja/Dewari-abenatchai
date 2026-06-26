@@ -1402,8 +1402,13 @@ function PetitDeLudo({ valeur, anime }) {
     if (!partieId) return
     const canal = ecouterPartie(partieId, (nouvelEtat) => {
       if (nouvelEtat.etat_partie) {
-        setPartie(nouvelEtat.etat_partie)
-        setCoupsDispo([])
+        setPartie(prev => {
+          if (JSON.stringify(prev) !== JSON.stringify(nouvelEtat.etat_partie)) {
+            setCoupsDispo([])
+            return nouvelEtat.etat_partie
+          }
+          return prev
+        })
       }
     })
     return () => supabase.removeChannel(canal)
