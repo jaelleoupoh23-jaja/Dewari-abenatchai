@@ -96,9 +96,10 @@ export async function sauvegarderEtat(partieId, etatPartie) {
 }
 
 // Écoute les changements d'état en temps réel
-export function ecouterPartie(partieId, callback) {  
+export function ecouterPartie(partieId, callback) {
+  const nomCanal = `partie-${partieId}-${Math.random().toString(36).substring(2, 7)}`
   return supabase
-    .channel(`partie-${partieId}`)
+    .channel(nomCanal)
     .on(
       'postgres_changes',
       {
