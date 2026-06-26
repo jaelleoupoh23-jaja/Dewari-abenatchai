@@ -1433,7 +1433,7 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole, pseudo, onRetour }
   }
 
   async function jouerPion(index) {
-    if (!partie || !partie.dernierDe || pionBouge || !estMonTour) return
+    if (!partie || !partie.dernierDe || pionBouge) return
     setPionBouge(true)
     const valeur = partie.dernierDe
     const couleur = partie.couleurs[partie.tourActuel]
@@ -1470,7 +1470,7 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole, pseudo, onRetour }
         noms={noms}
         indexCourant={indexCourant}
         couleurCourante={couleurCourante}
-        coupsDispo={estMonTour ? coupsDispo : []}
+      coupsDispo={coupsDispo}
         deBouge={deBouge}
         lancerAvecAnimation={lancerAvecAnimation}
         jouerPion={jouerPion}
