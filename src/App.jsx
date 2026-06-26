@@ -1378,7 +1378,7 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole, pseudo, onRetour }
   const couleurCourante = partie?.couleurs[partie.tourActuel]
   const indexCourant = partie ? partie.couleurs.indexOf(couleurCourante) : -1
   const noms = partie?.couleurs || []
-  const estMonTour = couleurCourante === monRole
+ const estMonTour = !monRole || couleurCourante === monRole
 // Écoute les mises à jour de l'état de partie
   useEffect(() => {
     if (!partieId) return
