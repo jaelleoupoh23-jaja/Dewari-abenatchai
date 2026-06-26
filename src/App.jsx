@@ -1396,7 +1396,7 @@ function PetitDeLudo({ valeur, anime }) {
   const couleurCourante = partie?.couleurs[partie.tourActuel]
   const indexCourant = partie ? partie.couleurs.indexOf(couleurCourante) : -1
   const noms = partie?.couleurs || []
-  const estMonTour = true
+ const estMonTour = monRole ? couleurCourante === monRole : true
 // Écoute les mises à jour de l'état de partie
   useEffect(() => {
     if (!partieId) return
