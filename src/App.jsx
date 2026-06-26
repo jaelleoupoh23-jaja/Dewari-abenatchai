@@ -1383,17 +1383,21 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole, pseudo, onRetour }
   useEffect(() => {
     if (!code) return
 
-    // Charge l'état actuel immédiatement au cas où la partie a déjà démarré
-    async function chargerEtatActuel() {
-      const { data } = await supabase
-        .from('parties_en_ligne')
-        .select('*')
-        .eq('id', code)
-        .maybeSingle()
-      if (data?.etat === 'en_cours' && data?.etat_partie) {
-        setPartieEnCours(data.etat_partie)
-        setNbJoueurs(data.nb_joueurs)
-        setPhase('jeu')
+  async function chargerEtatActuel() {
+      try {
+        const { data, error } = await supabase
+          .from('parties_en_ligne')
+          .select('*')
+          .eq('id', code.trim())
+          .maybeSingle()
+        if (error) { console.error('Erreur chargement:', error); return }
+        if (data?.etat === 'en_cours' && data?.etat_partie) {
+          setPartieEnCours(data.etat_partie)
+          setNbJoueurs(data.nb_joueurs || 2)
+          setPhase('jeu')
+        }
+      } catch(e) {
+        console.error('Exception:', e)
       }
     }
     chargerEtatActuel()
