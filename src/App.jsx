@@ -1530,14 +1530,19 @@ function PageMultijoueur({ onRetour }) {
     return () => supabase.removeChannel(canal)
   }, [code])
 
-  async function chargerJoueurs() {
+async function chargerJoueurs() {
     const { data } = await supabase
       .from('joueurs_partie')
       .select('*')
       .eq('partie_id', code)
     setJoueurs(data || [])
     const moi = (data || []).find(j => j.pseudo === pseudo)
-    if (moi) setMonRole(moi.couleur)
+    if (moi) {
+      setMonRole(moi.couleur)
+      console.log('Mon rôle:', moi.couleur, '| Mon pseudo:', pseudo)
+    } else {
+      console.log('Joueur non trouvé. Pseudo local:', pseudo, '| Joueurs:', data?.map(j => j.pseudo))
+    }
   }
 
   async function handleLancer() {
