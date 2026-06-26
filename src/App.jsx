@@ -836,7 +836,10 @@ const totem = {
   fontSize:34,
   lineHeight:'1'
 }}>
- {deBouge ? '🎲' : (dernierDe || '🎲')}
+<PetitDeLudo
+  valeur={dernierDe || 1}
+  anime={deBouge}
+/>
 </span>  </button> </foreignObject>
 
       {partie.couleurs.map((couleur) =>
@@ -1259,10 +1262,56 @@ setMessage('')
     </div>
   )
 }
+function PetitDeLudo({ valeur, anime }) {
+  const points = {
+    1: [5],
+    2: [1, 9],
+    3: [1, 5, 9],
+    4: [1, 3, 7, 9],
+    5: [1, 3, 5, 7, 9],
+    6: [1, 3, 4, 6, 7, 9],
+  }
+
+  const v = valeur || 1
+
+  return (
+    <div style={{
+      width: 58,
+      height: 58,
+      margin: '0 auto 12px',
+      borderRadius: 14,
+      background: 'linear-gradient(145deg,#ffffff,#e8e3d5)',
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3,1fr)',
+      gridTemplateRows: 'repeat(3,1fr)',
+      padding: 8,
+      gap: 3,
+      boxShadow: '0 10px 22px rgba(0,0,0,0.45), inset 0 2px 4px rgba(255,255,255,0.9)',
+      transform: anime ? 'rotateX(360deg) rotateY(360deg) scale(1.15)' : 'rotateX(0deg) rotateY(0deg) scale(1)',
+      transition: 'transform 0.7s ease',
+    }}>
+      {[1,2,3,4,5,6,7,8,9].map((pos) => (
+        <span
+          key={pos}
+          style={{
+            width: 9,
+            height: 9,
+            borderRadius: '50%',
+            background: points[v].includes(pos) ? '#e11d48' : 'transparent',
+            alignSelf: 'center',
+            justifySelf: 'center',
+            boxShadow: points[v].includes(pos) ? '0 1px 4px rgba(0,0,0,0.35)' : 'none',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 function PageLudo({ onRetour }) {
 const [phase, setPhase] = useState('config');
 const [nbJoueurs, setNbJoueurs] = useState(2);
   const [pionBouge, setPionBouge] = useState(false);
+  const [deAnime, setDeAnime] = useState(false)
 function sonPas() {
   try {
     const audio = new Audio('/pas.mp3')
@@ -1322,6 +1371,9 @@ function lancerAvecAnimation() {
   }
 
  async function lancer() {
+   setDeAnime(true)
+setTimeout(() => setDeAnime(false), 700)
+   
   if (!partie || coupsDispo.length > 0 || deBouge) return
 
   setDeBouge(true)
