@@ -793,8 +793,8 @@ const totem = {
             {zoneLabel[couleur]}
           </text>
        </g>
-  )
-})}
+
+))}
 
       {CASES_PARCOURS.map(([r, c], i) => (
         <rect
