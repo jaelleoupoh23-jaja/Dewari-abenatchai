@@ -1396,7 +1396,7 @@ function PetitDeLudo({ valeur, anime }) {
   const couleurCourante = partie?.couleurs[partie.tourActuel]
   const indexCourant = partie ? partie.couleurs.indexOf(couleurCourante) : -1
   const noms = partie?.couleurs || []
-  const estMonTour = monRole ? couleurCourante === monRole : false
+  const estMonTour = true
 // Écoute les mises à jour de l'état de partie
   useEffect(() => {
     if (!partieId) return
@@ -1458,8 +1458,8 @@ function PetitDeLudo({ valeur, anime }) {
     }
   }
 
-  async function jouerPion(index) {
-   if (!partie || !partie.dernierDe || pionBouge || !estMonTour) return
+async function jouerPion(index) {
+    if (!partie || !partie.dernierDe || pionBouge || !estMonTour) return
     setPionBouge(true)
     const valeur = partie.dernierDe
     const couleur = partie.couleurs[partie.tourActuel]
@@ -1469,10 +1469,12 @@ function PetitDeLudo({ valeur, anime }) {
       nouvellePartie = passerAuJoueurSuivant(nouvellePartie)
     }
 
+    nouvellePartie = { ...nouvellePartie, coupsDispoActuels: [] }
     await sauvegarderEtat(partieId, nouvellePartie)
     setPartie(nouvellePartie)
     setCoupsDispo([])
     setPionBouge(false)
+    setMessageTour('')
     sonPas()
   }
 
