@@ -22,9 +22,10 @@ export function getPseudo() {
 }
 
 // Crée une nouvelle partie en ligne
-export async function creerSalon(nbJoueurs, couleur) {
+export async function creerSalon(nbJoueurs) {
   const code = genererCode()
   const pseudo = getPseudo()
+  const couleur = nbJoueurs === 2 ? 'rouge' : 'rouge'
 
   const { data, error } = await supabase
     .from('parties_en_ligne')
@@ -47,9 +48,8 @@ export async function creerSalon(nbJoueurs, couleur) {
     couleur,
   })
 
-  return { code, pseudo, partie: data }
+  return { code, pseudo, couleur, partie: data }
 }
-
 // Rejoint une partie existante avec un code
 export async function rejoindreAvecCode(code) {
   const pseudo = getPseudo()
