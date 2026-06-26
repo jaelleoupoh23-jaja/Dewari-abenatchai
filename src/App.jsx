@@ -400,23 +400,23 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
           <div style={{ fontSize: 20 }}>→</div>
         </div>
 
-        <div onClick={onOuvrirLudo} style={st.carteLudo}>
-          <div onClick={onOuvrirMultijoueur} style={{
-  ...st.carteLudo,
-  background: 'linear-gradient(135deg,#FF4D6D,#FFB800)',
-  marginTop: 10
-}}>
-  <div style={st.carteDeEmoji}>🌍</div>
-  <div style={{ flex: 1, marginLeft: 12 }}>
-    <div style={{ fontWeight: 800, fontSize: 16 }}>Jouer en ligne</div>
-    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>Défie un ami à distance</div>
-  </div>
-  <div style={{ fontSize: 20 }}>→</div>
-</div>
+     <div onClick={onOuvrirLudo} style={st.carteLudo}>
           <div style={st.carteDeEmoji}>♟️</div>
           <div style={{ flex: 1, marginLeft: 12 }}>
             <div style={{ fontWeight: 800, fontSize: 16 }}>Jouer au Dewari</div>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>2 ou 4 joueurs · règles classiques</div>
+          </div>
+          <div style={{ fontSize: 20 }}>→</div>
+        </div>
+        <div onClick={onOuvrirMultijoueur} style={{
+          ...st.carteLudo,
+          background: 'linear-gradient(135deg,#FF4D6D,#FFB800)',
+          marginTop: 10
+        }}>
+          <div style={st.carteDeEmoji}>🌍</div>
+          <div style={{ flex: 1, marginLeft: 12 }}>
+            <div style={{ fontWeight: 800, fontSize: 16 }}>Jouer en ligne</div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>Défie un ami à distance</div>
           </div>
           <div style={{ fontSize: 20 }}>→</div>
         </div>
