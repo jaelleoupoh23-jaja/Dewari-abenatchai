@@ -108,7 +108,18 @@ const COULEURS_DUEL = {
 }
 
 const CELLULE = 22
+function faceDe(n) {
+  const faces = {
+    1: "1️⃣",
+    2: "2️⃣",
+    3: "3️⃣",
+    4: "4️⃣",
+    5: "5️⃣",
+    6: "6️⃣"
+  }
 
+  return faces[n] || "🎲"
+}
 const DEPART_COULEUR = {
   rouge: 0,
   vert: 13,
