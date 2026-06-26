@@ -795,7 +795,7 @@ const totem = {
           </text>
        </g>
     
-)} 
+})}
 
       {CASES_PARCOURS.map(([r, c], i) => (
         <rect
@@ -809,7 +809,7 @@ const totem = {
           stroke="#3a240d"
           strokeWidth="0.8"
         />
-      )}
+     ))}
 
       {Object.entries(COULOIR_COORDS).map(([couleur, cases]) =>
         cases.map(([r, c], i) => (
