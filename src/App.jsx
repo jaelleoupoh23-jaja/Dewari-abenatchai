@@ -1378,7 +1378,7 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole, pseudo, onRetour }
   const couleurCourante = partie?.couleurs[partie.tourActuel]
   const indexCourant = partie ? partie.couleurs.indexOf(couleurCourante) : -1
   const noms = partie?.couleurs || []
- const estMonTour = !monRole || couleurCourante === monRole
+const estMonTour = monRole ? couleurCourante === monRole : false
 // Écoute les mises à jour de l'état de partie
   useEffect(() => {
     if (!partieId) return
@@ -1433,7 +1433,7 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole, pseudo, onRetour }
   }
 
   async function jouerPion(index) {
-    if (!partie || !partie.dernierDe || pionBouge) return
+   if (!partie || !partie.dernierDe || pionBouge || !estMonTour) return
     setPionBouge(true)
     const valeur = partie.dernierDe
     const couleur = partie.couleurs[partie.tourActuel]
