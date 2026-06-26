@@ -709,7 +709,7 @@ const totem = {
     75%  { transform: rotate(-8deg) scale(1.05); }
     100% { transform: rotate(0deg) scale(1); }
   }
-`}</style>
+  }</style>
     <svg viewBox="0 0 330 330" style={st.ludoSvg}>
       <defs>
         <pattern id="motifJungle" width="42" height="42" patternUnits="userSpaceOnUse">
