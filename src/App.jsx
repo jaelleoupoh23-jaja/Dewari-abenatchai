@@ -439,9 +439,7 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
           
         </div>
       
- </div>
-      </div>
-</div>
+
 
 <div
   onClick={() => setEcran("juridique")}
