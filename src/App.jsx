@@ -1470,7 +1470,17 @@ async function jouerPion(index) {
     }
 
     nouvellePartie = { ...nouvellePartie, coupsDispoActuels: [] }
-    await new Promise(r => setTimeout(r, valeur * 180))
+const pionDepart = partie.pions[partie.couleurs[partie.tourActuel]][index]
+let partieAnimee = JSON.parse(JSON.stringify(partie))
+for (let pas = 1; pas <= valeur; pas++) {
+  let pionAnime = { ...pionDepart }
+  if (pionDepart.etat === 'base') { pionAnime = { etat: 'parcours', position: 0 } }
+  else if (pionDepart.etat === 'parcours') { const pos = pionDepart.position + pas; if (pos < 51) pionAnime = { etat: 'parcours', position: pos }; else pionAnime = { etat: 'couloir', position: 0 } }
+  else if (pionDepart.etat === 'couloir') { const pos = pionDepart.position + pas; if (pos < 5) pionAnime = { etat: 'couloir', position: pos }; else pionAnime = { etat: 'arrivee', position: 5 } }
+  partieAnimee = { ...partieAnimee, pions: { ...partieAnimee.pions, [partie.couleurs[partie.tourActuel]]: partieAnimee.pions[partie.couleurs[partie.tourActuel]].map((p, i) => i === index ? pionAnime : p) } }
+  setPartie(partieAnimee)
+  await new Promise((resolve) => setTimeout(resolve, 260))
+}
       await sauvegarderEtat(partieId, nouvellePartie)
     setPartie(nouvellePartie)
     setCoupsDispo([])
