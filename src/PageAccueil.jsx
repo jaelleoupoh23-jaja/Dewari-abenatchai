@@ -56,26 +56,42 @@ export default function PageAccueil({ onCommencer }) {
           </div>
 
           <div style={styles.compteTitre}>⏳ Début dans</div>
+
           <div style={styles.compteRebours}>
-            <div><strong>{temps.jours}</strong><span>jours</span></div>
-            <div><strong>{temps.heures}</strong><span>h</span></div>
-            <div><strong>{temps.minutes}</strong><span>min</span></div>
-            <div><strong>{temps.secondes}</strong><span>s</span></div>
+            <div style={styles.caseTemps}><strong>{temps.jours}</strong><span>jours</span></div>
+            <div style={styles.caseTemps}><strong>{temps.heures}</strong><span>h</span></div>
+            <div style={styles.caseTemps}><strong>{temps.minutes}</strong><span>min</span></div>
+            <div style={styles.caseTemps}><strong>{temps.secondes}</strong><span>s</span></div>
           </div>
+
+          <p style={styles.inscriptionTexte}>
+            🔥 Les inscriptions sont déjà ouvertes. Réserve ta place dès maintenant.
+          </p>
+
+          <button style={styles.boutonTournoi}>
+            🏆 Je m'inscris au Grand Tournoi
+          </button>
         </section>
 
         <section style={styles.sectionSimple}>
           <h2 style={styles.sectionTitre}>⚔️ Tournois des quartiers</h2>
+
           <p style={styles.texte}>
             Chaque quartier aura son propre championnat national et international.
           </p>
+
           <p style={styles.texteFort}>
             👑 Les meilleurs joueurs des quartiers s'affronteront pour décrocher le titre de Roi de Déwari.
           </p>
+
+          <div style={styles.lienQuartiers}>
+            ➡️ Découvrir les quartiers
+          </div>
         </section>
 
         <section style={styles.sectionSimple}>
           <h2 style={styles.sectionTitre}>👑 Les Rois du Jeu</h2>
+
           <div style={styles.rois}>
             <div>🥇 Top 1</div>
             <div>🥈 Top 2</div>
@@ -191,7 +207,34 @@ const styles = {
   compteRebours: {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: 7
+    gap: 7,
+    marginBottom: 12
+  },
+  caseTemps: {
+    background: 'rgba(0,0,0,0.22)',
+    borderRadius: 12,
+    padding: '8px 4px',
+    border: '1px solid rgba(255,255,255,0.08)'
+  },
+  inscriptionTexte: {
+    fontSize: 13,
+    lineHeight: 1.4,
+    fontWeight: 850,
+    color: '#FFD166',
+    margin: '12px auto 10px'
+  },
+  boutonTournoi: {
+    border: 'none',
+    borderRadius: 18,
+    padding: '13px 18px',
+    width: '100%',
+    maxWidth: 300,
+    fontWeight: 950,
+    fontSize: 14,
+    color: 'white',
+    background: 'linear-gradient(135deg,#FF4D6D,#FFB800)',
+    boxShadow: '0 10px 24px rgba(255,77,109,0.30)',
+    cursor: 'pointer'
   },
   sectionSimple: {
     borderRadius: 22,
@@ -218,6 +261,12 @@ const styles = {
     fontSize: 14,
     lineHeight: 1.45,
     fontWeight: 900
+  },
+  lienQuartiers: {
+    marginTop: 12,
+    color: '#FFD166',
+    fontWeight: 950,
+    fontSize: 14
   },
   rois: {
     display: 'grid',
