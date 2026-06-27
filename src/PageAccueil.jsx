@@ -8,9 +8,9 @@ export default function PageAccueil({ onCommencer }) {
 
         <h1 style={styles.titre}>Dewari-abenatchai</h1>
 
-        <p style={styles.slogan}>
-          Affronte tes amis, défie ton quartier et deviens une légende du jeu.
-        </p>
+       <p style={styles.slogan}>
+  Le monde entier est invité à vivre l’ambiance ivoirienne : joue, observe les parties comme un live et discute anonymement dans les quartiers.
+</p>
 
         <div style={styles.stats}>
           <div>🎲 Dé en ligne</div>
@@ -19,7 +19,7 @@ export default function PageAccueil({ onCommencer }) {
         </div>
 
         <button onClick={onCommencer} style={styles.bouton}>
-          Entrer dans l’arène →
+          Entrer dans les quartiers →
         </button>
 
         <p style={styles.note}>
