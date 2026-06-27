@@ -6,6 +6,7 @@ import { creerPartie, coupsValides, jouerCoup, lancerDe, passerAuJoueurSuivant, 
 import { getPseudo, creerSalon, rejoindreAvecCode, sauvegarderEtat, ecouterPartie, demarrerPartieEnLigne } from './salleMultijoueur'
 import { genererCodeSpectateur, ecouterPartieSpectateur, envoyerMessageSpectateur, envoyerCadeauSpectateur, ecouterChatSpectateur } from './spectateur'
 import PageDeEnLigne from './PageDeEnLigne'
+import PageJuridique from "./PageJuridique";
 const SLIDES = [
   { emoji: '🎲', titre: 'Le Ludo prend une autre dimension', fond: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)' },
   { emoji: '🏆', titre: 'Décembre. La compétition arrive.', fond: 'linear-gradient(135deg,#FFB800,#FF4D6D)' },
@@ -249,6 +250,11 @@ const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
 
   return (
     <div style={st.page}>
+      {ecran === "juridique" && (
+    <PageJuridique
+        onRetour={() => setEcran("accueil")}
+    />
+)}
       {ecran === 'accueil' && (
         <>
           <div style={st.barreNom}>👑 Dewari-abenatchai</div>
@@ -434,6 +440,29 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
         </div>
       
  </div>
+      </div>
+</div>
+
+<div
+  onClick={() => setEcran("juridique")}
+  style={st.carteLudo}
+>
+  <div style={st.carteDeEmoji}>⚖️</div>
+
+  <div style={{ flex: 1, marginLeft: 12 }}>
+    <div style={{ fontWeight: 800, fontSize: 16 }}>
+      Centre juridique
+    </div>
+
+    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>
+      CGU • Confidentialité • Sécurité
+    </div>
+  </div>
+
+  <div style={{ fontSize: 20 }}>→</div>
+</div>
+
+<div ref={refSalons} style={st.section}>
       <div ref={refSalons} style={st.section}>
         <div style={st.sectionTitre}>Choisis ton salon</div>
         <div style={st.sectionSousTitre}>20 joueurs max par salon</div>
