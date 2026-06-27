@@ -1365,8 +1365,8 @@ function PetitDeLudo({ valeur, anime }) {
         />
       ))}
     </div>
-  )
-}function ({ partieInitiale, partieId, monRole: monRoleInitial, pseudo, onRetour }) {
+}
+function PageLudoEnLigne({ partieInitiale, partieId, monRole: monRoleInitial, pseudo, onRetour }) {
   const [partie, setPartie] = useState(partieInitiale)
   const [coupsDispo, setCoupsDispo] = useState([])
   const [deBouge, setDeBouge] = useState(false)
