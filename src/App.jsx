@@ -4,103 +4,6 @@ import ChatJeu from './ChatJeu'
 import AgoraRTC from 'agora-rtc-sdk-ng'
 import { creerPartie, coupsValides, jouerCoup, lancerDe, passerAuJoueurSuivant, estCaseSecurisee } from './MoteurLudo'
 import { getPseudo, creerSalon, rejoindreAvecCode, sauvegarderEtat, ecouterPartie, demarrerPartieEnLigne } from './salleMultijoueur'
-const st = {
- page: {
-  maxWidth: 430,
-  margin: '0 auto',
-  minHeight: '100vh',
-  background:
-    'radial-gradient(circle at top, rgba(34,139,34,0.45), transparent 35%), linear-gradient(135deg, #06140b 0%, #102b16 45%, #020705 100%)',
-  fontFamily: "'Poppins', sans-serif",
-  display: 'flex',
-  flexDirection: 'column',
-  boxSizing: 'border-box',
-  color: '#fff',
-  position: 'relative',
-  overflow: 'hidden',
-  padding: '14px 10px',
-},
-   barreNom: { textAlign: 'center', padding: '14px 0 0', fontWeight: 800, fontSize: 16, letterSpacing: 0.5, color: '#fff' },
-  navWrap: { display: 'flex', gap: 8, overflowX: 'auto', padding: '12px 16px 4px', WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory', scrollBehavior: 'smooth' },
-  navBouton: { flexShrink: 0, padding: '8px 14px', borderRadius: 20, background: '#221f3b', color: '#cfc9e6', border: 'none', fontWeight: 700, fontSize: 13, whiteSpace: 'nowrap', scrollSnapAlign: 'start' },
-  avatarGroupe: { width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg,#FFB800,#FF4D6D)', color: '#1d1a35', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 12, flexShrink: 0 },
-  banniere: { height: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: 20, textAlign: 'center', transition: 'background 0.6s ease' },
-  bannieretEmoji: { fontSize: 48, marginBottom: 8 },
-  bannierTitre: { fontSize: 20, fontWeight: 800, lineHeight: 1.3, textShadow: '0 2px 8px rgba(0,0,0,0.3)' },
-  points: { display: 'flex', gap: 6, position: 'absolute', bottom: 14 },
-  point: { width: 6, height: 6, borderRadius: '50%', background: '#fff' },
-  heroTexte: { padding: '20px 18px 8px', textAlign: 'center' },
-  eyebrow: { fontSize: 12, fontWeight: 800, letterSpacing: 1.5, color: '#FFB800' },
-  compteWrap: { display: 'flex', justifyContent: 'center', gap: 14, margin: '14px 0 18px' },
-  compteBloc: { background: '#221f3b', borderRadius: 12, padding: '8px 14px', minWidth: 56 },
-  compteChiffre: { fontSize: 22, fontWeight: 800, color: '#fff' },
-  compteLabel: { fontSize: 10, color: '#9a93b5', textTransform: 'uppercase' },
-  boutonPrincipal: { width: '100%', padding: 15, background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', color: '#fff', border: 'none', borderRadius: 30, fontWeight: 800, fontSize: 15 },
-  confirme: { fontWeight: 800, color: '#4ADE80' },
-  details: { background: '#221f3b', borderRadius: 12, padding: 14, marginTop: 16, fontSize: 13, textAlign: 'left' },
-  section: { padding: '26px 18px 24px' },
-  sectionTitre: { fontSize: 20, fontWeight: 800 },
-  sectionSousTitre: { fontSize: 13, color: '#9a93b5', marginTop: 2 },
-  ligneSalon: { display: 'flex', alignItems: 'center', padding: '10px 12px', background: '#1d1a35', borderRadius: 14 },
-  avatar: { width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg,#FFB800,#FF4D6D)', color: '#1d1a35', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, flexShrink: 0, fontSize: 13 },
-  badge: { fontSize: 11, color: '#fff', borderRadius: 12, padding: '2px 8px', fontWeight: 800 },
-  carteCompte: { display: 'flex', alignItems: 'center', background: '#1d1a35', borderRadius: 14, padding: 14, marginTop: 14 },
-  carteDe: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#3A0CA3,#7B2CBF)', cursor: 'pointer' },
-  carteLudo: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#23A559,#3A86FF)', cursor: 'pointer', marginTop: 10 },
- ludoPlateauWrap: {
-  background: `
-    radial-gradient(circle at center, rgba(34,139,34,0.25), transparent 45%),
-    linear-gradient(145deg,#2d1b0f,#1a120b,#0e1f12)
-  `,
-  padding: 18,
-  borderRadius: 32,
-  border: '4px solid #D4AF37',
-  boxShadow:
-    '0 0 40px rgba(0,0,0,0.7), inset 0 0 30px rgba(212,175,55,0.15)',
-  position: 'relative',
-  overflow: 'hidden',
-},
-jungleDecoration: {
-  position: 'absolute',
-  inset: 0,
-  pointerEvents: 'none',
-  opacity: 0.15,
-  backgroundImage:
-    'url("https://www.transparenttextures.com/patterns/leaves.png")',
-},
-  ludoSvg: { width: '100%', maxWidth: 340, height: 'auto' },
-  carteDeEmoji: { fontSize: 32 },
-  zoneDe: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', background: '#1d1a35', borderRadius: 16, padding: '24px 18px', marginTop: 18 },
-  deCube: { width: 88, height: 88, borderRadius: 18, background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', boxShadow: '0 6px 18px rgba(123,44,191,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 14 },
-  deGrille: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'repeat(3, 1fr)', width: '100%', height: '100%' },
-  dePipCase: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  dePip: { width: 12, height: 12, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.3)' },
-  regleDe: { fontSize: 13, color: '#cfc9e6', background: '#1d1a35', borderRadius: 12, padding: 12, marginTop: 18, lineHeight: 1.5 },
-  bandeauWave: { background: '#1f3a2e', color: '#7CFFB2', fontSize: 12.5, padding: '8px 16px', textAlign: 'center', borderBottom: '1px solid #2a2745' },
-  overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, padding: 16 },
-  modal: { background: '#1d1a35', borderRadius: 20, padding: 24, width: '100%', maxWidth: 360, maxHeight: '90vh', overflowY: 'auto' },
-  modalTitre: { fontSize: 16, fontWeight: 800, marginBottom: 14, textAlign: 'center' },
-  ongletAuth: { flex: 1, padding: 10, background: '#16142a', color: '#9a93b5', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 13 },
-  ongletActif: { background: '#FF4D6D', color: '#fff' },
-  input: { padding: 12, borderRadius: 10, border: '1px solid #3a3658', background: '#16142a', color: '#fff', fontSize: 15 },
-  erreur: { color: '#FF6B6B', fontSize: 13, textAlign: 'center' },
-  lienFermer: { background: 'none', border: 'none', color: '#9a93b5', marginTop: 12, width: '100%', fontSize: 13 },
-  enteteChat: { display: 'flex', alignItems: 'center', padding: '16px 16px 10px', borderBottom: '1px solid #2a2745' },
-  boutonAppel: { marginLeft: 'auto', background: '#23A559', border: 'none', borderRadius: '50%', width: 38, height: 38, fontSize: 16, color: '#fff' },
-  badgeAppelActif: { marginLeft: 'auto', background: '#23A559', borderRadius: 14, padding: '4px 10px', fontSize: 12, fontWeight: 700 },
-  barreAppel: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', background: '#15311f', borderBottom: '1px solid #2a2745' },
-  boutonMicro: { background: '#23203a', border: 'none', borderRadius: '50%', width: 34, height: 34, fontSize: 14 },
-  boutonRaccrocher: { background: '#FF4D6D', border: 'none', borderRadius: '50%', width: 34, height: 34, fontSize: 14 },
-  retour: { background: 'none', border: 'none', fontSize: 20, color: '#fff', cursor: 'pointer' },
-  zoneMessages: { flex: 1, display: 'flex', flexDirection: 'column', gap: 8, overflowY: 'auto', minHeight: 300, padding: '14px 16px' },
-  bulle: { maxWidth: '75%', padding: '8px 12px', borderRadius: 14, fontSize: 14 },
-  imageMsg: { maxWidth: '100%', borderRadius: 10, display: 'block' },
-  zoneSaisie: { display: 'flex', alignItems: 'center', gap: 8, padding: 16, borderTop: '1px solid #2a2745' },
-  boutonPhoto: { background: 'none', border: 'none', fontSize: 20, flexShrink: 0 },
-  inputChat: { flex: 1, padding: 10, borderRadius: 20, border: '1px solid #3a3658', background: '#221f3b', color: '#fff' },
-  boutonEnvoyer: { background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: 16, flexShrink: 0 },
-}
-}
 
 const SLIDES = [
   { emoji: '🎲', titre: 'Le Ludo prend une autre dimension', fond: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)' },
@@ -727,8 +630,8 @@ function PageDe({ onRetour }) {
         }
       `}</style>
 
-     <div style={{ display:'flex', alignItems:'center', padding:'16px 16px 10px', borderBottom:'1px solid #2a2745' }}>
-        <button onClick={onRetour} style={{ background:'none', border:'none', fontSize:20, color:'#fff', cursor:'pointer' }}>←</button>
+      <div style={st.enteteChat}>
+        <button onClick={onRetour} style={st.retour}>←</button>
         <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>🎲 Les Dés</span>
       </div>
 
@@ -1463,7 +1366,7 @@ function PetitDeLudo({ valeur, anime }) {
       ))}
     </div>
   )
-function PageLudoEnLigne({ partieInitiale, partieId, monRole: monRoleInitial, pseudo, onRetour }) {
+}function PageLudoEnLigne({ partieInitiale, partieId, monRole: monRoleInitial, pseudo, onRetour }) {
   const [partie, setPartie] = useState(partieInitiale)
   const [coupsDispo, setCoupsDispo] = useState([])
   const [deBouge, setDeBouge] = useState(false)
@@ -1482,33 +1385,33 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole: monRoleInitial, ps
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle()
-      if (data?.couleur) setMonRole(data.couleur)
+      if (data?.couleur) {
+        setMonRole(data.couleur)
+        console.log('Rôle chargé dans PageLudoEnLigne:', data.couleur)
+      }
     }
     chargerMonRole()
   }, [partieId, pseudo])
 
+  const couleurCourante = partie?.couleurs[partie.tourActuel]
+  const indexCourant = partie ? partie.couleurs.indexOf(couleurCourante) : -1
+  const noms = partie?.couleurs || []
+ const estMonTour = monRole ? couleurCourante === monRole : true
+// Écoute les mises à jour de l'état de partie
   useEffect(() => {
     if (!partieId) return
     const canal = ecouterPartie(partieId, (nouvelEtat) => {
       if (nouvelEtat.etat_partie) {
-        const etat = nouvelEtat.etat_partie
-        setPartie(etat)
-        setCoupsDispo(etat.coupsDispoActuels || [])
-        if (etat.coupsDispoActuels?.length > 0) {
-          setMessageTour(`Dé : ${etat.dernierDe} — choisis un pion`)
+        setPartie(nouvelEtat.etat_partie)
+        if (nouvelEtat.etat_partie?.coupsDispoActuels) {
+          setCoupsDispo(nouvelEtat.etat_partie.coupsDispoActuels)
         } else {
-          setMessageTour('')
+          setCoupsDispo([])
         }
       }
     })
     return () => supabase.removeChannel(canal)
   }, [partieId])
-
-  const couleurCourante = partie?.couleurs[partie.tourActuel]
-  const indexCourant = partie ? partie.couleurs.indexOf(couleurCourante) : -1
-  const noms = partie?.couleurs || []
-  const estMonTour = monRole ? couleurCourante === monRole : false
-
   function sonPas() {
     try {
       const audio = new Audio('/pas.mp3')
@@ -1520,53 +1423,55 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole: monRoleInitial, ps
   async function lancerAvecAnimation() {
     if (!estMonTour || coupsDispo.length > 0 || deBouge) return
     setDeBouge(true)
-    try {
-      await new Promise(r => setTimeout(r, 650))
+    setTimeout(async () => {
       await lancer()
-    } finally {
       setDeBouge(false)
-    }
+    }, 650)
   }
 
   async function lancer() {
-    if (!partie) return
+    if (!partie || coupsDispo.length > 0) return
     const resultat = lancerDe(partie)
     const nouvellePartie = resultat.partie
 
     if (resultat.tourAnnule) {
       const suite = passerAuJoueurSuivant(nouvellePartie)
-      const etat = { ...suite, coupsDispoActuels: [] }
-      await sauvegarderEtat(partieId, etat)
-      setPartie(etat)
+      await sauvegarderEtat(partieId, suite)
+      setPartie(suite)
       setCoupsDispo([])
       setMessageTour('3 six → tour annulé')
     } else if (resultat.aucunCoup) {
       const suite = passerAuJoueurSuivant(nouvellePartie)
-      const etat = { ...suite, coupsDispoActuels: [] }
-      await sauvegarderEtat(partieId, etat)
-      setPartie(etat)
+      await sauvegarderEtat(partieId, suite)
+      setPartie(suite)
       setCoupsDispo([])
       setMessageTour(`Dé : ${resultat.valeur} — aucun coup`)
-    } else {
-      const etat = { ...nouvellePartie, coupsDispoActuels: resultat.coups }
-      await sauvegarderEtat(partieId, etat)
-      setPartie(etat)
+ } else {
+      const partieAvecCoups = {
+        ...nouvellePartie,
+        coupsDispoActuels: resultat.coups
+      }
+      await sauvegarderEtat(partieId, partieAvecCoups)
+      setPartie(partieAvecCoups)
       setCoupsDispo(resultat.coups)
       setMessageTour(`Dé : ${resultat.valeur} — choisis un pion`)
     }
   }
 
-  async function jouerPion(index) {
+async function jouerPion(index) {
     if (!partie || !partie.dernierDe || pionBouge || !estMonTour) return
     setPionBouge(true)
     const valeur = partie.dernierDe
+    const couleur = partie.couleurs[partie.tourActuel]
     let nouvellePartie = jouerCoup(partie, index, valeur)
+
     if (!nouvellePartie.doitRejouer) {
       nouvellePartie = passerAuJoueurSuivant(nouvellePartie)
     }
-    const etat = { ...nouvellePartie, coupsDispoActuels: [] }
-    await sauvegarderEtat(partieId, etat)
-    setPartie(etat)
+
+    nouvellePartie = { ...nouvellePartie, coupsDispoActuels: [] }
+    await sauvegarderEtat(partieId, nouvellePartie)
+    setPartie(nouvellePartie)
     setCoupsDispo([])
     setPionBouge(false)
     setMessageTour('')
@@ -1581,22 +1486,25 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole: monRoleInitial, ps
           🌍 En ligne · {estMonTour ? '🟢 Ton tour' : `⏳ Tour de ${couleurCourante}`}
         </span>
       </div>
+
       {messageTour ? (
         <div style={{ textAlign: 'center', fontSize: 13, color: '#FFB800', padding: '6px 0' }}>
           {messageTour}
         </div>
       ) : null}
+
       <InterfaceLudoPro
         partie={partie}
         noms={noms}
         indexCourant={indexCourant}
         couleurCourante={couleurCourante}
-        coupsDispo={estMonTour ? coupsDispo : []}
+      coupsDispo={coupsDispo}
         deBouge={deBouge}
         lancerAvecAnimation={lancerAvecAnimation}
         jouerPion={jouerPion}
         onOuvrirChat={() => setChatJeuOuvert(true)}
       />
+
       <ChatJeu
         partieId={partieId}
         pseudo={pseudo}
@@ -1604,6 +1512,241 @@ function PageLudoEnLigne({ partieInitiale, partieId, monRole: monRoleInitial, ps
         fermer={() => setChatJeuOuvert(false)}
         onNouveauMessage={() => {}}
       />
+    </div>
+  )
+}
+function PageMultijoueur({ onRetour }) {
+  const [phase, setPhase] = useState('menu')
+  const [code, setCode] = useState('')
+  const [codeJoint, setCodeJoint] = useState('')
+  const [erreur, setErreur] = useState('')
+  const [occupe, setOccupe] = useState(false)
+  const [pseudo] = useState(() => getPseudo())
+  const [nbJoueurs, setNbJoueurs] = useState(2)
+ const [joueurs, setJoueurs] = useState([])
+  const [partieEnCours, setPartieEnCours] = useState(null)
+  const [monRole, setMonRole] = useState(null)
+
+  // Écoute les joueurs qui rejoignent
+  useEffect(() => {
+    if (!code || code.length < 6) return
+    chargerJoueurs()
+    const canal = supabase
+      .channel(`joueurs-${code}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'joueurs_partie',
+        filter: `partie_id=eq.${code}`,
+      }, () => chargerJoueurs())
+      .subscribe()
+    return () => supabase.removeChannel(canal)
+  }, [code])
+
+  // Écoute les mises à jour de l'état de partie
+  useEffect(() => {
+   if (!code || code.length < 6) return
+ const canal = ecouterPartie(code, (nouvelEtat) => {
+      if (nouvelEtat.etat === 'en_cours' && nouvelEtat.etat_partie) {
+        setPartieEnCours(nouvelEtat.etat_partie)
+        setPhase('jeu')
+      }
+      if (nouvelEtat.etat_partie) {
+        setPartieEnCours(nouvelEtat.etat_partie)
+      }
+    })
+    return () => supabase.removeChannel(canal)
+  }, [code])
+
+async function chargerJoueurs() {
+    const { data } = await supabase
+      .from('joueurs_partie')
+      .select('*')
+      .eq('partie_id', code)
+    setJoueurs(data || [])
+    const moi = (data || []).find(j => j.pseudo === pseudo)
+    if (moi) {
+      setMonRole(moi.couleur)
+      console.log('Mon rôle:', moi.couleur, '| Mon pseudo:', pseudo)
+    } else {
+      console.log('Joueur non trouvé. Pseudo local:', pseudo, '| Joueurs:', data?.map(j => j.pseudo))
+    }
+  }
+
+ async function handleLancer() {
+    console.log('nbJoueurs au moment du lancer:', nbJoueurs)
+    const couleursActives = nbJoueurs === 2
+      ? ['rouge', 'jaune']
+      : ['rouge', 'vert', 'jaune', 'bleu']
+    console.log('couleursActives:', couleursActives)
+    const etatInitial = creerPartie(couleursActives)
+    await demarrerPartieEnLigne(code, etatInitial)
+  }
+
+  async function handleCreer() {
+    setOccupe(true)
+    setErreur('')
+    const res = await creerSalon(nbJoueurs)
+    if (res.erreur) { setErreur(res.erreur); setOccupe(false); return }
+    setCode(res.code)
+    setPhase('attente')
+    setOccupe(false)
+  }
+
+  async function handleCreer() {
+    setOccupe(true)
+    setErreur('')
+    const res = await creerSalon(nbJoueurs)
+    if (res.erreur) { setErreur(res.erreur); setOccupe(false); return }
+    setCode(res.code)
+    setPhase('attente')
+    setOccupe(false)
+  }
+
+  async function handleRejoindre() {
+    if (!codeJoint.trim()) return
+    setOccupe(true)
+    setErreur('')
+    const res = await rejoindreAvecCode(codeJoint.trim())
+    if (res.erreur) { setErreur(res.erreur); setOccupe(false); return }
+    setCode(res.code)
+    setPhase('attente')
+    setOccupe(false)
+  }
+
+  return (
+    <div style={st.page}>
+      <div style={st.enteteChat}>
+        <button onClick={onRetour} style={st.retour}>←</button>
+        <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>🌍 Jouer en ligne</span>
+      </div>
+
+      <div style={st.section}>
+        <div style={{ fontSize: 13, color: '#9a93b5', marginBottom: 16, textAlign: 'center' }}>
+          Ton pseudo : <strong style={{ color: '#FFB800' }}>{pseudo}</strong>
+        </div>
+
+       {phase === 'menu' && (
+          <>
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: 13, color: '#9a93b5', marginBottom: 8 }}>Nombre de joueurs :</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {[2, 4].map((n) => (
+                  <button
+                    key={n}
+                    onClick={() => setNbJoueurs(n)}
+                    style={{
+                      ...st.ongletAuth,
+                      flex: 1,
+                      ...(nbJoueurs === n ? st.ongletActif : {})
+                    }}
+                  >
+                    {n} joueurs
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button
+              onClick={handleCreer}
+              disabled={occupe}
+              style={{ ...st.boutonPrincipal, marginBottom: 14 }}
+            >
+              {occupe ? 'Création...' : '🎲 Créer un salon'}
+            </button>
+
+            <div style={{ textAlign: 'center', color: '#9a93b5', marginBottom: 12, fontSize: 13 }}>— ou —</div>
+
+            <input
+              value={codeJoint}
+              onChange={(e) => setCodeJoint(e.target.value.toUpperCase())}
+              placeholder="Code du salon (ex: AB12CD)"
+              style={{ ...st.input, marginBottom: 10, width: '100%', boxSizing: 'border-box' }}
+              maxLength={6}
+            />
+            <button
+              onClick={handleRejoindre}
+              disabled={occupe || !codeJoint.trim()}
+              style={{ ...st.boutonPrincipal }}
+            >
+              {occupe ? 'Connexion...' : '🚀 Rejoindre'}
+            </button>
+
+            {erreur && <div style={{ ...st.erreur, marginTop: 12 }}>{erreur}</div>}
+          </>
+        )}
+
+      {phase === 'attente' && (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 13, color: '#9a93b5', marginBottom: 8 }}>Code de ton salon :</div>
+            <div style={{
+              fontSize: 36,
+              fontWeight: 900,
+              letterSpacing: 8,
+              color: '#FFB800',
+              background: '#1d1a35',
+              borderRadius: 16,
+              padding: '18px 24px',
+              marginBottom: 18,
+            }}>
+              {code}
+            </div>
+            <div style={{ fontSize: 13, color: '#9a93b5', marginBottom: 16 }}>
+              Partage ce code à ton adversaire.
+            </div>
+            <div style={{
+              background: '#1d1a35',
+              borderRadius: 14,
+              padding: '12px 16px',
+              marginBottom: 16,
+              textAlign: 'left',
+            }}>
+              <div style={{ fontSize: 12, color: '#9a93b5', marginBottom: 8 }}>
+                Joueurs connectés ({joueurs.length}/{nbJoueurs}) :
+              </div>
+              {joueurs.map((j) => (
+                <div key={j.id} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  marginBottom: 6,
+                }}>
+                  <div style={{
+                    width: 12, height: 12,
+                    borderRadius: '50%',
+                    background: HEX_COULEUR[j.couleur] || '#fff',
+                    flexShrink: 0,
+                  }} />
+                  <span style={{ fontSize: 13, color: '#fff' }}>{j.pseudo}</span>
+                  {j.pseudo === pseudo && (
+                    <span style={{ fontSize: 11, color: '#FFB800' }}>(toi)</span>
+                  )}
+                </div>
+              ))}
+            </div>
+        {joueurs.length < nbJoueurs ? (
+              <div style={{ fontSize: 28, animation: 'hintPulse 1.5s ease-in-out infinite' }}>⏳</div>
+            ) : joueurs[0]?.pseudo === pseudo ? (
+              <button onClick={handleLancer} style={{ ...st.boutonPrincipal }}>
+                🚀 Tout le monde est là — Lancer la partie
+              </button>
+            ) : (
+              <div style={{ fontSize: 13, color: '#9a93b5', textAlign: 'center', marginTop: 8 }}>
+                ⏳ En attente que le créateur lance la partie...
+              </div>
+            )}
+          </div>
+        )}
+    </div>
+
+      {phase === 'jeu' && partieEnCours && (
+        <PageLudoEnLigne
+          partieInitiale={partieEnCours}
+          partieId={code}
+          monRole={monRole}
+          pseudo={pseudo}
+          onRetour={onRetour}
+        />
+      )}
     </div>
   )
 }
@@ -2209,4 +2352,100 @@ function ChatSalon({ salon, membre, onRetour }) {
     </div>
   )
 }
+
+const st = {
+ page: {
+  maxWidth: 430,
+  margin: '0 auto',
+  minHeight: '100vh',
+  background:
+    'radial-gradient(circle at top, rgba(34,139,34,0.45), transparent 35%), linear-gradient(135deg, #06140b 0%, #102b16 45%, #020705 100%)',
+  fontFamily: "'Poppins', sans-serif",
+  display: 'flex',
+  flexDirection: 'column',
+  boxSizing: 'border-box',
+  color: '#fff',
+  position: 'relative',
+  overflow: 'hidden',
+  padding: '14px 10px',
+},
+   barreNom: { textAlign: 'center', padding: '14px 0 0', fontWeight: 800, fontSize: 16, letterSpacing: 0.5, color: '#fff' },
+  navWrap: { display: 'flex', gap: 8, overflowX: 'auto', padding: '12px 16px 4px', WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory', scrollBehavior: 'smooth' },
+  navBouton: { flexShrink: 0, padding: '8px 14px', borderRadius: 20, background: '#221f3b', color: '#cfc9e6', border: 'none', fontWeight: 700, fontSize: 13, whiteSpace: 'nowrap', scrollSnapAlign: 'start' },
+  avatarGroupe: { width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg,#FFB800,#FF4D6D)', color: '#1d1a35', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 12, flexShrink: 0 },
+  banniere: { height: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: 20, textAlign: 'center', transition: 'background 0.6s ease' },
+  bannieretEmoji: { fontSize: 48, marginBottom: 8 },
+  bannierTitre: { fontSize: 20, fontWeight: 800, lineHeight: 1.3, textShadow: '0 2px 8px rgba(0,0,0,0.3)' },
+  points: { display: 'flex', gap: 6, position: 'absolute', bottom: 14 },
+  point: { width: 6, height: 6, borderRadius: '50%', background: '#fff' },
+  heroTexte: { padding: '20px 18px 8px', textAlign: 'center' },
+  eyebrow: { fontSize: 12, fontWeight: 800, letterSpacing: 1.5, color: '#FFB800' },
+  compteWrap: { display: 'flex', justifyContent: 'center', gap: 14, margin: '14px 0 18px' },
+  compteBloc: { background: '#221f3b', borderRadius: 12, padding: '8px 14px', minWidth: 56 },
+  compteChiffre: { fontSize: 22, fontWeight: 800, color: '#fff' },
+  compteLabel: { fontSize: 10, color: '#9a93b5', textTransform: 'uppercase' },
+  boutonPrincipal: { width: '100%', padding: 15, background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', color: '#fff', border: 'none', borderRadius: 30, fontWeight: 800, fontSize: 15 },
+  confirme: { fontWeight: 800, color: '#4ADE80' },
+  details: { background: '#221f3b', borderRadius: 12, padding: 14, marginTop: 16, fontSize: 13, textAlign: 'left' },
+  section: { padding: '26px 18px 24px' },
+  sectionTitre: { fontSize: 20, fontWeight: 800 },
+  sectionSousTitre: { fontSize: 13, color: '#9a93b5', marginTop: 2 },
+  ligneSalon: { display: 'flex', alignItems: 'center', padding: '10px 12px', background: '#1d1a35', borderRadius: 14 },
+  avatar: { width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg,#FFB800,#FF4D6D)', color: '#1d1a35', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, flexShrink: 0, fontSize: 13 },
+  badge: { fontSize: 11, color: '#fff', borderRadius: 12, padding: '2px 8px', fontWeight: 800 },
+  carteCompte: { display: 'flex', alignItems: 'center', background: '#1d1a35', borderRadius: 14, padding: 14, marginTop: 14 },
+  carteDe: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#3A0CA3,#7B2CBF)', cursor: 'pointer' },
+  carteLudo: { display: 'flex', alignItems: 'center', padding: '16px', borderRadius: 16, background: 'linear-gradient(135deg,#23A559,#3A86FF)', cursor: 'pointer', marginTop: 10 },
+ ludoPlateauWrap: {
+  background: `
+    radial-gradient(circle at center, rgba(34,139,34,0.25), transparent 45%),
+    linear-gradient(145deg,#2d1b0f,#1a120b,#0e1f12)
+  `,
+  padding: 18,
+  borderRadius: 32,
+  border: '4px solid #D4AF37',
+  boxShadow:
+    '0 0 40px rgba(0,0,0,0.7), inset 0 0 30px rgba(212,175,55,0.15)',
+  position: 'relative',
+  overflow: 'hidden',
+},
+jungleDecoration: {
+  position: 'absolute',
+  inset: 0,
+  pointerEvents: 'none',
+  opacity: 0.15,
+  backgroundImage:
+    'url("https://www.transparenttextures.com/patterns/leaves.png")',
+},
+  ludoSvg: { width: '100%', maxWidth: 340, height: 'auto' },
+  carteDeEmoji: { fontSize: 32 },
+  zoneDe: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', background: '#1d1a35', borderRadius: 16, padding: '24px 18px', marginTop: 18 },
+  deCube: { width: 88, height: 88, borderRadius: 18, background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', boxShadow: '0 6px 18px rgba(123,44,191,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 14 },
+  deGrille: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'repeat(3, 1fr)', width: '100%', height: '100%' },
+  dePipCase: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  dePip: { width: 12, height: 12, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.3)' },
+  regleDe: { fontSize: 13, color: '#cfc9e6', background: '#1d1a35', borderRadius: 12, padding: 12, marginTop: 18, lineHeight: 1.5 },
+  bandeauWave: { background: '#1f3a2e', color: '#7CFFB2', fontSize: 12.5, padding: '8px 16px', textAlign: 'center', borderBottom: '1px solid #2a2745' },
+  overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, padding: 16 },
+  modal: { background: '#1d1a35', borderRadius: 20, padding: 24, width: '100%', maxWidth: 360, maxHeight: '90vh', overflowY: 'auto' },
+  modalTitre: { fontSize: 16, fontWeight: 800, marginBottom: 14, textAlign: 'center' },
+  ongletAuth: { flex: 1, padding: 10, background: '#16142a', color: '#9a93b5', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 13 },
+  ongletActif: { background: '#FF4D6D', color: '#fff' },
+  input: { padding: 12, borderRadius: 10, border: '1px solid #3a3658', background: '#16142a', color: '#fff', fontSize: 15 },
+  erreur: { color: '#FF6B6B', fontSize: 13, textAlign: 'center' },
+  lienFermer: { background: 'none', border: 'none', color: '#9a93b5', marginTop: 12, width: '100%', fontSize: 13 },
+  enteteChat: { display: 'flex', alignItems: 'center', padding: '16px 16px 10px', borderBottom: '1px solid #2a2745' },
+  boutonAppel: { marginLeft: 'auto', background: '#23A559', border: 'none', borderRadius: '50%', width: 38, height: 38, fontSize: 16, color: '#fff' },
+  badgeAppelActif: { marginLeft: 'auto', background: '#23A559', borderRadius: 14, padding: '4px 10px', fontSize: 12, fontWeight: 700 },
+  barreAppel: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', background: '#15311f', borderBottom: '1px solid #2a2745' },
+  boutonMicro: { background: '#23203a', border: 'none', borderRadius: '50%', width: 34, height: 34, fontSize: 14 },
+  boutonRaccrocher: { background: '#FF4D6D', border: 'none', borderRadius: '50%', width: 34, height: 34, fontSize: 14 },
+  retour: { background: 'none', border: 'none', fontSize: 20, color: '#fff', cursor: 'pointer' },
+  zoneMessages: { flex: 1, display: 'flex', flexDirection: 'column', gap: 8, overflowY: 'auto', minHeight: 300, padding: '14px 16px' },
+  bulle: { maxWidth: '75%', padding: '8px 12px', borderRadius: 14, fontSize: 14 },
+  imageMsg: { maxWidth: '100%', borderRadius: 10, display: 'block' },
+  zoneSaisie: { display: 'flex', alignItems: 'center', gap: 8, padding: 16, borderTop: '1px solid #2a2745' },
+  boutonPhoto: { background: 'none', border: 'none', fontSize: 20, flexShrink: 0 },
+  inputChat: { flex: 1, padding: 10, borderRadius: 20, border: '1px solid #3a3658', background: '#221f3b', color: '#fff' },
+  boutonEnvoyer: { background: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: 16, flexShrink: 0 },
 }
