@@ -442,24 +442,7 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
 
 
 <div
-  onClick={() => setEcran("juridique")}
-  style={st.carteLudo}
->
-  <div style={st.carteDeEmoji}>⚖️</div>
-
-  <div style={{ flex: 1, marginLeft: 12 }}>
-    <div style={{ fontWeight: 800, fontSize: 16 }}>
-      Centre juridique
-    </div>
-
-    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>
-      CGU • Confidentialité • Sécurité
-    </div>
-  </div>
-
-  <div style={{ fontSize: 20 }}>→</div>
-</div>
-</div>
+ 
       <div ref={refSalons} style={st.section}>
         <div style={st.sectionTitre}>Choisis ton salon</div>
         <div style={st.sectionSousTitre}>20 joueurs max par salon</div>
