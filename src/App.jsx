@@ -4,7 +4,7 @@ import ChatJeu from './ChatJeu'
 import AgoraRTC from 'agora-rtc-sdk-ng'
 import { creerPartie, coupsValides, jouerCoup, lancerDe, passerAuJoueurSuivant, estCaseSecurisee } from './MoteurLudo'
 import { getPseudo, creerSalon, rejoindreAvecCode, sauvegarderEtat, ecouterPartie, demarrerPartieEnLigne } from './salleMultijoueur'
-
+import { genererCodeSpectateur, ecouterPartieSpectateur, envoyerMessageSpectateur, envoyerCadeauSpectateur, ecouterChatSpectateur } from './spectateur'
 const SLIDES = [
   { emoji: '🎲', titre: 'Le Ludo prend une autre dimension', fond: 'linear-gradient(135deg,#FF4D6D,#7B2CBF)' },
   { emoji: '🏆', titre: 'Décembre. La compétition arrive.', fond: 'linear-gradient(135deg,#FFB800,#FF4D6D)' },
@@ -262,6 +262,7 @@ const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
   onOuvrirDe={() => setEcran('de')}
   onOuvrirLudo={() => setEcran('ludo')}
   onOuvrirMultijoueur={() => setEcran('multijoueur')}
+  onOuvrirSpectateur={() => setEcran('spectateur')}
   refTournoi={refTournoi}
   refSalons={refSalons}
 />
@@ -297,7 +298,7 @@ const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
       {ecran === 'multijoueur' && (
   <PageMultijoueur onRetour={() => setEcran('accueil')} />
 )}
-
+{ecran === 'spectateur' && <PageSpectateur onRetour={() => setEcran('accueil')} />}
       {ecran === 'chat' && membre && salonActif && (
         <ChatSalon
           salon={salonActif}
@@ -366,7 +367,7 @@ function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourS
   )
 }
 
-function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTournoi, onOuvrirDe, onOuvrirLudo, onOuvrirMultijoueur, refTournoi, refSalons }) {
+function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTournoi, onOuvrirDe, onOuvrirLudo, onOuvrirMultijoueur, onOuvrirSpectateur, refTournoi, refSalons }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -417,6 +418,18 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
           <div style={{ flex: 1, marginLeft: 12 }}>
             <div style={{ fontWeight: 800, fontSize: 16 }}>Jouer en ligne</div>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>Défie un ami à distance</div>
+            <div onClick={() => onOuvrirSpectateur && onOuvrirSpectateur()} style={{
+  ...st.carteLudo,
+  background: 'linear-gradient(135deg,#1a1a2e,#16213e)',
+  marginTop: 10
+}}>
+  <div style={st.carteDeEmoji}>👁️</div>
+  <div style={{ flex: 1, marginLeft: 12 }}>
+    <div style={{ fontWeight: 800, fontSize: 16 }}>Regarder une partie</div>
+    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>Suis un match en direct</div>
+  </div>
+  <div style={{ fontSize: 20 }}>→</div>
+</div>
           </div>
           <div style={{ fontSize: 20 }}>→</div>
         </div>
@@ -1524,6 +1537,77 @@ for (let pas = 1; pas <= valeur; pas++) {
         fermer={() => setChatJeuOuvert(false)}
         onNouveauMessage={() => {}}
       />
+    </div>
+  )
+}
+function PageSpectateur({ onRetour }) {
+  const [code, setCode] = useState('')
+  const [partie, setPartie] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [texte, setTexte] = useState('')
+  const pseudo = getPseudo()
+  const CADEAUX = ['🎁','❤️','🔥','👑','💎','🎯','⚡','🌟']
+
+  useEffect(() => {
+    if (!code) return
+    let canal1, canal2
+    async function demarrer() {
+      const { data } = await supabase.from('parties_en_ligne').select('*').eq('code', code).single()
+      if (data?.etat_partie) setPartie(data.etat_partie)
+      canal1 = await ecouterPartieSpectateur(code, (nouvelEtat) => {
+        if (nouvelEtat.etat_partie) setPartie(nouvelEtat.etat_partie)
+      })
+      canal2 = await ecouterChatSpectateur(code, (msg) => {
+        setMessages(prev => [...prev, msg])
+      })
+    }
+    demarrer()
+    return () => {
+      if (canal1) supabase.removeChannel(canal1)
+      if (canal2) supabase.removeChannel(canal2)
+    }
+  }, [code])
+
+  const envoyer = async () => {
+    if (!texte.trim() || !code) return
+    await envoyerMessageSpectateur(code, pseudo, texte)
+    setTexte('')
+  }
+
+  const envoyerCadeau = async (cadeau) => {
+    if (!code) return
+    await envoyerCadeauSpectateur(code, pseudo, cadeau)
+  }
+
+  if (!partie) return (
+    <div style={{ padding: 20, color: '#fff' }}>
+      <button onClick={onRetour} style={{ marginBottom: 16, background: 'none', border: 'none', color: '#FFB800', fontSize: 20 }}>←</button>
+      <h2 style={{ textAlign: 'center' }}>👁️ Mode Spectateur</h2>
+      <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="Code de la partie (ex: ABC123)" style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', fontSize: 16, marginTop: 20, boxSizing: 'border-box' }} />
+      <p style={{ textAlign: 'center', fontSize: 12, color: '#aaa', marginTop: 8 }}>Demande le code aux joueurs</p>
+    </div>
+  )
+
+  const couleurCourante = partie.couleurs?.[partie.tourActuel]
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: '#06130f', overflowY: 'auto' }}>
+      <div style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <button onClick={onRetour} style={{ background: 'none', border: 'none', color: '#FFB800', fontSize: 20 }}>←</button>
+        <span style={{ color: '#fff', fontSize: 13, fontWeight: 800 }}>👁️ Spectateur · Tour de {couleurCourante}</span>
+      </div>
+      <InterfaceLudoPro partie={partie} noms={[]} coupsDispos={[]} onJouerPion={() => {}} pionBouge={false} indexCourant={0} />
+      <div style={{ padding: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+          {CADEAUX.map(c => <button key={c} onClick={() => envoyerCadeau(c)} style={{ fontSize: 22, background: 'none', border: 'none', cursor: 'pointer' }}>{c}</button>)}
+        </div>
+        <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 12, padding: 8, maxHeight: 150, overflowY: 'auto', marginBottom: 8 }}>
+          {messages.map((m, i) => <div key={i} style={{ fontSize: 12, color: '#fff', marginBottom: 4 }}><span style={{ color: '#FFB800' }}>{m.pseudo}</span> {m.type === 'cadeau' ? '🎁 ' + m.cadeau : m.message}</div>)}
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <input value={texte} onChange={e => setTexte(e.target.value)} placeholder="Commente..." style={{ flex: 1, padding: 10, borderRadius: 10, border: 'none', fontSize: 14 }} />
+          <button onClick={envoyer} style={{ background: '#FFB800', border: 'none', borderRadius: 10, padding: '0 16px', fontWeight: 800 }}>▶</button>
+        </div>
+      </div>
     </div>
   )
 }
