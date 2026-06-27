@@ -1470,7 +1470,7 @@ async function jouerPion(index) {
     }
 
     nouvellePartie = { ...nouvellePartie, coupsDispoActuels: [] }
-    await sauvegarderEtat(partieId, nouvellePartie)
+    await new Promise(r => setTimeout(r, valeur * 180)) await sauvegarderEtat(partieId, nouvellePartie)
     setPartie(nouvellePartie)
     setCoupsDispo([])
     setPionBouge(false)
