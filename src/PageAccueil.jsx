@@ -2,15 +2,15 @@ export default function PageAccueil({ onCommencer }) {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <div style={styles.logo}>👑🎲</div>
+        <div style={styles.logo}>⚔️🎲🚀</div>
 
-        <div style={styles.badge}>Jeu stratégique en ligne</div>
+        <div style={styles.badge}>🇨🇮 L'expérience ivoirienne en ligne</div>
 
         <h1 style={styles.titre}>Dewari-abenatchai</h1>
 
-       <p style={styles.slogan}>
-  Le monde entier est invité à vivre l’ambiance ivoirienne : joue, observe les parties comme un live et discute anonymement dans les quartiers.
-</p>
+      <div>⚔️ Choisis ton quartier</div>
+<div>👀 Observe les parties en direct</div>
+<div>💬 Discute anonymement avec la communauté</div>
 
         <div style={styles.stats}>
           <div>🎲 Dé en ligne</div>
@@ -19,7 +19,7 @@ export default function PageAccueil({ onCommencer }) {
         </div>
 
         <button onClick={onCommencer} style={styles.bouton}>
-          Entrer dans les quartiers →
+          ⚔️ Choisis ton quartier
         </button>
 
         <p style={styles.note}>
