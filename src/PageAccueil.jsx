@@ -101,7 +101,7 @@ const styles = {
     color: 'white',
     background: 'linear-gradient(135deg,#FF4D6D,#FFB800)',
     boxShadow: '0 14px 30px rgba(255,77,109,0.35)',
-    cursor: 'pointer'
+    cursor: 'pointer',
     animation: 'pulseButton 2s ease-in-out infinite'
   },
   note: {
