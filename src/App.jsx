@@ -238,12 +238,19 @@ const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
       alert(error.message.includes('complet') ? error.message : 'Erreur, réessaie.')
       return
     }
-    setMembre({ ...membre, salon_id: salon.id })
+ setMembre({
+  ...membre,
+  salon_id: salon.id,
+  quartier: salon.nom,
+  is_online: true,
+  last_seen: new Date().toISOString()
+})
     setSalonActif(salon)
     setEcran('chat')
     chargerSalons()
   }
 
+  
  function allerA(id) {
   if (id === 'tournoi') {
     setEcran('tournoi')
