@@ -13,17 +13,17 @@ export default function PageQuartier({ quartier, onRetour, onOuvrirChat }) {
 
     const channel = supabase
       .channel("quartier-live-" + quartier.id)
-     .on(
+   .on(
   "postgres_changes",
   { event: "*", schema: "public", table: "messages" },
-  () =>chargerConnectes();
+  () => chargerMessages()
 )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "messages" },
-        () => chargerMessages()
-      )
-      .subscribe();
+.on(
+  "postgres_changes",
+  { event: "*", schema: "public", table: "membres" },
+  () => chargerConnectes()
+)
+.subscribe();
 
     return () => {
       supabase.removeChannel(channel);
