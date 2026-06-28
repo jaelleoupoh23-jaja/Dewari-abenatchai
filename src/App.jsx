@@ -264,6 +264,15 @@ const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
 }
 
   async function deconnexion() {
+    if (membre) {
+  await supabase
+    .from("membres")
+    .update({
+      is_online: false,
+      last_seen: new Date().toISOString()
+    })
+    .eq("id", membre.id)
+}
     await supabase.auth.signOut()
     setMembre(null)
     setEcran('accueil')
