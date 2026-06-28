@@ -497,6 +497,7 @@ const quartiers = [
     })}
   </div>
 </div>
+  </>    
   )
 }
  
