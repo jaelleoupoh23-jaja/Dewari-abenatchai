@@ -5,40 +5,36 @@ export default function PageQuartier({ quartier, onRetour, onOuvrirChat }) {
   const [connectes, setConnectes] = useState(0);
   const [messages, setMessages] = useState([]);
 
-useEffect(() => {
-  if (!quartier?.id) return;
+  useEffect(() => {
+    if (!quartier?.id) return;
 
-  chargerConnectes();
-  chargerMessages();
-
-  const channel = supabase
-    .channel("quartier-live-" + quartier.id)
-    .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "messages" },
-      () => chargerMessages()
-    )
-    .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "membres" },
-      () => chargerConnectes()
-    )
-    .subscribe();
-
-  const refresh = setInterval(() => {
     chargerConnectes();
     chargerMessages();
-  }, 3000);
 
-  return () => {
-    clearInterval(refresh);
-    supabase.removeChannel(channel);
-  };
-}, [quartier?.id]);
-  return () => {
-  clearInterval(refresh);
-  supabase.removeChannel(channel);
-};
+    const channel = supabase
+      .channel("quartier-live-" + quartier.id)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "messages" },
+        () => chargerMessages()
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "membres" },
+        () => chargerConnectes()
+      )
+      .subscribe();
+
+    const refresh = setInterval(() => {
+      chargerConnectes();
+      chargerMessages();
+    }, 3000);
+
+    return () => {
+      clearInterval(refresh);
+      supabase.removeChannel(channel);
+    };
+  }, [quartier?.id]);
 
   async function chargerConnectes() {
     const { count } = await supabase
@@ -60,9 +56,12 @@ useEffect(() => {
 
     setMessages((data || []).reverse());
   }
+
   return (
     <div style={styles.page}>
-      <button onClick={onRetour} style={styles.retour}>← Retour aux quartiers</button>
+      <button onClick={onRetour} style={styles.retour}>
+        ← Retour aux quartiers
+      </button>
 
       <section style={styles.hero}>
         <div style={styles.icone}>{quartier?.icon || "⚔️"}</div>
@@ -85,9 +84,9 @@ useEffect(() => {
                 <div>Aucun message pour le moment.</div>
               </div>
             ) : (
-              messages.slice(-3).map((msg) => (
+              messages.map((msg) => (
                 <div key={msg.id} style={styles.message}>
-                  <strong>👤 {msg.pseudo}</strong>
+                  <strong>👤 {msg.pseudo || "Membre"}</strong>
                   <div>{msg.contenu}</div>
                 </div>
               ))
@@ -98,9 +97,7 @@ useEffect(() => {
             🔥 {messages.length} messages aujourd’hui
           </div>
 
-          <button style={styles.bouton}>
-            Entrer dans le chat →
-          </button>
+          <button style={styles.bouton}>Entrer dans le chat →</button>
         </div>
 
         <div style={styles.carte}>
@@ -130,7 +127,7 @@ const styles = {
     padding: 18,
     boxSizing: "border-box",
     maxWidth: 460,
-    margin: "0 auto"
+    margin: "0 auto",
   },
   retour: {
     background: "rgba(255,255,255,0.08)",
@@ -139,7 +136,7 @@ const styles = {
     borderRadius: 14,
     padding: "10px 14px",
     fontWeight: 800,
-    marginBottom: 18
+    marginBottom: 18,
   },
   hero: {
     borderRadius: 24,
@@ -147,54 +144,54 @@ const styles = {
     textAlign: "center",
     background: "rgba(255,255,255,0.08)",
     border: "1px solid rgba(255,255,255,0.14)",
-    marginBottom: 18
+    marginBottom: 18,
   },
   icone: {
     fontSize: 46,
-    marginBottom: 12
+    marginBottom: 12,
   },
   titre: {
     fontSize: 34,
     margin: 0,
-    fontWeight: 950
+    fontWeight: 950,
   },
   surnom: {
     color: "#FFD166",
     fontWeight: 900,
     fontSize: 18,
-    marginTop: 6
+    marginTop: 6,
   },
   connectes: {
     marginTop: 12,
     fontWeight: 900,
-    fontSize: 18
+    fontSize: 18,
   },
   grid: {
     display: "grid",
-    gap: 12
+    gap: 12,
   },
   carte: {
     borderRadius: 20,
     padding: 16,
     background: "rgba(28,24,58,0.92)",
-    border: "1px solid rgba(255,255,255,0.12)"
+    border: "1px solid rgba(255,255,255,0.12)",
   },
   messages: {
     display: "grid",
     gap: 10,
-    marginTop: 12
+    marginTop: 12,
   },
   message: {
     background: "#1d2757",
     borderRadius: 12,
     padding: 10,
     color: "#fff",
-    fontSize: 13
+    fontSize: 13,
   },
   statsChat: {
     marginTop: 12,
     color: "#FFD166",
-    fontWeight: 900
+    fontWeight: 900,
   },
   bouton: {
     width: "100%",
@@ -205,6 +202,6 @@ const styles = {
     background: "#ffb300",
     color: "#111",
     fontWeight: "bold",
-    cursor: "pointer"
-  }
+    cursor: "pointer",
+  },
 };
