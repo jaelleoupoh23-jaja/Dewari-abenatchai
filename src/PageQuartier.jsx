@@ -40,16 +40,15 @@ export default function PageQuartier({ quartier, onRetour, onOuvrirChat }) {
     setConnectes(count || 0);
   }
 
-  async function chargerMessages() {
-    const { data } = await supabase
-     .from("messages_partie")
-      .select("*")
-      .order("created_at", { ascending: true });
-    .limit(3)
+async function chargerMessages() {
+  const { data } = await supabase
+    .from("messages_partie")
+    .select("*")
+    .order("created_at", { ascending: true })
+    .limit(3);
 
-    setMessages(data || []);
-  }
-
+  setMessages(data || []);
+}
   return (
     <div style={styles.page}>
       <button onClick={onRetour} style={styles.retour}>← Retour aux quartiers</button>
