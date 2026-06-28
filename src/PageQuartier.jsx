@@ -13,11 +13,11 @@ export default function PageQuartier({ quartier, onRetour, onOuvrirChat }) {
 
     const channel = supabase
       .channel("quartier-live-" + quartier.id)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "membres" },
-        () => chargerConnectes()
-      )
+     .on(
+  "postgres_changes",
+  { event: "*", schema: "public", table: "messages" },
+  () =>chargerConnectes();
+)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "messages" },
