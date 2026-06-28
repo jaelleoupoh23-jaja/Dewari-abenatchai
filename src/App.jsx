@@ -19,7 +19,7 @@ const SLIDES = [
 const ONGLETS = [
   { id: 'accueil', label: '🏠 Accueil' },
   { id: 'tournoi', label: '🏆 Tournoi' },
-  { id: 'salons', label: '🎲 Salons' },
+ { id: 'salons', label: '⚔️ Quartiers' },,
   { id: 'compte', label: '👤 Mon compte' },
 ]
 
@@ -262,7 +262,7 @@ const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
   return (
     <div style={st.page}>
       {ecran === 'landing' && (
-  <PageAccueil onCommencer={() => setEcran('accueil')} />
+ <PageAccueil onCommencer={() => setEcran('quartiers')} />
 )}
       {ecran === "juridique" && (
     <PageJuridique
