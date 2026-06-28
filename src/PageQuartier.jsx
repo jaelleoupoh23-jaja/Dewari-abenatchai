@@ -20,7 +20,7 @@ export default function PageQuartier({ quartier, onRetour, onOuvrirChat }) {
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "messages_quartier" },
+        { event: "*", schema: "public", table: "messages_partie" },
         () => chargerMessages()
       )
       .subscribe();
