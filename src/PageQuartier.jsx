@@ -34,14 +34,17 @@ export default function PageQuartier({ quartier, onRetour, onOuvrirChat }) {
     </div>
   </div>
 
-  <input
-    placeholder="Écrire un message..."
-    style={styles.input}
-  />
+ <div style={styles.statsChat}>
+  🟢 42 en ligne maintenant
+</div>
 
-  <button style={styles.bouton}>
-    Envoyer
-  </button>
+<div style={styles.statsChat}>
+  🔥 18 messages aujourd’hui
+</div>
+
+<button style={styles.bouton}>
+  Entrer dans le chat →
+</button>
 </div>
         <div style={styles.carte}>
           <h2>🎲 Parties en cours</h2>
@@ -152,5 +155,11 @@ bouton: {
   color: '#111',
   fontWeight: 'bold',
   cursor: 'pointer'
-}
+},
+  statsChat: {
+  marginTop: 8,
+  fontSize: 13,
+  fontWeight: 800,
+  color: '#FFD166'
+},
 }
