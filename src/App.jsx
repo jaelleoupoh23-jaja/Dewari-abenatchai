@@ -225,7 +225,15 @@ const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
       alert('Ce salon est complet (20 joueurs maximum).')
       return
     }
-    const { error } = await supabase.from('membres').update({ salon_id: salon.id }).eq('id', membre.id)
+    const { error } = await supabase
+  .from('membres')
+  .update({
+    salon_id: salon.id,
+    quartier: salon.nom,
+    is_online: true,
+    last_seen: new Date().toISOString()
+  })
+  .eq('id', membre.id)
     if (error) {
       alert(error.message.includes('complet') ? error.message : 'Erreur, réessaie.')
       return
