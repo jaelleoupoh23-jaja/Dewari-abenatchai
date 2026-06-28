@@ -389,7 +389,16 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
   }, [])
 
   const slide = SLIDES[index]
-
+const quartiers = [
+  { nom: 'Yopougon', icone: '⚔️', surnom: 'Les Ultras', entree: '2 500 FCFA', couleur: '#FF8A00' },
+  { nom: 'Abobo', icone: '💉', surnom: 'Les Guerriers', entree: '2 500 FCFA', couleur: '#FF4D6D' },
+  { nom: 'Koumassi', icone: '🎯', surnom: 'Les Stratèges', entree: '5 000 FCFA', couleur: '#3FA7FF' },
+  { nom: 'Djorobité', icone: '🚀', surnom: 'La Conspi', entree: '10 000 FCFA', couleur: '#9D4EDD' },
+  { nom: 'Bingerville', icone: '🍃', surnom: 'Les Tok-Tok', entree: '15 000 FCFA', couleur: '#52B788' },
+  { nom: 'Palmeraie', icone: '✨', surnom: 'Les Choco', entree: '25 000 FCFA', couleur: '#FFD166' },
+  { nom: '2 Plateaux', icone: '💼', surnom: 'Les Boss', entree: '50 000 FCFA', couleur: '#4361EE' },
+  { nom: 'Beverly Hills', icone: '💎', surnom: 'Le Cercle Royal', entree: '100 000 FCFA', couleur: '#F6C85F' }
+]
   return (
     <>
       <div style={{ ...st.banniere, background: slide.fond }}>
@@ -444,31 +453,50 @@ function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTour
 </div>
 
 <div ref={refSalons} style={st.section}>
-        <div style={st.sectionTitre}>Choisis ton salon</div>
-        <div style={st.sectionSousTitre}>20 joueurs max par salon</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 14 }}>
-          {salons.map((s) => {
-            const complet = s.nbMembres >= 20
-            return (
-              <div
-                key={s.id}
-                onClick={() => !complet && onChoisirSalon(s)}
-                style={{ ...st.ligneSalon, opacity: complet ? 0.5 : 1, cursor: complet ? 'not-allowed' : 'pointer' }}
-              >
-                <div style={st.avatar}>{s.palier / 1000}</div>
-                <div style={{ flex: 1, marginLeft: 12, minWidth: 0 }}>
-                  <div style={{ fontWeight: 800 }}>{s.nom}</div>
-                  <div style={{ fontSize: 13, color: '#9a93b5' }}>Rejoindre ce salon</div>
-                </div>
-                <span style={{ ...st.badge, backgroundColor: complet ? '#54506b' : '#FF4D6D' }}>
-                  {complet ? 'Complet' : `${s.nbMembres}/20`}
-                </span>
-              </div>
-            )
-          })}
+  <div style={st.sectionTitre}>⚔️ Choisis ton quartier</div>
+  <div style={st.sectionSousTitre}>
+    Rejoins ta communauté, défends ton quartier et entre dans l’ambiance.
+  </div>
+
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 14 }}>
+    {salons.map((s, i) => {
+      const q = quartiers[i] || quartiers[0]
+
+      return (
+        <div
+          key={s.id}
+          onClick={() => onChoisirSalon({ ...s, nom: q.nom })}
+          style={{
+            ...st.ligneSalon,
+            alignItems: 'flex-start',
+            border: `1px solid ${q.couleur}`,
+            boxShadow: `0 10px 28px ${q.couleur}22`,
+            cursor: 'pointer'
+          }}
+        >
+          <div style={{ ...st.avatar, backgroundColor: q.couleur }}>
+            {q.icone}
+          </div>
+
+          <div style={{ flex: 1, marginLeft: 12, minWidth: 0 }}>
+            <div style={{ fontWeight: 950, fontSize: 17 }}>{q.nom}</div>
+            <div style={{ fontSize: 14, color: '#FFD166', fontWeight: 850 }}>
+              {q.icone} {q.surnom}
+            </div>
+            <div style={{ fontSize: 13, color: '#9a93b5', marginTop: 5 }}>
+              💰 Entrée : à partir de {q.entree}
+            </div>
+            <div style={{ fontSize: 13, color: '#ffffff', marginTop: 5, fontWeight: 800 }}>
+              👥 {s.nbMembres || 0} connectés
+            </div>
+          </div>
+
+          <div style={{ fontSize: 20, color: q.couleur }}>→</div>
         </div>
-         </div>
-    </>
+      )
+    })}
+  </div>
+</div>
   )
 }
  
