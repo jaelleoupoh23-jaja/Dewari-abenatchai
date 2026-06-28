@@ -114,7 +114,7 @@ const styles = {
     padding: 16,
     background: 'rgba(28,24,58,0.92)',
     border: '1px solid rgba(255,255,255,0.12)'
-  };
+  },
   messages: {
   display: 'flex',
   flexDirection: 'column',
