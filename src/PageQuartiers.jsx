@@ -27,10 +27,15 @@ export default function PageQuartiers({ salons = [], onChoisirSalon, onRetour })
       )
       .subscribe();
 
+    const refresh = setInterval(() => {
+      chargerConnectesQuartiers();
+    }, 3000);
+
     return () => {
+      clearInterval(refresh);
       supabase.removeChannel(channel);
     };
-}, []);
+  }, []);
 
   async function chargerConnectesQuartiers() {
     const resultats = {};
@@ -39,8 +44,8 @@ export default function PageQuartiers({ salons = [], onChoisirSalon, onRetour })
       const { count } = await supabase
         .from("membres")
         .select("*", { count: "exact", head: true })
-     .eq("quartier", q.nom)
-.eq("is_online", true);
+        .eq("quartier", q.nom)
+        .eq("is_online", true);
 
       resultats[q.nom] = count || 0;
     }
@@ -50,9 +55,7 @@ export default function PageQuartiers({ salons = [], onChoisirSalon, onRetour })
 
   return (
     <div style={styles.page}>
-      <button onClick={onRetour} style={styles.retour}>
-        ← Retour
-      </button>
+      <button onClick={onRetour} style={styles.retour}>← Retour</button>
 
       <h1 style={styles.titre}>⚔️ Choisis ton quartier</h1>
 
@@ -81,20 +84,12 @@ export default function PageQuartiers({ salons = [], onChoisirSalon, onRetour })
 
               <div style={styles.infos}>
                 <div style={styles.nom}>{q.nom}</div>
-                <div style={styles.surnom}>
-                  {q.icon} {q.surnom}
-                </div>
-                <div style={styles.detail}>
-                  💰 Entrée : à partir de {q.entree}
-                </div>
-                <div style={styles.connectes}>
-                  👥 {nbConnectes} connectés
-                </div>
+                <div style={styles.surnom}>{q.icon} {q.surnom}</div>
+                <div style={styles.detail}>💰 Entrée : à partir de {q.entree}</div>
+                <div style={styles.connectes}>👥 {nbConnectes} connectés</div>
               </div>
 
-              <div style={{ ...styles.fleche, color: q.couleur }}>
-                →
-              </div>
+              <div style={{ ...styles.fleche, color: q.couleur }}>→</div>
             </div>
           );
         })}
@@ -122,11 +117,7 @@ const styles = {
     fontWeight: 800,
     marginBottom: 18
   },
-  titre: {
-    fontSize: 30,
-    margin: "8px 0",
-    fontWeight: 950
-  },
+  titre: { fontSize: 30, margin: "8px 0", fontWeight: 950 },
   sousTitre: {
     color: "rgba(255,255,255,0.82)",
     fontSize: 16,
@@ -134,10 +125,7 @@ const styles = {
     lineHeight: 1.4,
     marginBottom: 18
   },
-  liste: {
-    display: "grid",
-    gap: 16
-  },
+  liste: { display: "grid", gap: 16 },
   carte: {
     display: "flex",
     alignItems: "center",
@@ -158,33 +146,10 @@ const styles = {
     fontSize: 30,
     flexShrink: 0
   },
-  infos: {
-    flex: 1
-  },
-  nom: {
-    fontSize: 24,
-    fontWeight: 950,
-    marginBottom: 4
-  },
-  surnom: {
-    color: "#FFD166",
-    fontSize: 16,
-    fontWeight: 900,
-    marginBottom: 8
-  },
-  detail: {
-    color: "rgba(255,255,255,0.78)",
-    fontSize: 14,
-    fontWeight: 800,
-    marginBottom: 6
-  },
-  connectes: {
-    color: "rgba(255,255,255,0.9)",
-    fontSize: 14,
-    fontWeight: 900
-  },
-  fleche: {
-    fontSize: 30,
-    fontWeight: 900
-  }
+  infos: { flex: 1 },
+  nom: { fontSize: 24, fontWeight: 950, marginBottom: 4 },
+  surnom: { color: "#FFD166", fontSize: 16, fontWeight: 900, marginBottom: 8 },
+  detail: { color: "rgba(255,255,255,0.78)", fontSize: 14, fontWeight: 800, marginBottom: 6 },
+  connectes: { color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 900 },
+  fleche: { fontSize: 30, fontWeight: 900 }
 };
