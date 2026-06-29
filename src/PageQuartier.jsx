@@ -5,7 +5,6 @@ export default function PageQuartier({ quartier, onRetour, onOuvrirChat }) {
   const [connectes, setConnectes] = useState(0);
   const [messages, setMessages] = useState([]);
   const [totalMembres, setTotalMembres] = useState(0);
-const [totalMessages, setTotalMessages] = useState(0);
 
   useEffect(() => {
     if (!quartier?.id) return;
@@ -24,13 +23,17 @@ const [totalMessages, setTotalMessages] = useState(0);
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "membres" },
-        () => chargerConnectes()
+        () => {
+          chargerConnectes();
+          chargerTotalMembres();
+        }
       )
       .subscribe();
 
     const refresh = setInterval(() => {
       chargerConnectes();
       chargerMessages();
+      chargerTotalMembres();
     }, 3000);
 
     return () => {
@@ -47,6 +50,15 @@ const [totalMessages, setTotalMessages] = useState(0);
       .eq("is_online", true);
 
     setConnectes(count || 0);
+  }
+
+  async function chargerTotalMembres() {
+    const { count } = await supabase
+      .from("membres")
+      .select("*", { count: "exact", head: true })
+      .eq("quartier", quartier?.nom);
+
+    setTotalMembres(count || 0);
   }
 
   async function chargerMessages() {
@@ -67,56 +79,55 @@ const [totalMessages, setTotalMessages] = useState(0);
       </button>
 
       <section style={styles.hero}>
-        <div style={styles.icone}>{quartier?.icon || "⚔️"}</div>
+        <div style={styles.icone}>{quartier?.icone || "⚔️"}</div>
         <h1 style={styles.titre}>{quartier?.nom || "Quartier"}</h1>
         <div style={styles.surnom}>{quartier?.surnom || "Communauté"}</div>
+
         <div style={styles.connectes}>👥 {connectes} connectés</div>
+
+        <div style={styles.membres}>
+          {totalMembres} membre{totalMembres > 1 ? "s" : ""}
+        </div>
       </section>
 
-      <div style={styles.grid}>
-        <div
-          style={{ ...styles.carte, cursor: "pointer" }}
-          onClick={() => onOuvrirChat(quartier)}
-        >
-          <h2>💬 Chat du quartier</h2>
+      <div style={styles.carte}>
+        <h2 style={styles.h2}>💬 Chat du quartier</h2>
 
-          <div style={styles.messages}>
-            {messages.length === 0 ? (
-              <div style={styles.message}>
-                <strong>👤 Système</strong>
-                <div>Aucun message pour le moment.</div>
+        <div style={styles.messages}>
+          {messages.length === 0 ? (
+            <div style={styles.message}>
+              <strong>👤 Système</strong>
+              <div>Aucun message pour le moment.</div>
+            </div>
+          ) : (
+            messages.map((msg) => (
+              <div key={msg.id} style={styles.message}>
+                <strong>👤 {msg.pseudo || "Membre"}</strong>
+                <div>{msg.contenu}</div>
               </div>
-            ) : (
-              messages.map((msg) => (
-                <div key={msg.id} style={styles.message}>
-                  <strong>👤 {msg.pseudo || "Membre"}</strong>
-                  <div>{msg.contenu}</div>
-                </div>
-              ))
-            )}
-          </div>
-
-          <div style={styles.statsChat}>
-           🔥 {messages.length} messages aujourd’hui
-          </div>
-
-          <button style={styles.bouton}>Entrer dans le chat →</button>
+            ))
+          )}
         </div>
 
-        <div style={styles.carte}>
-          <h2>🎲 Parties en cours</h2>
-          <p>Observe ou rejoins les matchs disponibles.</p>
+        <div style={styles.statsChat}>
+          🔥 {messages.length} derniers messages
         </div>
 
-        <div style={styles.carte}>
-          <h2>🏆 Championnat</h2>
-          <p>Le championnat de ce quartier arrive bientôt.</p>
-        </div>
+        <button onClick={() => onOuvrirChat(quartier)} style={styles.bouton}>
+          Entrer dans le chat →
+        </button>
+      </div>
 
-        <div style={styles.carte}>
-          <h2>👑 Roi du quartier</h2>
-          <p>Aucun roi pour le moment. Le premier champion sera affiché ici.</p>
-        </div>
+      <div style={styles.carte}>
+        <h2 style={styles.h2}>🎲 Parties en cours</h2>
+        <p style={styles.p}>Observe ou rejoins les matchs disponibles.</p>
+      </div>
+
+      <div style={styles.carte}>
+        <h2 style={styles.h2}>🏆 Championnat</h2>
+        <p style={styles.p}>
+          Aucun roi pour le moment. Le premier champion sera affiché ici.
+        </p>
       </div>
     </div>
   );
@@ -130,7 +141,7 @@ const styles = {
     padding: 18,
     boxSizing: "border-box",
     maxWidth: 460,
-    margin: "0 auto",
+    margin: "0 auto"
   },
   retour: {
     background: "rgba(255,255,255,0.08)",
@@ -139,72 +150,85 @@ const styles = {
     borderRadius: 14,
     padding: "10px 14px",
     fontWeight: 800,
-    marginBottom: 18,
+    marginBottom: 18
   },
   hero: {
-    borderRadius: 24,
-    padding: 22,
-    textAlign: "center",
     background: "rgba(255,255,255,0.08)",
     border: "1px solid rgba(255,255,255,0.14)",
-    marginBottom: 18,
+    borderRadius: 28,
+    padding: 30,
+    textAlign: "center",
+    marginBottom: 20
   },
   icone: {
-    fontSize: 46,
-    marginBottom: 12,
+    fontSize: 48,
+    marginBottom: 14
   },
   titre: {
-    fontSize: 34,
-    margin: 0,
+    fontSize: 36,
     fontWeight: 950,
+    margin: "8px 0"
   },
   surnom: {
     color: "#FFD166",
+    fontSize: 20,
     fontWeight: 900,
-    fontSize: 18,
-    marginTop: 6,
+    marginBottom: 16
   },
   connectes: {
-    marginTop: 12,
+    fontSize: 20,
     fontWeight: 900,
-    fontSize: 18,
+    marginBottom: 8
   },
-  grid: {
-    display: "grid",
-    gap: 12,
+  membres: {
+    color: "rgba(255,255,255,0.75)",
+    fontSize: 15,
+    fontWeight: 800
   },
   carte: {
-    borderRadius: 20,
-    padding: 16,
-    background: "rgba(28,24,58,0.92)",
+    background: "rgba(28,24,58,0.95)",
     border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: 22,
+    padding: 18,
+    marginBottom: 18
+  },
+  h2: {
+    fontSize: 26,
+    fontWeight: 950,
+    marginBottom: 16
   },
   messages: {
     display: "grid",
-    gap: 10,
-    marginTop: 12,
+    gap: 12
   },
   message: {
-    background: "#1d2757",
-    borderRadius: 12,
-    padding: 10,
-    color: "#fff",
-    fontSize: 13,
+    background: "#22306b",
+    borderRadius: 14,
+    padding: 12,
+    fontSize: 15,
+    lineHeight: 1.4
   },
   statsChat: {
-    marginTop: 12,
     color: "#FFD166",
     fontWeight: 900,
+    fontSize: 17,
+    marginTop: 16,
+    marginBottom: 12
   },
   bouton: {
     width: "100%",
-    marginTop: 10,
-    padding: 12,
-    borderRadius: 10,
+    background: "#FFB000",
+    color: "#1b1200",
     border: "none",
-    background: "#ffb300",
-    color: "#111",
-    fontWeight: "bold",
-    cursor: "pointer",
+    borderRadius: 14,
+    padding: 14,
+    fontSize: 16,
+    fontWeight: 950,
+    cursor: "pointer"
   },
+  p: {
+    color: "rgba(255,255,255,0.78)",
+    fontSize: 16,
+    lineHeight: 1.4
+  }
 };
