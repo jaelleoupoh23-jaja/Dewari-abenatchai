@@ -2160,26 +2160,50 @@ async function jouerPion(index) {
       )}
     </div>
   )
-}  function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
+function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
   const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
 
   useEffect(() => {
-    const t = setInterval(() => setCompte(calculCompte(tournoi?.date_debut)), 60000)
+    const t = setInterval(() => {
+      setCompte(calculCompte(tournoi?.date_debut))
+    }, 60000)
+
     return () => clearInterval(t)
   }, [tournoi])
+
+  const prixInscription = tournoi?.prix_inscription || 30000
+  const nomTournoi = tournoi?.nom || 'Tournoi Dewari Abenatchai'
+  const dateTournoi = tournoi?.date_debut
+    ? new Date(tournoi.date_debut).toLocaleString('fr-FR')
+    : 'Date à confirmer'
 
   return (
     <div style={st.page}>
       <div style={st.enteteChat}>
         <button onClick={onRetour} style={st.retour}>←</button>
-        <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>🏆 Tournoi</span>
+        <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>
+          🏆 Tournoi
+        </span>
       </div>
 
       <div style={{ ...st.heroTexte, paddingTop: 24 }}>
         <div style={st.eyebrow}>LUDO COMPÉTITION · DÉCEMBRE</div>
+
+        <h1 style={{ fontSize: 32, fontWeight: 950, margin: '12px 0', color: '#fff' }}>
+          {nomTournoi}
+        </h1>
+
+        <p style={{ color: '#d8d2ff', fontSize: 15, lineHeight: 1.5, marginBottom: 18 }}>
+          Affronte les meilleurs joueurs, représente ton quartier et tente de devenir le roi du Dewari.
+        </p>
+
         {compte && (
           <div style={st.compteWrap}>
-            {[{ v: compte.j, l: 'jours' }, { v: compte.h, l: 'heures' }, { v: compte.m, l: 'min' }].map((b) => (
+            {[
+              { v: compte.j, l: 'jours' },
+              { v: compte.h, l: 'heures' },
+              { v: compte.m, l: 'min' }
+            ].map((b) => (
               <div key={b.l} style={st.compteBloc}>
                 <div style={st.compteChiffre}>{String(b.v).padStart(2, '0')}</div>
                 <div style={st.compteLabel}>{b.l}</div>
@@ -2187,20 +2211,49 @@ async function jouerPion(index) {
             ))}
           </div>
         )}
+
+        <div style={st.details}>
+          <p style={{ margin: '6px 0' }}>📅 Début : {dateTournoi}</p>
+          <p style={{ margin: '6px 0' }}>
+            💰 Inscription : {prixInscription.toLocaleString('fr-FR')} FCFA
+          </p>
+          <p style={{ margin: '6px 0' }}>👥 Participants : limité selon les places disponibles</p>
+          <p style={{ margin: '6px 0' }}>🎮 Format : élimination directe</p>
+        </div>
+
+        <div style={st.details}>
+          <p style={{ margin: '6px 0', fontWeight: 900, color: '#FFD166' }}>
+            🏆 Récompenses
+          </p>
+
+          <p style={{ margin: '6px 0' }}>
+            🥇 1er prix : {tournoi?.premier_prix && !tournoi.premier_prix.includes('À COMPLÉTER') ? tournoi.premier_prix : 'À annoncer'}
+          </p>
+
+          <p style={{ margin: '6px 0' }}>
+            🥈 2e prix : {tournoi?.deuxieme_prix && !tournoi.deuxieme_prix.includes('À COMPLÉTER') ? tournoi.deuxieme_prix : 'À annoncer'}
+          </p>
+
+          <p style={{ margin: '6px 0' }}>
+            🥉 3e prix : {tournoi?.troisieme_prix && !tournoi.troisieme_prix.includes('À COMPLÉTER') ? tournoi.troisieme_prix : 'À annoncer'}
+          </p>
+        </div>
+
+        <div style={st.details}>
+          <p style={{ margin: '6px 0', fontWeight: 900, color: '#FFD166' }}>
+            💳 Paiement
+          </p>
+          <p style={{ margin: '6px 0' }}>
+            Dépôt obligatoire via Wave uniquement avant validation de l'inscription.
+          </p>
+        </div>
+
         {!inscritTournoi ? (
           <button onClick={onOuvrirInscription} style={st.boutonPrincipal}>
-            🏆 Je m'inscris · {tournoi?.prix_inscription?.toLocaleString('fr-FR') || '30 000'} CFA
+            🏆 Je m'inscris · {prixInscription.toLocaleString('fr-FR')} FCFA
           </button>
         ) : (
           <div style={st.confirme}>✅ Tu es inscrit au tournoi !</div>
-        )}
-        {(tournoi?.description || tournoi?.premier_prix || tournoi?.deuxieme_prix || tournoi?.troisieme_prix) && (
-          <div style={st.details}>
-            {tournoi?.description && !tournoi.description.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>{tournoi.description}</p>}
-            {tournoi?.premier_prix && !tournoi.premier_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥇 1er prix : {tournoi.premier_prix}</p>}
-            {tournoi?.deuxieme_prix && !tournoi.deuxieme_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥈 2e prix : {tournoi.deuxieme_prix}</p>}
-            {tournoi?.troisieme_prix && !tournoi.troisieme_prix.includes('À COMPLÉTER') && <p style={{ margin: '4px 0' }}>🥉 3e prix : {tournoi.troisieme_prix}</p>}
-          </div>
         )}
       </div>
     </div>
