@@ -2473,7 +2473,9 @@ function ChatSalon({ salon, membre, onRetour }) {
       </div>
 
       <div style={st.bandeauWave}>
-        💳 Mises à régler via <b>Wave : {NUMERO_WAVE}</b> — règlement manuel entre joueurs
+      💳 <b>DÉPÔT OBLIGATOIRE VIA WAVE UNIQUEMENT : {NUMERO_WAVE}</b>
+<br />
+👑 <b>RÈGLE D'OR : BOUFFE OBLIGATOIRE. TU NE BOUFFES PAS, TU SORS DU JEU.</b>
       </div>
 
       {enAppel && (
