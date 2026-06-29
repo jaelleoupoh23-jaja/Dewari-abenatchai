@@ -2160,6 +2160,8 @@ async function jouerPion(index) {
       )}
     </div>
   )
+}
+
 function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
   const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
 
