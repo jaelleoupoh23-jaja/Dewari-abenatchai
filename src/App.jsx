@@ -510,14 +510,6 @@ function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourS
 
       
 
-        <button
-          onClick={onDeconnexion}
-          style={{ ...st.lienFermer, marginTop: 14, border: "1px solid #3a3658", borderRadius: 10, padding: 10 }}
-        >
-          Se déconnecter
-        </button>
-      </div>
-    </div>
   )
 }
 function Accueil({ salons, tournoi, inscritTournoi, onChoisirSalon, onOuvrirTournoi, onOuvrirDe, onOuvrirLudo, onOuvrirMultijoueur, onOuvrirSpectateur, onOuvrirDeEnLigne, refTournoi, refSalons }) {
