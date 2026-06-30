@@ -2231,22 +2231,20 @@ function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour })
         </div>
 </div>
 
-<div style={st.compteRebours}>
-  <div style={st.caseTemps}>
-    <strong>{temps.jours}</strong>
-    <span>Jours</span>
+{compte && (
+  <div style={st.compteWrap}>
+    {[
+      { v: compte.j, l: "jours" },
+      { v: compte.h, l: "heures" },
+      { v: compte.m, l: "min" }
+    ].map((b) => (
+      <div key={b.l} style={st.compteBloc}>
+        <div style={st.compteChiffre}>{String(b.v).padStart(2, "0")}</div>
+        <div style={st.compteLabel}>{b.l}</div>
+      </div>
+    ))}
   </div>
-
-  <div style={st.caseTemps}>
-    <strong>{temps.heures}</strong>
-    <span>Heures</span>
-  </div>
-
-  <div style={st.caseTemps}>
-    <strong>{temps.minutes}</strong>
-    <span>Min</span>
-  </div>
-</div>
+)}
 
 {etape === "formulaire" ? (
         {etape === "formulaire" ? (
