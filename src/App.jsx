@@ -567,7 +567,7 @@ const quartiers = [
           </div>
           <div style={{ fontSize: 20 }}>→</div>
         </div>
-<div onClick={() => onOuvrirDeEnLigne && onOuvrirDeEnLigne()} style={{ ...st.carteLudo, background: 'linear-gradient(135deg,#1B4332,#40916C)', marginTop: 10 }}><div style={st.carteDeEmoji}>🎲</div><div style={{ flex: 1, marginLeft: 12 }}><div style={{ fontWeight: 800, fontSize: 16 }}>Dé en ligne</div><div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>Défie un ami avec un code</div></div><div style={{ fontSize: 20 }}>→</div></div>
+<div onClick={() => onOuvrirDeEnLigne && onOuvrirDeEnLigne()} style={{ ...st.carteLudo, background: 'linear-gradient(135deg,#1B4332,#40916C)', marginTop: 10 }}><div style={st.carteDeEmoji}>🎲</div><div style={{ flex: 1, marginLeft: 12 }}><div style={{ fontWeight: 800, fontSize: 16 }}>Godé en ligne</div><div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>Défie un ami avec un code</div></div><div style={{ fontSize: 20 }}>→</div></div>
      <div onClick={onOuvrirLudo} style={st.carteLudo}>
           <div style={st.carteDeEmoji}>♟️</div>
           <div style={{ flex: 1, marginLeft: 12 }}>
