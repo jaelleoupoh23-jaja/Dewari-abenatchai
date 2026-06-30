@@ -61,7 +61,7 @@ export default function PageAccueil({ onCommencer }) {
             En attendant, prépare-toi pour le Tournoi de Décembre !
           </p>
 
-          <button style={styles.boutonTournoi} onClick={onCommencer}>
+          <button style={styles.boutonTournoi} onClick={onTournoi}>
             🏆 Voir les tournois
           </button>
         </section>
@@ -77,7 +77,7 @@ export default function PageAccueil({ onCommencer }) {
     👀 Observe les parties en direct.
   </p>
 
-  <button onClick={onCommencer} style={styles.bouton}>
+  <button onClick={onJeux} style={styles.bouton}>
     🎮 Accéder aux jeux
   </button>
 </section>
