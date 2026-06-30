@@ -2229,7 +2229,26 @@ function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour })
             ⚠️ L'inscription est validée après vérification du paiement Wave.
           </p>
         </div>
+</div>
 
+<div style={st.compteRebours}>
+  <div style={st.caseTemps}>
+    <strong>{temps.jours}</strong>
+    <span>Jours</span>
+  </div>
+
+  <div style={st.caseTemps}>
+    <strong>{temps.heures}</strong>
+    <span>Heures</span>
+  </div>
+
+  <div style={st.caseTemps}>
+    <strong>{temps.minutes}</strong>
+    <span>Min</span>
+  </div>
+</div>
+
+{etape === "formulaire" ? (
         {etape === "formulaire" ? (
           <div style={st.details}>
             <input
