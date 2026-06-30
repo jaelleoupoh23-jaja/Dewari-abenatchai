@@ -508,14 +508,7 @@ function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourS
   </button>
 </div>
 
-        {salonActuel && (
-          <button
-            onClick={() => onRetourSalon(salonActuel)}
-            style={{ ...st.boutonPrincipal, marginTop: 14 }}
-          >
-            🎮 Retourner dans {membre.quartier || salonActuel.nom}
-          </button>
-        )}
+      
 
         <button
           onClick={onDeconnexion}
