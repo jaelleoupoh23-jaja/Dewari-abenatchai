@@ -81,18 +81,17 @@ En attendant, prépare-toi pour le Tournoi de Décembre  !
 
         </section>
 
-        <section style={styles.sectionSimple}>
-          <h2 style={styles.sectionTitre}>👑 Les Rois du Jeu</h2>
-
-         <section style={styles.sectionSimple}>
+       
+      <section style={styles.sectionSimple}>
   <h2 style={styles.sectionTitre}>🌍 Choisis ton univers</h2>
 
   <p style={styles.texteFort}>
     Le respect se gagne quartier par quartier.
   </p>
-   <p style={styles.texte}>
-  🤫 Tout ce qui se passe dans ton quartier... reste dans ton quartier.
-</p>        
+
+  <p style={styles.texte}>
+    🤫 Tout ce qui se passe dans ton quartier... reste dans ton quartier.
+  </p>
 
   <p style={styles.texte}>
     🔥 <strong>Yopougon</strong> — Les Ultras<br />
@@ -105,6 +104,7 @@ En attendant, prépare-toi pour le Tournoi de Décembre  !
     Entre dans l'arène et représente ton quartier.
   </p>
 </section>
+          
         <button onClick={onCommencer} style={styles.bouton}>
           ⚔️ Choisis mon quartier
         </button>
