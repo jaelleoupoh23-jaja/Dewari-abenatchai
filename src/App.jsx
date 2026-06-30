@@ -476,11 +476,16 @@ function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourS
           display: "grid",
           gap: 10,
         }}>
-          <div>🏘️ Quartier : <strong>{membre.quartier || "Non défini"}</strong></div>
-          <div>🟢 Statut : <strong>Connecté</strong></div>
-          <div>🎲 Salon actuel : <strong>{salonActuel?.nom || "Aucun salon"}</strong></div>
-          <div>🏆 Victoires : <strong>0</strong></div>
-          <div>⭐ Niveau : <strong>Débutant</strong></div>
+         <div>🆔 ID joueur : <strong>{membre.id || "Non disponible"}</strong></div>
+<div>💰 Solde : <strong>{membre.solde || 0} FCFA</strong></div>
+<div>🎮 Parties jouées : <strong>{membre.parties_jouees || 0}</strong></div>
+<div>🏆 Victoires : <strong>{membre.victoires || 0}</strong></div>
+<div>⭐ Niveau : <strong>{membre.niveau || "Débutant"}</strong></div>
+<div>🥇 Classement : <strong>{membre.classement || "Non classé"}</strong></div>
+<div>🏅 Badge : <strong>{membre.badge || "Nouveau joueur"}</strong></div>
+<div>🏘️ Quartier : <strong>{membre.quartier || "Non défini"}</strong></div>
+<div>🟢 Statut : <strong>Connecté</strong></div>
+<div>🎲 Salon actuel : <strong>{salonActuel?.nom || "Aucun salon"}</strong></div>
         </div>
 
         {salonActuel && (
