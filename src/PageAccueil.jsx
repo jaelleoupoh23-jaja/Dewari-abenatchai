@@ -66,35 +66,48 @@ export default function PageAccueil({ onCommencer }) {
           </button>
         </section>
 
-        <section style={styles.sectionSimple}>
-          <h2 style={styles.sectionTitre}>🌍 Choisis ton univers</h2>
+       <section style={styles.sectionSimple}>
+  <h2 style={styles.sectionTitre}>🎮 Accueil — Jouer en ligne</h2>
 
-          <p style={styles.texteFort}>
-            Le respect se gagne quartier par quartier.
-          </p>
+  <p style={styles.texte}>
+    🎲 Rejoins une partie en quelques secondes.
+    <br />
+    👥 Crée ton salon ou rejoins un code.
+    <br />
+    👀 Observe les parties en direct.
+  </p>
 
-          <p style={styles.texte}>
-            🤫 Tout ce qui se passe dans ton quartier... reste dans ton quartier.
-          </p>
+  <button onClick={onCommencer} style={styles.bouton}>
+    🎮 Accéder aux jeux
+  </button>
+</section>
 
-          <p style={styles.texte}>
-            🔥 <strong>Yopougon</strong> — Les Ultras
-            <br />
-            🕶️ <strong>Djorobité</strong> — La Conspi
-            <br />
-            🥁 <strong>Bingerville</strong> — Les Tok-Tok
-            <br />
-            ✨ <strong>...et bien d'autres quartiers t'attendent.</strong>
-          </p>
+<section style={styles.sectionSimple}>
+  <h2 style={styles.sectionTitre}>🌍 Choisis ton quartier</h2>
 
-          <p style={styles.texteFort}>
-            Entre dans l'arène et représente ton quartier.
-          </p>
-        </section>
+  <p style={styles.texteFort}>
+    Le respect se gagne quartier par quartier.
+  </p>
 
-        <button onClick={onCommencer} style={styles.bouton}>
-          ⚔️ Choisir mon quartier
-        </button>
+  <p style={styles.texte}>
+    🤫 Tout ce qui se passe dans ton quartier... reste dans ton quartier.
+  </p>
+
+  <p style={styles.texte}>
+    🔥 <strong>Yopougon</strong> — Les Ultras
+    <br />
+    🕶️ <strong>Djorobité</strong> — La Conspi
+    <br />
+    🥁 <strong>Bingerville</strong> — Les Tok-Tok
+    <br />
+    ✨ <strong>...et bien d'autres quartiers t'attendent.</strong>
+  </p>
+
+  <button onClick={onCommencer} style={styles.bouton}>
+    ⚔️ Choisir mon quartier
+  </button>
+</section>
+  
 
         <p style={styles.note}>
           En continuant, tu acceptes les règles, la sécurité et les conditions de la plateforme.
