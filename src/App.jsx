@@ -331,7 +331,7 @@ onTournoi={() => setEcran('tournoi')}
               salons={salons}
               onConnexion={() => setModalAuth({ pourSalon: null })}
               onDeconnexion={deconnexion}
-              onRetourSalon={(s) => { setSalonActif(s); setEcran('chat') }}
+             onRetourSalon={(s) => { setSalonActif(s); setEcran('accueil') }}
             />
           </div>
         </>
