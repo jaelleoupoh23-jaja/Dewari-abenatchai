@@ -2167,6 +2167,16 @@ async function jouerPion(index) {
 
 function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
   const [etape, setEtape] = useState("formulaire")
+  const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCompte(calculCompte(tournoi?.date_debut))
+  }, 60000)
+
+  return () => clearInterval(interval)
+}, [tournoi])
+  
   const [form, setForm] = useState({
     pseudo: "",
     nom: "",
@@ -2231,7 +2241,20 @@ function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour })
         </div>
 </div>
 
-
+{compte && (
+  <div style={st.compteWrap}>
+    {[
+      { v: compte.j, l: "jours" },
+      { v: compte.h, l: "heures" },
+      { v: compte.m, l: "min" }
+    ].map((b) => (
+      <div key={b.l} style={st.compteBloc}>
+        <div style={st.compteChiffre}>{String(b.v).padStart(2, "0")}</div>
+        <div style={st.compteLabel}>{b.l}</div>
+      </div>
+    ))}
+  </div>
+)}
 
         {etape === "formulaire" ? (
           <div style={st.details}>
