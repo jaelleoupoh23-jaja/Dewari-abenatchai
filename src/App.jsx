@@ -155,7 +155,7 @@ function coordPion(couleur, pion, index) {
   return BASE_COORDS[couleur]?.[index] || [7, 7]
 }
 export default function App() {
- const [ecran, setEcran] = useState('accueil')
+ const [ecran, setEcran] = useState('landing')
   const [session, setSession] = useState(null)
   const [membre, setMembre] = useState(null)
   const [salonActif, setSalonActif] = useState(null)
