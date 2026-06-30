@@ -596,8 +596,35 @@ const quartiers = [
        </div>
 </div>
 </div>
+<div
+  onClick={() => setEcran('juridique')}
+  style={{
+    marginTop: 24,
+    padding: '18px 16px',
+    borderTop: '1px solid rgba(255,255,255,0.15)',
+    textAlign: 'center',
+    cursor: 'pointer',
+    color: '#ddd'
+  }}
+>
+  <div style={{ fontWeight: 700, fontSize: 15 }}>
+    📜 Conditions d'utilisation →
+  </div>
 
+  <div
+    style={{
+      marginTop: 12,
+      fontSize: 12,
+      color: '#888'
+    }}
+  >
+    © 2026 LudoWari-Abenatchai
+    <br />
+    Tous droits réservés.
+  </div>
+</div>
   </>    
+    
   )
 }
  
