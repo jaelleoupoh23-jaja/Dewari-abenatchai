@@ -58,7 +58,7 @@ export default function PageAccueil({ onCommencer, onOuvrirTournoi }) {
 
           <p style={styles.inscriptionTexte}>
            🕒 Les inscriptions seront bientôt ouvertes.
-En attendant, prépare-toi pour le Grand Tournoi National !
+En attendant, prépare-toi pour le Tournoi de Décembre  !
           </p>
 
         <button
