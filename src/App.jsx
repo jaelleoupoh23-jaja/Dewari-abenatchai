@@ -305,6 +305,21 @@ onTournoi={() => setEcran('tournoi')}
         onRetour={() => setEcran("accueil")}
     />
 )}
+      {ecran === 'compte' && (
+  <>
+    <div style={st.barreNom}>👑 Dewari-abenatchai</div>
+    <NavOnglets onAller={allerA} />
+
+    <Compte
+      session={session}
+      membre={membre}
+      salons={salons}
+      onConnexion={() => setModalAuth({ pourSalon: null })}
+      onDeconnexion={deconnexion}
+      onRetourSalon={(s) => { setSalonActif(s); setEcran('accueil') }}
+    />
+  </>
+)}
       {ecran === 'accueil' && (
         <>
           <div style={st.barreNom}>👑 Dewari-abenatchai</div>
@@ -324,16 +339,7 @@ onTournoi={() => setEcran('tournoi')}
   refTournoi={refTournoi}
   refSalons={refSalons}
 />
-          <div ref={refCompte}>
-            <Compte
-              session={session}
-              membre={membre}
-              salons={salons}
-              onConnexion={() => setModalAuth({ pourSalon: null })}
-              onDeconnexion={deconnexion}
-             onRetourSalon={(s) => { setSalonActif(s); setEcran('accueil') }}
-            />
-          </div>
+        
         </>
       )}
 
