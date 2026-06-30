@@ -152,7 +152,7 @@ p_id: (await supabase.auth.getUser()).data.user.id
         {partie.etat === 'attente' && <div style={{ color: '#aaa', marginBottom: 20 }}>En attente du 2ème joueur...</div>}
         {partie.etat === 'fini' && <div style={{ fontSize: 20, fontWeight: 800, color: '#FFB800', marginBottom: 20 }}>🏆 {partie.gagnant} a gagné !</div>}
         {partie.etat === 'en_cours' && !spectateur && partie.tour_actuel === monRole && (
-          <button onClick={lancerDe} style={
+          <button onClick={lancerDe} style={{
   marginTop: 22,
   width: '100%',
   padding: 18,
