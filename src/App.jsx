@@ -2323,7 +2323,6 @@ function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour })
           </div>
         )}
       </div>
-    </div>
   )
 }
 function calculCompte(dateDebut) {
