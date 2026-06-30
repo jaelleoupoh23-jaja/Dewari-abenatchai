@@ -414,7 +414,6 @@ function NavOnglets({ onAller }) {
   )
 }
 
-onClick={() => onDeconnexion()}
 function Accueil({
   salons,
   tournoi,
