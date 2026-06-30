@@ -257,21 +257,19 @@ const [chatJeuOuvert, setChatJeuOuvert] = useState(false)
   }
 
   
- function allerA(id) {
-  if (id === 'tournoi') {
-    setEcran('tournoi')
-    return
-  }
+ function allerA(id) 
+if (id === 'compte') {
+  chargerMembre()
+  setEcran('compte')
+  return
+}
+
 
   if (id === 'salons') {
     setEcran('quartiers')
     return
   }
 
-  if (id === 'compte') {
-    setEcran('compte')
-    return
-  }
 
   setEcran('accueil')
 }
@@ -1610,7 +1608,50 @@ const estMonTour = monRole ? couleurCourante === monRole : false
       setMessageTour(`Dé : ${resultat.valeur} — choisis un pion`)
     }
   }
+async function enregistrerVictoireCompte(nouvellePartie) {
+  if (!nouvellePartie?.vainqueur) return
+  if (nouvellePartie.vainqueur !== monRole) return
 
+  const { data: authData } = await supabase.auth.getUser()
+  const user = authData?.user
+  if (!user) return
+
+  const { data: joueur } = await supabase
+    .from("membres")
+    .select("solde, parties_jouees, victoires")
+    .eq("user_id", user.id)
+    .maybeSingle()
+
+  const victoires = (joueur?.victoires || 0) + 1
+  const parties_jouees = (joueur?.parties_jouees || 0) + 1
+  const solde = (joueur?.solde || 0) + 500
+
+  let niveau = "Débutant"
+  let badge = "Nouveau joueur"
+
+  if (victoires >= 50) {
+    niveau = "Champion"
+    badge = "Roi du quartier"
+  } else if (victoires >= 20) {
+    niveau = "Confirmé"
+    badge = "Joueur dangereux"
+  } else if (victoires >= 5) {
+    niveau = "Intermédiaire"
+    badge = "Talent du quartier"
+  }
+
+  await supabase
+    .from("membres")
+    .update({
+      solde,
+      parties_jouees,
+      victoires,
+      niveau,
+      badge,
+    })
+    .eq("user_id", user.id)
+}
+  
 async function jouerPion(index) {
     if (!partie || !partie.dernierDe || pionBouge || !estMonTour) return
     setPionBouge(true)
@@ -1634,6 +1675,9 @@ for (let pas = 1; pas <= valeur; pas++) {
   setPartie(partieAnimee)
   await new Promise((resolve) => setTimeout(resolve, 260))
 }
+ if (nouvellePartie.vainqueur) {
+  await enregistrerVictoireCompte(nouvellePartie)
+} 
       await sauvegarderEtat(partieId, nouvellePartie)
     setPartie(nouvellePartie)
     setCoupsDispo([])
