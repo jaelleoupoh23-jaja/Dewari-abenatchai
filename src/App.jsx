@@ -264,7 +264,11 @@ if (id === 'compte') {
   return
 }
 
-
+if (id === 'tournoi') {
+  setEcran('tournoi')
+  return
+}
+   
   if (id === 'salons') {
     setEcran('quartiers')
     return
