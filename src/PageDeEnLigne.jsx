@@ -23,24 +23,29 @@ export default function PageDeEnLigne({ onRetour }) {
   const [spectateur, setSpectateur] = useState(false)
   const pseudo = getPseudo()
 
-  useEffect(() => {
-    if (!code) return
-    const canal = supabase.channel('de-' + code)
-   .on('postgres_changes', {
-        event: '*', schema: 'public',
-        table: 'parties_de_en_ligne'
-      }, (payload) => {
-       if (payload.new && payload.new.code === code) {
-  setPartie(payload.new)
+useEffect(() => {
+  if (!code) return
 
-  if (payload.new.joueur2_pseudo && payload.new.etat === 'en_cours') {
-    setEcran('jeu')
+  const charger = async () => {
+    const { data } = await supabase
+      .from('parties_de_en_ligne')
+      .select('*')
+      .eq('code', code)
+      .single()
+
+    if (data) {
+      setPartie(data)
+      if (data.joueur2_pseudo && data.etat === 'en_cours') {
+        setEcran('jeu')
+      }
+    }
   }
-}
-      })
-      .subscribe()
-    return () => supabase.removeChannel(canal)
-  }, [code])
+
+  charger()
+  const interval = setInterval(charger, 1500)
+
+  return () => clearInterval(interval)
+}, [code])
 
   async function creer() {
     const newCode = genererCode()
