@@ -2248,11 +2248,7 @@ function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour })
   🏆 Je m'inscris au tournoi
 </button>
 
-       <div style={st.confirme}>
-  🕒 Les inscriptions seront bientôt ouvertes.
-  <br />
-  En attendant, prépare-toi pour le Tournoi de Décembre !
-</div>
+   
       </div>
     </div>
   )
