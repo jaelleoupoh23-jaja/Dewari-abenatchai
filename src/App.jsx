@@ -2166,27 +2166,48 @@ async function jouerPion(index) {
 }
 
 function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour }) {
-  const [compte, setCompte] = useState(calculCompte(tournoi?.date_debut))
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setCompte(calculCompte(tournoi?.date_debut))
-    }, 60000)
-
-    return () => clearInterval(t)
-  }, [tournoi])
+  const [etape, setEtape] = useState("formulaire")
+  const [form, setForm] = useState({
+    pseudo: "",
+    nom: "",
+    whatsapp: "",
+    quartier: "",
+    age: "",
+    accepte: false
+  })
 
   const prixInscription = tournoi?.prix_inscription || 30000
-  const nomTournoi = tournoi?.nom || 'Tournoi Dewari Abenatchai'
   const dateTournoi = tournoi?.date_debut
-    ? new Date(tournoi.date_debut).toLocaleString('fr-FR')
-    : 'Date à confirmer'
+    ? new Date(tournoi.date_debut).toLocaleDateString("fr-FR")
+    : "1 décembre 2026"
+
+  function changerChamp(champ, valeur) {
+    setForm({ ...form, [champ]: valeur })
+  }
+
+  function continuerPaiement() {
+    if (!form.pseudo || !form.nom || !form.whatsapp || !form.quartier) {
+      alert("Remplis le pseudonyme, le nom, le WhatsApp et le quartier.")
+      return
+    }
+
+    if (!form.accepte) {
+      alert("Tu dois accepter le règlement du tournoi.")
+      return
+    }
+
+    setEtape("paiement")
+  }
+
+  const messageWhatsApp = encodeURIComponent(
+    `Bonjour 👋\n\nJe viens de remplir le formulaire d'inscription au Tournoi Dewari Abenatchai.\n\nPseudonyme : ${form.pseudo}\nNom : ${form.nom}\nQuartier : ${form.quartier}\nTéléphone : ${form.whatsapp}\n\nJe vais vous envoyer ma capture de paiement Wave.`
+  )
 
   return (
     <div style={st.page}>
       <div style={st.enteteChat}>
         <button onClick={onRetour} style={st.retour}>←</button>
-        <span style={{ fontWeight: 800, marginLeft: 8, color: '#fff', fontSize: 16 }}>
+        <span style={{ fontWeight: 800, marginLeft: 8, color: "#fff", fontSize: 16 }}>
           🏆 Tournoi
         </span>
       </div>
@@ -2194,66 +2215,114 @@ function PageTournoi({ tournoi, inscritTournoi, onOuvrirInscription, onRetour })
       <div style={{ ...st.heroTexte, paddingTop: 24 }}>
         <div style={st.eyebrow}>LUDO COMPÉTITION · DÉCEMBRE</div>
 
-        <h1 style={{ fontSize: 32, fontWeight: 950, margin: '12px 0', color: '#fff' }}>
-          {nomTournoi}
+        <h1 style={{ fontSize: 30, fontWeight: 950, margin: "12px 0", color: "#fff" }}>
+          Inscription au Tournoi Dewari Abenatchai
         </h1>
 
-        <p style={{ color: '#d8d2ff', fontSize: 15, lineHeight: 1.5, marginBottom: 18 }}>
-          Affronte les meilleurs joueurs, représente ton quartier et tente de devenir le roi du Dewari.
-        </p>
+        <div style={st.details}>
+          <p style={{ margin: "6px 0" }}>📅 Date : {dateTournoi}</p>
+          <p style={{ margin: "6px 0" }}>
+            💰 Frais d'inscription : {prixInscription.toLocaleString("fr-FR")} FCFA
+          </p>
+          <p style={{ margin: "6px 0" }}>🎮 Format : élimination directe</p>
+          <p style={{ margin: "6px 0", color: "#FFD166", fontWeight: 900 }}>
+            ⚠️ L'inscription est validée après vérification du paiement Wave.
+          </p>
+        </div>
 
-        {compte && (
-          <div style={st.compteWrap}>
-            {[
-              { v: compte.j, l: 'jours' },
-              { v: compte.h, l: 'heures' },
-              { v: compte.m, l: 'min' }
-            ].map((b) => (
-              <div key={b.l} style={st.compteBloc}>
-                <div style={st.compteChiffre}>{String(b.v).padStart(2, '0')}</div>
-                <div style={st.compteLabel}>{b.l}</div>
-              </div>
-            ))}
+        {etape === "formulaire" ? (
+          <div style={st.details}>
+            <input
+              value={form.pseudo}
+              onChange={(e) => changerChamp("pseudo", e.target.value)}
+              placeholder="Pseudonyme *"
+              style={st.inputChat}
+            />
+
+            <input
+              value={form.nom}
+              onChange={(e) => changerChamp("nom", e.target.value)}
+              placeholder="Nom et prénom *"
+              style={st.inputChat}
+            />
+
+            <input
+              value={form.whatsapp}
+              onChange={(e) => changerChamp("whatsapp", e.target.value)}
+              placeholder="Numéro WhatsApp *"
+              style={st.inputChat}
+            />
+
+            <input
+              value={form.quartier}
+              onChange={(e) => changerChamp("quartier", e.target.value)}
+              placeholder="Quartier *"
+              style={st.inputChat}
+            />
+
+            <input
+              value={form.age}
+              onChange={(e) => changerChamp("age", e.target.value)}
+              placeholder="Âge (optionnel)"
+              style={st.inputChat}
+            />
+
+            <label style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 12 }}>
+              <input
+                type="checkbox"
+                checked={form.accepte}
+                onChange={(e) => changerChamp("accepte", e.target.checked)}
+              />
+              <span>J'accepte le règlement du tournoi.</span>
+            </label>
+
+            <button onClick={continuerPaiement} style={{ ...st.boutonPrincipal, marginTop: 16 }}>
+              ➡️ Continuer vers le paiement
+            </button>
+          </div>
+        ) : (
+          <div style={st.details}>
+            <h2 style={{ color: "#FFD166", marginTop: 0 }}>💳 Paiement Wave</h2>
+
+            <p>Envoyez :</p>
+            <h2 style={{ color: "#fff" }}>{prixInscription.toLocaleString("fr-FR")} FCFA</h2>
+
+            <p>au numéro :</p>
+            <h2 style={{ color: "#FFD166" }}>07-08-68-02-36</h2>
+
+            <p style={{ color: "#d8d2ff", lineHeight: 1.5 }}>
+              Puis envoyez la capture d'écran de votre paiement à l'administrateur sur WhatsApp.
+            </p>
+
+            <a
+              href={`https://wa.me/2250708680236?text=${messageWhatsApp}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                ...st.boutonPrincipal,
+                display: "block",
+                textAlign: "center",
+                textDecoration: "none",
+                background: "#25D366",
+                color: "#07120b",
+                marginTop: 16
+              }}
+            >
+              💬 Ouvrir WhatsApp
+            </a>
+
+            <button
+              onClick={() => setEtape("formulaire")}
+              style={{ ...st.lienFermer, marginTop: 14, border: "1px solid #3a3658", borderRadius: 10, padding: 10 }}
+            >
+              ← Modifier mes informations
+            </button>
           </div>
         )}
-
-        <div style={st.details}>
-          <p style={{ margin: '6px 0' }}>📅 Début : {dateTournoi}</p>
-          <p style={{ margin: '6px 0' }}>
-            💰 Inscription : {prixInscription.toLocaleString('fr-FR')} FCFA
-          </p>
-          <p style={{ margin: '6px 0' }}>👥 Participants : limité selon les places disponibles</p>
-          <p style={{ margin: '6px 0' }}>🎮 Format : élimination directe</p>
-        </div>
-
-        <div style={st.details}>
-          <p style={{ margin: '6px 0', fontWeight: 900, color: '#FFD166' }}>
-            🏆 Récompenses
-          </p>
-
-          <p style={{ margin: '6px 0' }}>
-            🥇 1er prix : {tournoi?.premier_prix && !tournoi.premier_prix.includes('À COMPLÉTER') ? tournoi.premier_prix : 'À annoncer'}
-          </p>
-
-          <p style={{ margin: '6px 0' }}>
-            🥈 2e prix : {tournoi?.deuxieme_prix && !tournoi.deuxieme_prix.includes('À COMPLÉTER') ? tournoi.deuxieme_prix : 'À annoncer'}
-          </p>
-
-          <p style={{ margin: '6px 0' }}>
-            🥉 3e prix : {tournoi?.troisieme_prix && !tournoi.troisieme_prix.includes('À COMPLÉTER') ? tournoi.troisieme_prix : 'À annoncer'}
-          </p>
-        </div>
-
-       <button onClick={onOuvrirInscription} style={st.boutonPrincipal}>
-  🏆 Je m'inscris au tournoi
-</button>
-
-   
       </div>
     </div>
   )
 }
-
 function calculCompte(dateDebut) {
   if (!dateDebut) return null
   const diff = new Date(dateDebut) - new Date()
