@@ -434,24 +434,79 @@ function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourS
     <div style={st.section}>
       <div style={st.sectionTitre}>👤 Mon compte</div>
 
-      <div style={st.carteCompte}>
-        <div style={st.avatarGroupe}>
-          {(membre.pseudo || "?").slice(0, 2).toUpperCase()}
-        </div>
+     <div style={{
+  background: "rgba(35, 28, 70, 0.92)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  borderRadius: 26,
+  padding: 22,
+  marginTop: 18,
+  boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
+}}>
+  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+    <div style={{
+      width: 64,
+      height: 64,
+      borderRadius: "50%",
+      background: "linear-gradient(135deg,#FF4D2D,#FFB800)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 22,
+      fontWeight: 900,
+      color: "#fff",
+      flexShrink: 0,
+    }}>
+      {(membre.pseudo || "?").slice(0, 2).toUpperCase()}
+    </div>
 
-        <div style={{ marginTop: 12, fontSize: 22, fontWeight: 950 }}>
-          {membre.pseudo || "Joueur Dewari"}
-        </div>
+    <div>
+      <div style={{ fontSize: 26, fontWeight: 950 }}>
+        {membre.pseudo || "Joueur Dewari"}
+      </div>
+      <div style={{ color: "#cfc8ff", fontSize: 14 }}>
+        Profil joueur
+      </div>
+    </div>
+  </div>
 
-        <div style={{ color: "#9a93b5", fontSize: 13, marginTop: 4 }}>
-          Profil joueur
-        </div>
+  <div style={{
+    marginTop: 20,
+    background: "rgba(255,255,255,0.07)",
+    borderRadius: 18,
+    padding: 16,
+    display: "grid",
+    gap: 10,
+  }}>
+    <div>🏘️ Quartier : <strong>{membre.quartier || "Non défini"}</strong></div>
+    <div>🟢 Statut : <strong>Connecté</strong></div>
+    <div>🎲 Salon actuel : <strong>{salonActuel?.nom || "Aucun salon"}</strong></div>
+    <div>🏆 Victoires : <strong>0</strong></div>
+    <div>⭐ Niveau : <strong>Débutant</strong></div>
+  </div>
 
-        <div style={st.details}>
-          <p style={{ margin: "6px 0" }}>🏘️ Quartier : <strong>{membre.quartier || "Non défini"}</strong></p>
-          <p style={{ margin: "6px 0" }}>🟢 Statut : <strong>Connecté</strong></p>
-          <p style={{ margin: "6px 0" }}>🎲 Salon actuel : <strong>{salonActuel?.nom || "Aucun salon"}</strong></p>
-        </div>
+  {salonActuel && (
+    <button
+      onClick={() => onRetourSalon(salonActuel)}
+      style={{ ...st.boutonPrincipal, marginTop: 16 }}
+    >
+      🎮 Retourner dans {membre.quartier || salonActuel.nom}
+    </button>
+  )}
+
+  <button
+    onClick={onDeconnexion}
+    style={{
+      ...st.lienFermer,
+      marginTop: 16,
+      width: "100%",
+      border: "1px solid rgba(255,255,255,0.18)",
+      borderRadius: 14,
+      padding: 12,
+    }}
+  >
+    Se déconnecter
+  </button>
+</div>
 
         {salonActuel && (
           <button
