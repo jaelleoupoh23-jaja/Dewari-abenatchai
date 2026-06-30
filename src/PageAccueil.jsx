@@ -80,9 +80,6 @@ En attendant, prépare-toi pour le Grand Tournoi National !
             👑 Les meilleurs joueurs des quartiers s'affronteront pour décrocher le titre de Roi de Déwari.
           </p>
 
-          <div style={styles.lienQuartiers}>
-            ➡️ Découvrir les quartiers
-          </div>
         </section>
 
         <section style={styles.sectionSimple}>
