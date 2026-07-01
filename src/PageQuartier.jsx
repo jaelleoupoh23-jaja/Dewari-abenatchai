@@ -60,7 +60,7 @@ async function chargerConnectes() {
 
 async function chargerTotalMembres() {
   const { count } = await supabase
-    .from("membres")
+    .from("membres_quartiers")
     .select("*", { count: "exact", head: true })
     .eq("salon_id", quartier?.id)
 
