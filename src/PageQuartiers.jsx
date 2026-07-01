@@ -42,10 +42,9 @@ export default function PageQuartiers({ salons = [], onChoisirSalon, onRetour })
 
     for (const q of quartiers) {
       const { count } = await supabase
-        .from("membres")
-        .select("*", { count: "exact", head: true })
-        .eq("quartier", q.nom)
-        .eq("is_online", true);
+      .from("membres")
+.eq("quartier", q.nom)
+
 
       resultats[q.nom] = count || 0;
     }
