@@ -377,14 +377,18 @@ onTournoi={() => setEcran('tournoi')}
   <PageQuartiers
     salons={salons}
    onChoisirSalon={async (quartier) => {
-
+if (!membre || !membre?.pseudo) {
+  console.log("Membre non chargé :", membre)
+  return
+}
+     
   setQuartierActif(quartier)
 
   const { data: deja } = await supabase
     .from("membres")
     .select("id")
     .eq("salon_id", quartier.id)
-    .eq("pseudo", membre.pseudo)
+    .eq("pseudo", membre?.pseudo)
     .maybeSingle()
 
   if (!deja) {
@@ -394,7 +398,7 @@ onTournoi={() => setEcran('tournoi')}
       .insert({
         salon_id: quartier.id,
         quartier: quartier.nom,
-        pseudo: membre.pseudo,
+        pseudo: membre?.pseudo,
         is_online: true,
         last_seen: new Date().toISOString()
       })
@@ -404,7 +408,7 @@ onTournoi={() => setEcran('tournoi')}
       .insert({
         salon_id: quartier.id,
         pseudo: "Système",
-        contenu: `🎉 ${membre.pseudo} a rejoint le quartier ${quartier.nom}.`
+        contenu: `🎉 ${membre?.pseudo} a rejoint le quartier ${quartier.nom}.`
       })
 
   } else {
@@ -512,12 +516,12 @@ function Compte({ session, membre, salons, onConnexion, onDeconnexion, onRetourS
             color: "#fff",
             flexShrink: 0,
           }}>
-            {(membre.pseudo || "?").slice(0, 2).toUpperCase()}
+            {(membre?.pseudo || "?").slice(0, 2).toUpperCase()}
           </div>
 
           <div>
             <div style={{ fontSize: 26, fontWeight: 950 }}>
-              {membre.pseudo || "Joueur Ludowari"}
+              {membre?.pseudo || "Joueur Ludowari"}
             </div>
             <div style={{ color: "#cfc8ff", fontSize: 14 }}>
               Profil joueur
@@ -2723,7 +2727,7 @@ function ChatSalon({ salon, membre, onRetour }) {
     canalRef.current?.send({
       type: 'broadcast',
       event: 'frappe',
-      payload: { membre_id: membre.id, pseudo: membre.pseudo },
+      payload: { membre_id: membre.id, pseudo: membre?.pseudo },
     })
   }
 
