@@ -381,18 +381,26 @@ onChoisirSalon={async (quartier) => {
   setEcran("quartier")
 
   if (membre?.pseudo) {
-   await supabase
+  const userId = session?.user?.id || localStorage.getItem("dew_user_id") || crypto.randomUUID()
+localStorage.setItem("dew_user_id", userId)
+
+const { error } = await supabase
   .from("membres_quartiers")
   .upsert(
     {
-      user_id: session.user.id,
+      user_id: userId,
       salon_id: quartier.id,
-      pseudo: membre.pseudo,
-      quartier: quartier.nom
+      pseudo: membre?.pseudo || "Joueur"
     },
     {
       onConflict: "user_id,salon_id"
     }
+  )
+
+if (error) {
+  alert("Erreur inscription quartier : " + error.message)
+},
+  
   )
   }
 }}
