@@ -210,7 +210,7 @@ useEffect(() => {
     const avecCompte = await Promise.all(
       (data || []).map(async (s) => {
         const { count } = await supabase
-          .from('membres')
+          .from('membres_quartiers')
           .select('*', { count: 'exact', head: true })
           .eq('salon_id', s.id)
         return { ...s, nbMembres: count || 0 }
