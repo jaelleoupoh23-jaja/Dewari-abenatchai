@@ -380,9 +380,12 @@ onChoisirSalon={async (quartier) => {
   setQuartierActif(quartier)
   setEcran("quartier")
 
-  if (true) {
-  const userId = session?.user?.id || localStorage.getItem("dew_user_id") || crypto.randomUUID()
-localStorage.setItem("dew_user_id", userId)
+ if (!session?.user?.id) {
+  setModalAuth({ pourSalon: quartier })
+  return
+}
+
+const userId = session.user.id
 
 const { error } = await supabase
   .from("membres_quartiers")
