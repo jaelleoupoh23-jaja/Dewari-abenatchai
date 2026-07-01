@@ -37,20 +37,23 @@ export default function PageQuartiers({ salons = [], onChoisirSalon, onRetour })
     };
   }, []);
 
-  async function chargerConnectesQuartiers() {
-    const resultats = {};
+ async function chargerConnectesQuartiers() {
+  const resultats = {}
 
-    for (const q of quartiers) {
-      const { count } = await supabase
-      .from("membres")
-.eq("quartier", q.nom)
+  for (let i = 0; i < quartiers.length; i++) {
+    const q = quartiers[i]
+    const salon = salons[i] || { id: i }
 
+    const { count } = await supabase
+      .from("membres_quartiers")
+      .select("*", { count: "exact", head: true })
+      .eq("salon_id", salon.id)
 
-      resultats[q.nom] = count || 0;
-    }
-
-    setConnectesParQuartier(resultats);
+    resultats[q.nom] = count || 0
   }
+
+  setConnectesParQuartier(resultats)
+}
 
   return (
     <div style={styles.page}>
@@ -85,7 +88,7 @@ export default function PageQuartiers({ salons = [], onChoisirSalon, onRetour })
                 <div style={styles.nom}>{q.nom}</div>
                 <div style={styles.surnom}>{q.icon} {q.surnom}</div>
                 <div style={styles.detail}>💰 Entrée : à partir de {q.entree}</div>
-                <div style={styles.connectes}>👥 {nbConnectes} connectés</div>
+                <div style={styles.connectes}>👥 {nbConnectes} membres</div>
               </div>
 
               <div style={{ ...styles.fleche, color: q.couleur }}>→</div>
