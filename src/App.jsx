@@ -187,8 +187,24 @@ useEffect(() => {
 
   chargerSalons()
   chargerTournoi()
-
-  return () => listener.subscription.unsubscribe()
+  const channelSalons = supabase
+  .channel("realtime-salons")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "membres_quartiers",
+    },
+    () => {
+      chargerSalons()
+    }
+  )
+  .subscribe()
+return () => {
+  listener.subscription.unsubscribe()
+  supabase.removeChannel(channelSalons)
+}
 }, [])
   
 useEffect(() => {
