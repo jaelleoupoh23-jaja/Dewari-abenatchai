@@ -398,8 +398,7 @@ const { error } = await supabase
   )
 
 if (error) {
-  alert("Erreur inscription quartier : " + error.message)
-},
+ alert("Erreur inscription quartier : " + error.message)
   
   )
   }
