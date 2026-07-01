@@ -27,7 +27,7 @@ export default function PageQuartier({ quartier, onRetour, onOuvrirChat }) {
       )
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "membres" },
+          { event: "*", schema: "public", table: "membres_quartiers" },
         () => {
           chargerConnectes();
           chargerTotalMembres();
