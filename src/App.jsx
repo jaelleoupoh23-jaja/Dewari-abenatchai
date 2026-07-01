@@ -256,10 +256,11 @@ useEffect(() => {
     onConflict: "user_id,salon_id"
   }
 )
-    if (error) {
-      alert(error.message.includes('complet') ? error.message : 'Erreur, réessaie.')
-      return
-    }
+   if (error) {
+  console.log("ERREUR ENTRER CHAT :", error)
+  alert("Erreur chat : " + error.message)
+  return
+}
  setMembre({
   ...membre,
   salon_id: salon.id,
