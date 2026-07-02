@@ -398,34 +398,11 @@ onTournoi={() => setEcran('tournoi')}
       {ecran === 'quartiers' && (
   <PageQuartiers
     salons={salons}
-onChoisirSalon={async (quartier) => {
+onChoisirSalon={(quartier) => {
   setQuartierActif(quartier)
   setEcran("quartier")
 
- if (!session?.user?.id) {
-  setModalAuth({ pourSalon: quartier })
-  return
-}
 
-const userId = session.user.id
-
-const { error } = await supabase
-  .from("membres_quartiers")
-  .upsert(
-    {
-      user_id: userId,
-      salon_id: quartier.id,
-      pseudo: membre?.pseudo || "Joueur"
-    },
-    {
-      onConflict: "user_id,salon_id"
-    }
-  )
-
- if (error) {
-  console.log("ERREUR MEMBRES_QUARTIERS :", error)
-  alert("Erreur inscription quartier : " + error.message)
-}
 }}
 onRetour={() => setEcran('accueil')}
   />
